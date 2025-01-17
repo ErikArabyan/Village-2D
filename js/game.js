@@ -37,6 +37,7 @@ col = (collisions) => {
 		battleZonesMap.push(battleZonesData.slice(i, 40 + i))
 	}
 
+
 	const boundaries = []
 	const offset = {
 		x: 0, // misure della mappa
