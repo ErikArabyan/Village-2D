@@ -24,7 +24,7 @@ let setmenu = false
 init(STAGE_ID, 0, 0, STAGE_WIDTH, STAGE_HEIGHT)
 let background = new Sprite(MAP, STAGE_WIDTH, STAGE_HEIGHT)
 const music = new Sound(BG_SONG)
-const menu = new Menu(STARTPOS_X, STARTPOS_Y, ['play', 'pause', 'volume'])
+const menu = new Menu(STARTPOS_X, STARTPOS_Y, ['Play Music (Enter)', 'Pause Music (Enter)', 'Volume Change (<-- -->)'])
 
 
 col = (collisions) => {

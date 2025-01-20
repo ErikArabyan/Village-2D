@@ -131,17 +131,17 @@ class Boundary {
 					case 'assets/maps/ForestMap.jpg':
 						[boundaries, battleZones] = col(colissionsTree)
 						battleZones = []
-						console.log(boundaries);	
+						//console.log(boundaries);	
 						break
 					case 'assets/maps/JewerlyMap.png':
 						;[boundaries, battleZones] = col(collisionsJewerly)
 						battleZones = []
-						console.log(boundaries);
+						//console.log(boundaries);
 						break
 					case 'assets/maps/StoneMap.jpg':
 						;[boundaries, battleZones] = col(collisionsStones)
 						battleZones = []
-						console.log(boundaries);
+						//console.log(boundaries);
 						
 						break
 				}
@@ -152,7 +152,7 @@ class Boundary {
 	}
 
 	draw() {
-		ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'
+		ctx.fillStyle = 'rgba(255, 0, 0, 0.0)'
 		ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
 	}
 }
@@ -503,7 +503,7 @@ class Menu {
 		this.ArrowRight = new Key('ArrowRight')
 		this.choose = new Key('Enter')
 		this.font = 'Arial'
-		this.size = 20
+		this.size = 22
 		this.standardColor = 'white'
 		this.selectedColor = 'red'
 		this.index = 0
