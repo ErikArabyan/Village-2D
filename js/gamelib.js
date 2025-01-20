@@ -131,14 +131,18 @@ class Boundary {
 					case 'assets/maps/ForestMap.jpg':
 						[boundaries, battleZones] = col(colissionsTree)
 						battleZones = []
-						console.log(boundaries);
-						
+						console.log(boundaries);	
 						break
 					case 'assets/maps/JewerlyMap.png':
 						;[boundaries, battleZones] = col(collisionsJewerly)
+						battleZones = []
+						console.log(boundaries);
 						break
 					case 'assets/maps/StoneMap.jpg':
-						;[boundaries, battleZones] = col(colissionsStones)
+						;[boundaries, battleZones] = col(collisionsStones)
+						battleZones = []
+						console.log(boundaries);
+						
 						break
 				}
 				console.log(this.map)
