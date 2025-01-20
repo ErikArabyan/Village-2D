@@ -129,20 +129,13 @@ class Boundary {
 				background.image.src = this.map
 				switch (this.map) {
 					case 'assets/maps/ForestMap.jpg':
-						[boundaries, battleZones] = col(colissionsTree)
-						battleZones = []
-						//console.log(boundaries);	
+						boundaries = col(colissionsTree)
 						break
 					case 'assets/maps/JewerlyMap.png':
-						;[boundaries, battleZones] = col(collisionsJewerly)
-						battleZones = []
-						//console.log(boundaries);
+						boundaries = col(collisionsJewerly)
 						break
 					case 'assets/maps/StoneMap.jpg':
-						;[boundaries, battleZones] = col(collisionsStones)
-						battleZones = []
-						//console.log(boundaries);
-						
+						boundaries = col(collisionsStones)
 						break
 				}
 				console.log(this.map)
@@ -152,7 +145,7 @@ class Boundary {
 	}
 
 	draw() {
-		ctx.fillStyle = 'rgba(255, 0, 0, 0.0)'
+		ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'
 		ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
 	}
 }

@@ -32,11 +32,6 @@ col = (collisions) => {
 	for (let i = 0; i < collisions.length; i += 40) {
 		collisionsMap.push(collisions.slice(i, 40 + i))
 	}
-	const battleZonesMap = []
-	for (let i = 0; i < battleZonesData.length; i += 40) {
-		battleZonesMap.push(battleZonesData.slice(i, 40 + i))
-	}
-
 
 	const boundaries = []
 	const offset = {
@@ -68,24 +63,10 @@ col = (collisions) => {
 		})
 	})
 
-	const battleZones = []
-	battleZonesMap.forEach((row, i) => {
-		row.forEach((symbol, j) => {
-			if (symbol > 0)
-				battleZones.push(
-					new Boundary({
-						position: {
-							x: j * Boundary.width + offset.x,
-							y: i * Boundary.height + offset.y,
-						},
-					})
-				)
-		})
-	})
-	return [boundaries, battleZones]
+	return boundaries
 }
 
-let [boundaries, battleZones] = col(collisions)
+let boundaries = col(collisions)
 
 const w = new Key('w')
 const a = new Key('a')
@@ -125,10 +106,6 @@ function animate() {
 	}
 	boundaries.forEach(boundary => {
 		boundary.draw()
-	})
-
-	battleZones.forEach(i => {
-		i.draw()
 	})
 
 	player.draw()
