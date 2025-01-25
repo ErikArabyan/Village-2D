@@ -14,12 +14,12 @@ const CONFIG = {
 		START_Y: 480 / 2 - 38,
 		IMAGES: ['assets/players/playerUp.png', 'assets/players/playerDown.png', 'assets/players/playerLeft.png', 'assets/players/playerRight.png'],
 	},
-	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.jpg', 'assets/maps/StoneMap.png'],
+	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png'],
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
 
-// Состояние игрока и меню
+// Controlliamo se giocatore si muove e no, e se aperto menu e no
 const state = {
 	move: true,
 	setmenu: false,
@@ -33,16 +33,17 @@ const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
 const background = new Sprite(CONFIG.MAPS[0], CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 
-// Функция для создания границ
+	// Функция для создания границ
 const col = collisions =>
-	collisions.reduce((boundaries, symbol, index) => {
+	collisions.reduce((boundaries, symbol, index) => { // математические действия над списком	
+
 		if (symbol !== 0) {
 			const row = Math.floor(index / 40)
 			const col = index % 40
 			boundaries.push(
 				new Boundary({
 					position: { x: col * Boundary.width, y: row * Boundary.height },
-					action: typeof symbol == 'object' ? symbol[0] : symbol,
+					action: typeof symbol == 'object' ? symbol[0] : symbol, 
 					width: typeof symbol == 'object' ? symbol[1] * 16 : 16,
 					height: typeof symbol == 'object' ? symbol[2] * 16 : 16,
 				})
@@ -58,7 +59,7 @@ let boundaries = col(collisions)
 const animate = () => {
 	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
-	boundaries.forEach(b => b.draw())
+	boundaries.forEach(b => b.draw())   //   отрисовка границ не нужно
 	player.draw()
 	items.drawResources()
 
@@ -77,7 +78,7 @@ const animate = () => {
 				}
 			},
 		}
-		menuActions[menu.index]()
+		menuActions[menu.index]() 
 	}
 	window.requestAnimationFrame(animate)
 }
@@ -120,7 +121,6 @@ const keyActions = {
 }
 
 function menuHandler(e) {
-	// menu.update()
 	menu.keyDownHandler(e)
 	menu.update()
 	setTimeout(() => {
@@ -132,6 +132,7 @@ function menuHandler(e) {
 window.addEventListener('keydown', e => {
 	state.move = true
 	keyActions[e.code]?.keyDown?.(e)
+	
 })
 
 window.addEventListener('keyup', e => {

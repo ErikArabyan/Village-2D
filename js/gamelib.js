@@ -332,7 +332,7 @@ class Animation {
 	 * @param {number} delay - Tempo di attesa dell'animazione.
 	 */
 	constructor(path, delay, pic_width, pic_height, p_width, p_height) {
-		this.images = path.map(e => {
+		this.images = path.map(e => {  // Перебирает все елементы массива черзе .map
 			let img = new Image()
 			img.src = e
 			return img
