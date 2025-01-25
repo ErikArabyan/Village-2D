@@ -7,19 +7,27 @@
 				margin: 0;
 				padding: 0;
 			}
+
+			.game {
+				background-color: rgb(37, 78, 37);
+				display: flex;
+				width: 100vw;
+				height: 100vh;
+				justify-content: center;
+				align-items: center;
+			}
 		</style>
 	</head>
 	<body>
-		<div>
+		<div class="game">
 			<canvas id="stage"></canvas>
-			<script src="js/utils.js"></script>
-			<script src="js/gamelib.js"></script>
-			<!-- <script src="./assets/activities/battleZones.js"></script> -->
-			<script src="assets/collisions/collisions.js"></script>
-			<script src="assets/collisions/collisionsJewerly.js"></script>
-			<script src="assets/collisions/collisionsStones.js"></script>
-			<script src="assets/collisions/collisionsTree.js"></script>
-			<script src="js/game.js"></script>	
 		</div>
+		<script src="js/utils.js"></script>
+		<script src="js/gamelib.js"></script>
+		<script src="assets/collisions/collisions.js"></script>
+		<script src="assets/collisions/collisionsJewerly.js"></script>
+		<script src="assets/collisions/collisionsStones.js"></script>
+		<script src="assets/collisions/collisionsTree.js"></script>
+		<script src="js/game.js"></script>
 	</body>
 </html>

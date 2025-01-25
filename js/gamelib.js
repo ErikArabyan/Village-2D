@@ -5,7 +5,6 @@
  */
 
 let ctx
-let raf
 
 /**
  * Inizializza il canvas di disegno e le variabili globali.
@@ -15,15 +14,23 @@ let raf
  * @param {number} width - Larghezza del canvas.
  * @param {number} height - Altezza del canvas.
  */
-function init(id, x, y, width, height) {
+function init(id, width, height) {
 	let canvas = document.getElementById(id)
 	ctx = canvas.getContext('2d')
-	canvas.style.position = 'absolute'
-	canvas.style.left = x + 'px'
-	canvas.style.top = y + 'px'
 	canvas.width = width
 	canvas.height = height
-	raf = undefined
+
+	// Определяем размеры канваса
+	const aspectRatio = 640 / 480
+	const screenWidth = window.innerWidth
+	const screenHeight = window.innerHeight
+	if (screenWidth / screenHeight > aspectRatio) {
+		canvas.style.height = `${screenHeight}px`
+		canvas.style.width = `${screenHeight * aspectRatio}px`
+	} else {
+		canvas.style.width = `${screenWidth}px`
+		canvas.style.height = `${screenWidth / aspectRatio}px`
+	}
 }
 
 // -----------------------------------------------------------------------------
@@ -35,9 +42,9 @@ class Vector2 {
 	/**
 	 * Crea un nuovo oggetto Vector2.
 	 */
-	constructor() {
-		this.x = 0
-		this.y = 0
+	constructor(x = 0, y = 0) {
+		this.x = x
+		this.y = y
 	}
 
 	/**
@@ -95,53 +102,45 @@ class Sprite {
 class Boundary {
 	/**
 	 * @param {object} position
-	 * @param {string} isAction
+	 * @param {number | undefined} action
 	 * @param {number} width
 	 * @param {number} height
 	 */
 	static width = 16
 	static height = 16
-	constructor({ position, map = '' }) {
+	constructor({ position, action = undefined, width = 16, height = 16 }) {
 		this.position = position
-		this.map = map
-		this.width = 16
-		this.height = 16
+		this.action = action
+		this.width = width
+		this.height = height
 	}
 
-	collide(px, py, ph, pw) {
-		if (this.map == '') {
-			return !(
-				(
-					px < this.position.x + this.width - 6 && //right border
-					px > this.position.x - this.width + 6 && //left border
-					py < this.position.y - this.height + 16 && //bottom border
-					py > this.position.y - 22
-				) //top border
-			)
-		} else {
-			if (
-				this.map &&
-				px < this.position.x + this.width - 6 && //right border
-				px > this.position.x - this.width + 6 && //left border
-				py < this.position.y - this.height + 16 && //bottom border
-				py > this.position.y - 22
-			) {
-				background.image.src = this.map
-				switch (this.map) {
-					case 'assets/maps/ForestMap.jpg':
-						boundaries = col(colissionsTree)
-						break
-					case 'assets/maps/JewerlyMap.png':
-						boundaries = col(collisionsJewerly)
-						break
-					case 'assets/maps/StoneMap.jpg':
-						boundaries = col(collisionsStones)
-						break
-				}
-				console.log(this.map)
+	collide(px, py, pw, ph) {
+		if (px < this.position.x + this.width - 6 && px + pw > this.position.x + 6 && py < this.position.y + this.height - 14 && py + ph > this.position.y + 4) {
+			if (this.action == 1) return true
+			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
+
+			switch (this.action) {
+				case 2:
+					boundaries = col(collisions)
+					break
+				case 3:
+					boundaries = col(colissionsTree)
+					break
+				case 4:
+					boundaries = col(collisionsJewerly)
+					break
+				case 5:
+					boundaries = col(collisionsStones)
+					break
+				default:
+					if (items.items[this.action - 7] != 1000) {
+						items.items[this.action - 7] += 1
+					}
+					return true
 			}
-			return true
 		}
+		return false
 	}
 
 	draw() {
@@ -171,9 +170,7 @@ class Key {
 	 * @param {Object} e - Parametro relativo all'evento.
 	 */
 	keyDownHandler(e) {
-		if (e.key == this.key) {
-			this.pressed = true
-		}
+		if (e.key == this.key) this.pressed = true
 	}
 
 	/**
@@ -181,9 +178,7 @@ class Key {
 	 * @param {Object} e - Parametro relativo all'evento.
 	 */
 	keyUpHandler(e) {
-		if (e.key == this.key) {
-			this.pressed = false
-		}
+		if (e.key == this.key) this.pressed = false
 	}
 }
 
@@ -268,9 +263,7 @@ class Text {
 	 * Disegna il testo.
 	 */
 	draw() {
-		//ctx.drawImage(this.image, точка начала обрезки, размер окна обрезки, расположение на карте, масштаб);
-		//this.images[this.frame].onload = () =>{
-		ctx.font = this.size + 'px ' + this.font
+		ctx.font = `${this.size}px ${this.font}`
 		ctx.fillStyle = this.color
 		ctx.fillText(this.text, this.position.x, this.position.y)
 	}
@@ -338,20 +331,21 @@ class Animation {
 	 * @param {string[]} path - Percorso delle risorse.
 	 * @param {number} delay - Tempo di attesa dell'animazione.
 	 */
-	constructor(path, delay, player_width, player_height) {
-		this.images = []
-		for (let e of path) {
+	constructor(path, delay, pic_width, pic_height, p_width, p_height) {
+		this.images = path.map(e => {
 			let img = new Image()
 			img.src = e
-			this.images.push(img)
-		}
+			return img
+		})
 		this.frame = 0
 		this.frames = this.images.length
 		this.timer = new Timer(delay)
 		this.position = new Vector2()
 		this.rotation = 1
-		this.width = player_width
-		this.height = player_height
+		this.picWidth = pic_width
+		this.picHeight = pic_height
+		this.width = p_width
+		this.height = p_height
 	}
 
 	/**
@@ -385,18 +379,7 @@ class Animation {
 	 * Disegna l'animazione.
 	 */
 	draw() {
-		//const img = this.images[this.frame];
-		//if (img.complete) {		);
-
-		ctx.drawImage(this.images[this.rotation], this.frame, 0, this.width, this.height, this.position.x, this.position.y, 16, 24) // 192 68
-		//        } else {
-		//            ctx.drawImage(img, 0, 0, 50, 80, this.position.x, this.position.y, 16, 24);
-
-		//ctx.drawImage(this.image, точка начала обрезки, размер окна обрезки, расположение на карте, масштаб);
-		//this.images[this.frame].onload = () =>{
-		// ctx.drawImage(this.images[this.frame], 0,0);
-
-		//ctx.drawImage(this.images[this.frame], 0, 0, 50, 80, this.position.x, this.position.y, 16, 24);
+		ctx.drawImage(this.images[this.rotation], this.frame, 0, this.picWidth, this.picHeight, this.position.x, this.position.y, this.width, this.height)
 	}
 }
 
@@ -486,7 +469,7 @@ class Menu {
 	 * @param {number} y - Posizione y del menu.
 	 * @param {string[]} items - Voci di menu.
 	 */
-	constructor(x, y, items) {
+	constructor(x, y, items, icons = []) {
 		this.items = items
 		this.x = x
 		this.y = y
@@ -500,6 +483,11 @@ class Menu {
 		this.standardColor = 'white'
 		this.selectedColor = 'red'
 		this.index = 0
+		this.images = icons.map(src => {
+			const img = new Image()
+			img.src = src
+			return img
+		})
 	}
 
 	/**
@@ -531,17 +519,11 @@ class Menu {
 	 */
 	update() {
 		if (this.up.pressed) {
-			this.index--
-			if (this.index == -1) {
-				this.index = this.items.length - 1
-			}
+			this.index = (this.index - 1 + this.items.length) % this.items.length
 			this.up.pressed = false
 		}
 		if (this.down.pressed) {
-			this.index++
-			if (this.index == this.items.length) {
-				this.index = 0
-			}
+			this.index = (this.index + 1) % this.items.length
 			this.down.pressed = false
 		}
 	}
@@ -551,15 +533,29 @@ class Menu {
 	 */
 	draw() {
 		let y = this.y
-		ctx.font = this.size + 'px ' + this.font
+		ctx.font = `${this.size}px ${this.font}`
 		ctx.fillStyle = 'rgba(77, 77, 77, 0.9)'
+		ctx.textAlign = 'center'
 		ctx.fillRect(0, 0, 640, 480)
 		for (let i = 0; i < this.items.length; i++) {
-			ctx.fillStyle = this.standardColor
-			if (i == this.index) {
-				ctx.fillStyle = this.selectedColor
-			}
+			ctx.fillStyle = i === this.index ? this.selectedColor : this.standardColor
 			ctx.fillText(this.items[i], this.x, y)
+			y += this.size + 10
+		}
+	}
+
+	drawResources() {
+		let y = this.y
+		ctx.font = `${this.size}px ${this.font}`
+		ctx.fillStyle = 'rgba(77, 77, 77, 0.9)'
+		ctx.fillRect(540, 0, 100, 90)
+		for (let i = 0; i < this.items.length; i++) {
+			ctx.fillStyle = this.standardColor
+			ctx.drawImage(this.images[i], 545, y - 18, 24, 24)
+			ctx.fillStyle = this.items[i] == 1000 ? 'green' : 'red'
+			ctx.fillText(Math.floor(this.items[i] / 100), this.x, y)
+			ctx.fillText(['/', '/', '/'][i], this.x + (this.items[i] == 1000 ? 30 : 15), y)
+			ctx.fillText(10, this.x + (this.items[i] == 1000 ? 40 : 25), y)
 			y += this.size + 10
 		}
 	}
