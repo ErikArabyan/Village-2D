@@ -14,12 +14,12 @@ const CONFIG = {
 		START_Y: 480 / 2 - 38,
 		IMAGES: ['assets/players/playerUp.png', 'assets/players/playerDown.png', 'assets/players/playerLeft.png', 'assets/players/playerRight.png'],
 	},
-	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.jpg', 'assets/maps/JewerlyMap.jpg', 'assets/maps/StoneMap.jpg'],
+	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.jpg', 'assets/maps/StoneMap.png'],
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
 
-// Состояние
+// Состояние игрока и меню
 const state = {
 	move: true,
 	setmenu: false,
