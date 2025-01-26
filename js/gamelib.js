@@ -135,9 +135,6 @@ class Boundary {
 					break
 				default:
 					state.action = this.action
-					if (items.items[this.action - 7] != 1000) {
-						items.items[this.action - 7] += 1
-					}
 					return true
 			}
 		}
@@ -354,6 +351,9 @@ class Animation {
 		this.timer.doTick()
 		if (this.timer.tick()) {
 			if (this.action) {
+				if (items.items[state.action - 7] != 100) {
+					items.items[state.action - 7] += 1
+				}
 				this.frame = this.frame === 0 ? this.picWidth : 0
 			} else {
 				this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
@@ -406,6 +406,7 @@ class Animation {
 			this.frame = 0
 			this.move = (this.move / 2) * 3
 			this.position.set(this.position.x - 8, this.position.y - 8)
+
 			switch (this.side) {
 				case 1:
 					this.move = 144
@@ -421,7 +422,7 @@ class Animation {
 					break
 			}
 		}
-		if (state.action == 7) this.move += 128
+		if (state.action == 7 && this.move < 192) this.move += 192		
 	}
 
 	draw() {
@@ -598,10 +599,10 @@ class Menu {
 		for (let i = 0; i < this.items.length; i++) {
 			ctx.fillStyle = this.standardColor
 			ctx.drawImage(this.images[i], 545, y - 18, 24, 24)
-			ctx.fillStyle = this.items[i] == 1000 ? 'green' : 'red'
-			ctx.fillText(Math.floor(this.items[i] / 100), this.x, y)
-			ctx.fillText(['/', '/', '/'][i], this.x + (this.items[i] == 1000 ? 30 : 15), y)
-			ctx.fillText(10, this.x + (this.items[i] == 1000 ? 40 : 25), y)
+			ctx.fillStyle = this.items[i] == 100 ? 'green' : 'red'
+			ctx.fillText(Math.floor(this.items[i] / 10), this.x, y)
+			ctx.fillText(['/', '/', '/'][i], this.x + (this.items[i] == 100 ? 30 : 15), y)
+			ctx.fillText(10, this.x + (this.items[i] == 100 ? 40 : 25), y)
 			y += this.size + 10
 		}
 	}

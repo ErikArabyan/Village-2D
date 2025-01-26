@@ -2,6 +2,6 @@ block - 1
 maps - actions
    2 - 6 base map
    3 - 7 Tree
-   4 - 8 jewelery
-   5 - 9 stone
+   4 - 9 jewelery
+   5 - 8 stone
 

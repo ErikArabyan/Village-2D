@@ -10,7 +10,7 @@ const CONFIG = {
 		PICHEIGHT: 32,
 		ACTUALWIDTH: 32,
 		ACTUALHEIGHT: 32,
-		START_X: 640 / 2 - 8,
+		START_X: 640 / 2 - 16,
 		START_Y: 480 / 2 - 38,
 		IMAGES: ['assets/players/Player.png', 'assets/players/Player_Actions.png'],
 	},
