@@ -86,7 +86,7 @@ class Sprite {
 	 * @return {boolean} true se i due sprite collidono, altrimenti false.
 	 */
 	collide(px, py) {
-		return px < this.position.x + this.width - 12 && px > this.position.x - 4 && py < this.position.y + this.height - 21 && py > this.position.y - 2
+		return px < this.position.x + this.width - 22 && px > this.position.x - 4 && py < this.position.y + this.height - 28 && py > this.position.y - 12
 	}
 
 	/**

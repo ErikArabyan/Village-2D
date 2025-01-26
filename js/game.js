@@ -52,7 +52,7 @@ const col = collisions =>
 	}, [])
 
 // Обработка столкновений
-let boundaries = col(collisionsStones)
+let boundaries = col(collisions)
 
 // Функция для анимации
 const animate = () => {
