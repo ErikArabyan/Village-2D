@@ -295,7 +295,7 @@ class Timer {
 	 * Attiva il tick del timer.
 	 */
 	doTick() {
-		this.elapsed = this.delay + 1
+		this.elapsed += 1
 	}
 
 	/**
@@ -332,7 +332,7 @@ class Animation {
 	 * @param {number} delay - Tempo di attesa dell'animazione.
 	 */
 	constructor(path, delay, pic_width, pic_height, p_width, p_height) {
-		this.images = path.map(e => {  // Перебирает все елементы массива черзе .map
+		this.images = path.map(e => {
 			let img = new Image()
 			img.src = e
 			return img
@@ -342,42 +342,44 @@ class Animation {
 		this.move = 0
 		this.timer = new Timer(delay)
 		this.position = new Vector2()
-		this.rotation = 1
 		this.picWidth = pic_width
 		this.picHeight = pic_height
 		this.width = p_width
 		this.height = p_height
 	}
 
-	/**
-	 * Resetta l'animazione.
-	 */
-	reset() {
-		this.frame = 0
-		//this.timer.reset();
-	}
-
-	/**
-	 * Aggiorna l'animazione.
-	 */
-	update() { // 
-		//		this.timer.update();
-		//		if (this.timer.tick()) {
-		this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
-		//		}
-	}
-
-	changeState(x) {
-
-	}
-
-	static update() {
-				setInterval(() => {
+	update() {
+		this.timer.doTick()
+		if (this.timer.tick()) {
 			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
-		},500)
+			this.timer.reset()
+		}
 	}
-	
-	draw() {		
+	// 1-4, 2-5 dual, 3-6  - pic
+	// w-1, s-2, a-3, d-4
+	changeState(x) {
+		if (this.move !== x) {
+			// this.frame = 0
+		}
+		console.log(x)
+		switch (x) {
+			case 1:
+				this.move = 64
+				break
+			case 2:
+				this.move = 0
+				break
+			case 3:
+				this.move = 32
+				// ctx.translate(32, 0)
+				break
+			case 4:
+				this.move = 32
+				break
+		}
+	}
+
+	draw() {
 		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.position.x, this.position.y, this.width, this.height)
 	}
 }
