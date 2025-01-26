@@ -6,13 +6,14 @@ const CONFIG = {
 		HEIGHT: 480,
 	},
 	PLAYER: {
-		PICWIDTH: 48,
-		PICHEIGHT: 68,
-		ACTUALWIDTH: 16,
-		ACTUALHEIGHT: 24,
+		PICWIDTH: 32,
+		PICHEIGHT: 32,
+		ACTUALWIDTH: 32,
+		ACTUALHEIGHT: 32,
 		START_X: 640 / 2 - 8,
 		START_Y: 480 / 2 - 38,
 		IMAGES: ['assets/players/playerUp.png', 'assets/players/playerDown.png', 'assets/players/playerLeft.png', 'assets/players/playerRight.png'],
+		NEWIMAGES: ['assets/players/Player.png', 'assets/players/Player_Actions.png'],
 	},
 	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png'],
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
@@ -26,7 +27,7 @@ const state = {
 }
 
 // Объекты
-const player = new Animation(CONFIG.PLAYER.IMAGES, 1, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT)
+const player = new Animation(CONFIG.PLAYER.NEWIMAGES, 1, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT)
 const music = new Sound(CONFIG.BG_SONG)
 const menu = new Menu(CONFIG.STAGE.WIDTH / 2, CONFIG.STAGE.HEIGHT / 2, ['Play Music (Enter)', 'Pause Music (Enter)', 'Volume Change (<-- -->)'])
 const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
@@ -36,7 +37,6 @@ player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 	// Функция для создания границ
 const col = collisions =>
 	collisions.reduce((boundaries, symbol, index) => { // математические действия над списком	
-
 		if (symbol !== 0) {
 			const row = Math.floor(index / 40)
 			const col = index % 40
@@ -59,9 +59,10 @@ let boundaries = col(collisions)
 const animate = () => {
 	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
-	boundaries.forEach(b => b.draw())   //   отрисовка границ не нужно
+	boundaries.forEach(b => b.draw())   //   отрисовка границ колизии не нужно
 	player.draw()
 	items.drawResources()
+	// player.update()
 
 	if (state.setmenu) menu.draw()
 
@@ -84,12 +85,12 @@ const animate = () => {
 }
 
 // Функция для движения игрока
-const movePlayer = (dx, dy) => {
+const movePlayer = (dx, dy, num) => {
 	state.move = !boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))
 	if (state.move && background.collide(player.position.x + dx, player.position.y + dy, player.width, player.height)) {
 		player.position.set(player.position.x + dx, player.position.y + dy)
 	}
-	player.update()
+	player.update(num+1)
 }
 
 // Обработчик событий для клавиш
@@ -103,7 +104,7 @@ const keyDown = (e, key, num) => {
 
 	const { dx, dy } = directions[num]
 	key.keyDownHandler(e)
-	movePlayer(dx, dy)
+	movePlayer(dx, dy, num)
 	player.changeState(num)
 }
 

@@ -339,6 +339,7 @@ class Animation {
 		})
 		this.frame = 0
 		this.frames = this.images.length
+		this.move = 0
 		this.timer = new Timer(delay)
 		this.position = new Vector2()
 		this.rotation = 1
@@ -359,27 +360,25 @@ class Animation {
 	/**
 	 * Aggiorna l'animazione.
 	 */
-	// update() {
-	// 	this.timer.update();
-	// 	if (this.timer.tick()) {
-	// 		this.frame = (this.frame + 1) % this.frames;
-	// 	}
-	// }
-	update() {
+	update() { // 
 		//		this.timer.update();
 		//		if (this.timer.tick()) {
-		this.frame = (this.frame + 48) % 192
+		this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
 		//		}
 	}
+
 	changeState(x) {
-		this.rotation = x
+
 	}
 
-	/**
-	 * Disegna l'animazione.
-	 */
-	draw() {
-		ctx.drawImage(this.images[this.rotation], this.frame, 0, this.picWidth, this.picHeight, this.position.x, this.position.y, this.width, this.height)
+	static update() {
+				setInterval(() => {
+			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+		},500)
+	}
+	
+	draw() {		
+		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.position.x, this.position.y, this.width, this.height)
 	}
 }
 
