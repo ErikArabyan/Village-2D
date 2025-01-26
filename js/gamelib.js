@@ -116,10 +116,10 @@ class Boundary {
 	}
 
 	collide(px, py, pw, ph) {
+		state.action = undefined
 		if (px < this.position.x + this.width - 12 && px + pw > this.position.x + 12 && py < this.position.y + this.height - 18 && py + ph > this.position.y + 9) {
 			if (this.action == 1) return true
 			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
-
 			switch (this.action) {
 				case 2:
 					boundaries = col(collisions)
@@ -134,6 +134,7 @@ class Boundary {
 					boundaries = col(collisionsStones)
 					break
 				default:
+					state.action = this.action
 					if (items.items[this.action - 7] != 1000) {
 						items.items[this.action - 7] += 1
 					}
@@ -338,7 +339,6 @@ class Animation {
 			return img
 		})
 		this.frame = 0
-		this.frames = this.images.length
 		this.move = 0
 		this.timer = new Timer(delay)
 		this.position = new Vector2()
@@ -346,17 +346,24 @@ class Animation {
 		this.picHeight = pic_height
 		this.width = p_width
 		this.height = p_height
+		this.side = undefined
+		this.action = false
 	}
 
 	update() {
 		this.timer.doTick()
 		if (this.timer.tick()) {
-			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+			if (this.action) {
+				this.frame = this.frame === 0 ? this.picWidth : 0
+			} else {
+				this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+			}
 			this.timer.reset()
 		}
 	}
 
 	changeState(x, ismove = false) {
+		this.side = x
 		switch (x) {
 			case 1:
 				this.move = 96
@@ -372,6 +379,49 @@ class Animation {
 				break
 		}
 		if (ismove) this.move += 128
+	}
+
+	endState() {
+		if (this.action && state.action) {
+			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
+			this.picWidth = 32
+			this.picHeight = 32
+			this.width = 32
+			this.height = 32
+			this.action = false
+			this.frame = 0
+			this.move = (this.move / 3) * 2
+			this.position.set(this.position.x + 8, this.position.y + 8)
+		}
+	}
+
+	collect() {
+		if (!this.action && state.action) {
+			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
+			this.picWidth = 48
+			this.picHeight = 48
+			this.width = 48
+			this.height = 48
+			this.action = true
+			this.frame = 0
+			this.move = (this.move / 2) * 3
+			this.position.set(this.position.x - 8, this.position.y - 8)
+			switch (this.side) {
+				case 1:
+					this.move = 144
+					break
+				case 2:
+					this.move = 0
+					break
+				case 3:
+					this.move = 96
+					break
+				case 4:
+					this.move = 48
+					break
+			}
+		}
+		if (state.action == 7) this.move += 128
 	}
 
 	draw() {

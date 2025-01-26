@@ -23,6 +23,7 @@ const CONFIG = {
 const state = {
 	move: true,
 	setmenu: false,
+	action: undefined,
 }
 
 // Объекты
@@ -33,16 +34,17 @@ const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
 const background = new Sprite(CONFIG.MAPS[0], CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 
-	// Функция для создания границ
+// Функция для создания границ
 const col = collisions =>
-	collisions.reduce((boundaries, symbol, index) => { // математические действия над списком	
+	collisions.reduce((boundaries, symbol, index) => {
+		// математические действия над списком
 		if (symbol !== 0) {
 			const row = Math.floor(index / 40)
 			const col = index % 40
 			boundaries.push(
 				new Boundary({
 					position: { x: col * Boundary.width, y: row * Boundary.height },
-					action: typeof symbol == 'object' ? symbol[0] : symbol, 
+					action: typeof symbol == 'object' ? symbol[0] : symbol,
 					width: typeof symbol == 'object' ? symbol[1] * 16 : 16,
 					height: typeof symbol == 'object' ? symbol[2] * 16 : 16,
 				})
@@ -58,7 +60,7 @@ let boundaries = col(collisions)
 const animate = () => {
 	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
-	boundaries.forEach(b => b.draw())   //   отрисовка границ колизии не нужно
+	boundaries.forEach(b => b.draw()) //   отрисовка границ колизии не нужно
 	player.draw()
 	player.update()
 	items.drawResources()
@@ -79,7 +81,7 @@ const animate = () => {
 				}
 			},
 		}
-		menuActions[menu.index]() 
+		menuActions[menu.index]()
 	}
 	window.requestAnimationFrame(animate)
 }
@@ -90,7 +92,7 @@ const movePlayer = (dx, dy, num) => {
 	if (state.move && background.collide(player.position.x + dx, player.position.y + dy, player.width, player.height)) {
 		player.position.set(player.position.x + dx, player.position.y + dy)
 	}
-	player.update(num+1)
+	player.update(num + 1)
 }
 
 // Обработчик событий для клавиш
@@ -102,9 +104,9 @@ const keyDown = (e, key, num) => {
 		{ dx: 4, dy: 0 }, // Вправо
 	]
 
-	const { dx, dy } = directions[num-1]
+	const { dx, dy } = directions[num - 1]
 	key.keyDownHandler(e)
-	movePlayer(dx, dy, num-1)
+	movePlayer(dx, dy, num - 1)
 	player.changeState(num, true)
 }
 
@@ -113,6 +115,7 @@ const keyActions = {
 	KeyS: { keyDown: e => keyDown(e, new Key('s'), 2), keyUp: () => player.changeState(2) },
 	KeyA: { keyDown: e => keyDown(e, new Key('a'), 3), keyUp: () => player.changeState(3) },
 	KeyD: { keyDown: e => keyDown(e, new Key('d'), 4), keyUp: () => player.changeState(4) },
+	KeyE: { keyDown: () => player.collect(true), keyUp: () => player.endState() },
 	Escape: { keyDown: () => (state.setmenu = !state.setmenu) },
 	ArrowUp: { keyDown: menuHandler },
 	ArrowDown: { keyDown: menuHandler },
@@ -133,7 +136,6 @@ function menuHandler(e) {
 window.addEventListener('keydown', e => {
 	state.move = true
 	keyActions[e.code]?.keyDown?.(e)
-	
 })
 
 window.addEventListener('keyup', e => {
@@ -143,4 +145,3 @@ window.addEventListener('keyup', e => {
 // Инициализация
 init(CONFIG.STAGE.ID, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 animate()
-
