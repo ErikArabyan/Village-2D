@@ -60,7 +60,7 @@ let boundaries = col(collisions)
 const animate = () => {
 	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
-	boundaries.forEach(b => b.draw()) //   отрисовка границ колизии не нужно
+	// boundaries.forEach(b => b.draw()) //   отрисовка границ колизии не нужно
 	player.draw()
 	player.update()
 	items.drawResources()
@@ -87,7 +87,7 @@ const animate = () => {
 }
 
 // Функция для движения игрока
-const movePlayer = (dx, dy, num) => {
+const movePlayer = (dx, dy, num) => {	
 	state.move = !boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))
 	if (state.move && background.collide(player.position.x + dx, player.position.y + dy, player.width, player.height)) {
 		player.position.set(player.position.x + dx, player.position.y + dy)
@@ -129,7 +129,7 @@ function menuHandler(e) {
 	menu.update()
 	setTimeout(() => {
 		menu.keyUpHandler(e)
-	}, 10)
+	}, 20)
 }
 
 // События

@@ -122,15 +122,19 @@ class Boundary {
 			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
 			switch (this.action) {
 				case 2:
+					player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 					boundaries = col(collisions)
 					break
 				case 3:
+					player.position.set(220, 200)
 					boundaries = col(colissionsTree)
 					break
 				case 4:
+					player.position.set(304, 242)
 					boundaries = col(collisionsJewerly)
 					break
 				case 5:
+					player.position.set(100, 150)
 					boundaries = col(collisionsStones)
 					break
 				default:
@@ -363,22 +367,24 @@ class Animation {
 	}
 
 	changeState(x, ismove = false) {
-		this.side = x
-		switch (x) {
-			case 1:
-				this.move = 96
-				break
-			case 2:
-				this.move = 0
-				break
-			case 3:
-				this.move = 64
-				break
-			case 4:
-				this.move = 32
-				break
+		if (!this.action) {
+			this.side = x
+			switch (x) {
+				case 1:
+					this.move = 96
+					break
+				case 2:
+					this.move = 0
+					break
+				case 3:
+					this.move = 64
+					break
+				case 4:
+					this.move = 32
+					break
+			}
+			if (ismove) this.move += 128
 		}
-		if (ismove) this.move += 128
 	}
 
 	endState() {
@@ -421,8 +427,8 @@ class Animation {
 					this.move = 48
 					break
 			}
+			if (state.action == 7 && this.move < 192) this.move += 192
 		}
-		if (state.action == 7 && this.move < 192) this.move += 192		
 	}
 
 	draw() {
