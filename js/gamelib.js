@@ -116,7 +116,7 @@ class Boundary {
 	}
 
 	collide(px, py, pw, ph) {
-		if (px < this.position.x + this.width - 6 && px + pw > this.position.x + 6 && py < this.position.y + this.height - 14 && py + ph > this.position.y + 4) {
+		if (px < this.position.x + this.width - 12 && px + pw > this.position.x + 12 && py < this.position.y + this.height - 18 && py + ph > this.position.y + 9) {
 			if (this.action == 1) return true
 			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
 
@@ -355,28 +355,23 @@ class Animation {
 			this.timer.reset()
 		}
 	}
-	// 1-4, 2-5 dual, 3-6  - pic
-	// w-1, s-2, a-3, d-4
-	changeState(x) {
-		if (this.move !== x) {
-			// this.frame = 0
-		}
-		console.log(x)
+
+	changeState(x, ismove = false) {
 		switch (x) {
 			case 1:
-				this.move = 64
+				this.move = 96
 				break
 			case 2:
 				this.move = 0
 				break
 			case 3:
-				this.move = 32
-				// ctx.translate(32, 0)
+				this.move = 64
 				break
 			case 4:
 				this.move = 32
 				break
 		}
+		if (ismove) this.move += 128
 	}
 
 	draw() {

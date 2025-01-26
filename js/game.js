@@ -12,8 +12,7 @@ const CONFIG = {
 		ACTUALHEIGHT: 32,
 		START_X: 640 / 2 - 8,
 		START_Y: 480 / 2 - 38,
-		IMAGES: ['assets/players/playerUp.png', 'assets/players/playerDown.png', 'assets/players/playerLeft.png', 'assets/players/playerRight.png'],
-		NEWIMAGES: ['assets/players/Player.png', 'assets/players/Player_Actions.png'],
+		IMAGES: ['assets/players/Player.png', 'assets/players/Player_Actions.png'],
 	},
 	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png'],
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
@@ -27,7 +26,7 @@ const state = {
 }
 
 // Объекты
-const player = new Animation(CONFIG.PLAYER.NEWIMAGES, 10, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT)
+const player = new Animation(CONFIG.PLAYER.IMAGES, 10, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT)
 const music = new Sound(CONFIG.BG_SONG)
 const menu = new Menu(CONFIG.STAGE.WIDTH / 2, CONFIG.STAGE.HEIGHT / 2, ['Play Music (Enter)', 'Pause Music (Enter)', 'Volume Change (<-- -->)'])
 const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
@@ -53,7 +52,7 @@ const col = collisions =>
 	}, [])
 
 // Обработка столкновений
-let boundaries = col(collisions)
+let boundaries = col(collisionsStones)
 
 // Функция для анимации
 const animate = () => {
@@ -103,17 +102,17 @@ const keyDown = (e, key, num) => {
 		{ dx: 4, dy: 0 }, // Вправо
 	]
 
-	const { dx, dy } = directions[num]
+	const { dx, dy } = directions[num-1]
 	key.keyDownHandler(e)
-	movePlayer(dx, dy, num)
-	player.changeState(num+1)
+	movePlayer(dx, dy, num-1)
+	player.changeState(num, true)
 }
 
 const keyActions = {
-	KeyW: { keyDown: e => keyDown(e, new Key('w'), 0), keyUp: () => player.changeState(1) },
-	KeyS: { keyDown: e => keyDown(e, new Key('s'), 1), keyUp: () => player.changeState(2) },
-	KeyA: { keyDown: e => keyDown(e, new Key('a'), 2), keyUp: () => player.changeState(3) },
-	KeyD: { keyDown: e => keyDown(e, new Key('d'), 3), keyUp: () => player.changeState(4) },
+	KeyW: { keyDown: e => keyDown(e, new Key('w'), 1), keyUp: () => player.changeState(1) },
+	KeyS: { keyDown: e => keyDown(e, new Key('s'), 2), keyUp: () => player.changeState(2) },
+	KeyA: { keyDown: e => keyDown(e, new Key('a'), 3), keyUp: () => player.changeState(3) },
+	KeyD: { keyDown: e => keyDown(e, new Key('d'), 4), keyUp: () => player.changeState(4) },
 	Escape: { keyDown: () => (state.setmenu = !state.setmenu) },
 	ArrowUp: { keyDown: menuHandler },
 	ArrowDown: { keyDown: menuHandler },
