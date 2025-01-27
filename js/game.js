@@ -18,8 +18,9 @@ const CONFIG = {
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
+
 const state = {
-	actionAvailable: undefined,
+	num: 1,
 }
 
 // Объекты
@@ -99,11 +100,11 @@ const keyDown = () => {
 		{ key: keys.D, axis: 'dx', value: 1, stateNum: 3 },
 		{ key: keys.A, axis: 'dx', value: -1, stateNum: 2 },
 	]
-	let num = 1
+
 	directions.forEach(({ key, axis, value, stateNum }) => {
 		if (key.pressed && dir[axis] !== value) {
 			dir[axis] += value
-			num = stateNum
+			state.num = stateNum
 		}
 	})
 	if (dir.dx && dir.dy) {
@@ -113,7 +114,7 @@ const keyDown = () => {
 	if (dir.dx) movePlayer(dir.dx, 0)
 	if (dir.dy) movePlayer(0, dir.dy)
 
-	player.changeState(num, dir.dx || dir.dy)
+	player.changeState(state.num, dir.dx || dir.dy)
 }
 
 const keyActions = {
