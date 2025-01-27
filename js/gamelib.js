@@ -116,7 +116,7 @@ class Boundary {
 	}
 
 	collide(px, py, pw, ph) {
-		state.action = undefined
+		state.actionAvailable = undefined
 		if (px < this.position.x + this.width - 12 && px + pw > this.position.x + 12 && py < this.position.y + this.height - 18 && py + ph > this.position.y + 9) {
 			if (this.action == 1) return true
 			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
@@ -138,7 +138,7 @@ class Boundary {
 					boundaries = col(collisionsStones)
 					break
 				default:
-					state.action = this.action
+					state.actionAvailable = this.action
 					return true
 			}
 		}
@@ -167,20 +167,16 @@ class Key {
 		this.pressed = false
 	}
 
-	/**
-	 * Gestisce l'evento relativo alla pressione del tasto.
-	 * @param {Object} e - Parametro relativo all'evento.
-	 */
-	keyDownHandler(e) {
+	keyDownHandler() {
 		this.pressed = true
 	}
 
-	/**
-	 * Gestisce l'evento relativo al rilascio del tasto.
-	 * @param {Object} e - Parametro relativo all'evento.
-	 */
-	keyUpHandler(e) {
+	keyUpHandler() {
 		this.pressed = false
+	}
+
+	keyPressChange() {
+		this.pressed = !this.pressed
 	}
 }
 
@@ -355,8 +351,8 @@ class Animation {
 		this.timer.doTick()
 		if (this.timer.tick()) {
 			if (this.action) {
-				if (items.items[state.action - 7] != 100) {
-					items.items[state.action - 7] += 1
+				if (items.items[state.actionAvailable - 7] != 100) {
+					items.items[state.actionAvailable - 7] += 1
 				}
 				this.frame = this.frame === 0 ? this.picWidth : 0
 			} else {
@@ -370,16 +366,16 @@ class Animation {
 		if (!this.action) {
 			this.side = x
 			switch (x) {
-				case 1:
+				case 0:
 					this.move = 96
 					break
-				case 2:
+				case 1:
 					this.move = 0
 					break
-				case 3:
+				case 2:
 					this.move = 64
 					break
-				case 4:
+				case 3:
 					this.move = 32
 					break
 			}
@@ -388,7 +384,7 @@ class Animation {
 	}
 
 	endState() {
-		if (this.action && state.action) {
+		if (this.action && state.actionAvailable) {
 			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
 			this.picWidth = 32
 			this.picHeight = 32
@@ -398,12 +394,12 @@ class Animation {
 			this.frame = 0
 			this.move = (this.move / 3) * 2
 			this.position.set(this.position.x + 8, this.position.y + 8)
-			state.action = undefined
+			keys.E.keyUpHandler()
 		}
 	}
 
 	collect() {
-		if (!this.action && state.action) {
+		if (!this.action && state.actionAvailable) {
 			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
 			this.picWidth = 48
 			this.picHeight = 48
@@ -415,20 +411,20 @@ class Animation {
 			this.position.set(this.position.x - 8, this.position.y - 8)
 
 			switch (this.side) {
-				case 1:
+				case 0:
 					this.move = 144
 					break
-				case 2:
+				case 1:
 					this.move = 0
 					break
-				case 3:
+				case 2:
 					this.move = 96
 					break
-				case 4:
+				case 3:
 					this.move = 48
 					break
 			}
-			if (state.action == 7 && this.move < 192) this.move += 192
+			if (state.actionAvailable == 7 && this.move < 192) this.move += 192
 		}
 	}
 
@@ -540,43 +536,36 @@ class Menu {
 		})
 	}
 
-	/**
-	 * Gestisce l'evento relativo al rilascio dei tasti up e down.
-	 * @param {Object} e - Parametro relativo all'evento.
-	 */
-	keyDownHandler(e) {
-		this.action.keyDownHandler(e)
-	}
-
-	/**
-	 * Gestisce l'evento relativo alla pressione dei tasti up e down.
-	 * @param {Object} e - Parametro relativo all'evento.
-	 */
-	keyUpHandler(e) {
-		this.up.keyUpHandler(e)
-		this.down.keyUpHandler(e)
-		this.choose.keyUpHandler(e)
-		this.ArrowLeft.keyUpHandler(e)
-		this.ArrowRight.keyUpHandler(e)
-	}
-
-	/**
-	 * Aggiorna lo stato del menu.
-	 */
 	update() {
-		if (this.up.pressed) {
+		if (keys.ArrowUp.pressed) {
 			this.index = (this.index - 1 + this.items.length) % this.items.length
-			this.up.pressed = false
+			keys.ArrowUp.keyUpHandler()
 		}
-		if (this.down.pressed) {
+		if (keys.ArrowDown.pressed) {
 			this.index = (this.index + 1) % this.items.length
-			this.down.pressed = false
+			keys.ArrowDown.keyUpHandler()
+		}
+		if (keys.Enter.pressed) {
+			switch (this.index) {
+				case 0:
+					music.play()
+					break
+				case 1:
+					music.pause()
+					break
+			}
+			keys.Enter.keyUpHandler()
+		}
+		if (keys.ArrowLeft.pressed) {
+			music.volume(Math.max(music.audio.volume - 0.08, 0))
+			keys.ArrowLeft.keyUpHandler()
+		}
+		if (keys.ArrowRight.pressed) {
+			music.volume(Math.min(music.audio.volume + 0.08, 1))
+			keys.ArrowRight.keyUpHandler()
 		}
 	}
 
-	/**
-	 * Disegna il menu.
-	 */
 	draw() {
 		let y = this.y
 		ctx.font = `${this.size}px ${this.font}`

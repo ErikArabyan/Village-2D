@@ -18,10 +18,8 @@ const CONFIG = {
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
-
 const state = {
-	setmenu: false,
-	action: undefined,
+	actionAvailable: undefined,
 }
 
 // Объекты
@@ -30,6 +28,19 @@ const music = new Sound(CONFIG.BG_SONG)
 const menu = new Menu(CONFIG.STAGE.WIDTH / 2, CONFIG.STAGE.HEIGHT / 2, ['Play Music (Enter)', 'Pause Music (Enter)', 'Volume Change (<-- -->)'])
 const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
 const background = new Sprite(CONFIG.MAPS[0], CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
+const keys = {
+	W: new Key('KeyW'),
+	S: new Key('KeyS'),
+	A: new Key('KeyA'),
+	D: new Key('KeyD'),
+	E: new Key('KeyE'),
+	Esc: new Key('Escape'),
+	ArrowUp: new Key('ArrowUp'),
+	ArrowDown: new Key('ArrowDown'),
+	ArrowLeft: new Key('ArrowLeft'),
+	ArrowRight: new Key('ArrowRight'),
+	Enter: new Key('Enter'),
+}
 player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 
 // Функция для создания границ
@@ -51,92 +62,85 @@ const col = collisions =>
 		return boundaries
 	}, [])
 
-// Обработка столкновений
+// установка колизии
 let boundaries = col(collisions)
 
 // Функция для анимации
 const animate = () => {
-	// ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
+	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
 	// отрисовка границ колизии не нужно
-	boundaries.forEach(b => b.draw()) 
+	// boundaries.forEach(b => b.draw())
 	player.draw()
 	player.updateFrame()
 	items.drawResources()
-	if (state.setmenu) menu.draw()
-
-
+	if (keys.Esc.pressed) {
+		menu.draw()
+		menu.update()
+	}
+	keyDown()
 
 	window.requestAnimationFrame(animate)
 }
 
 // Функция для движения игрока
-const movePlayer = (dx, dy) => {
+const movePlayer = (dx = 0, dy = 0) => {
 	if (!boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))) {
 		player.position.set(player.position.x + dx, player.position.y + dy)
 	}
 }
 
 // Обработчик событий для клавиш
-const keyDown = num => {
+const keyDown = () => {
+	const dir = { dx: 0, dy: 0 }
 	const directions = [
-		{ dx: 0, dy: -4 }, // Вверх
-		{ dx: 0, dy: 4 }, // Вниз
-		{ dx: -4, dy: 0 }, // Влево
-		{ dx: 4, dy: 0 }, // Вправо
+		{ key: keys.W, axis: 'dy', value: -1, stateNum: 0 },
+		{ key: keys.S, axis: 'dy', value: 1, stateNum: 1 },
+		{ key: keys.D, axis: 'dx', value: 1, stateNum: 3 },
+		{ key: keys.A, axis: 'dx', value: -1, stateNum: 2 },
 	]
-
-	const { dx, dy } = directions[num - 1]
-	if (!state.action) {
-		movePlayer(dx, dy, num - 1)
+	let num = 1
+	directions.forEach(({ key, axis, value, stateNum }) => {
+		if (key.pressed && dir[axis] !== value) {
+			dir[axis] += value
+			num = stateNum
+		}
+	})
+	if (dir.dx && dir.dy) {
+		dir.dx *= 7 / 10
+		dir.dy *= 7 / 10
 	}
-	player.changeState(num, true)
+	if (dir.dx) movePlayer(dir.dx, 0)
+	if (dir.dy) movePlayer(0, dir.dy)
+
+	player.changeState(num, dir.dx || dir.dy)
 }
 
 const keyActions = {
-	KeyW: { keyDown: () => keyDown(1), keyUp: () => player.changeState(1) },
-	KeyS: { keyDown: () => keyDown(2), keyUp: () => player.changeState(2) },
-	KeyA: { keyDown: () => keyDown(3), keyUp: () => player.changeState(3) },
-	KeyD: { keyDown: () => keyDown(4), keyUp: () => player.changeState(4) },
-	KeyE: { keyDown: () => player.collect(true), keyUp: () => player.endState() },
-	Escape: { keyDown: () => (state.setmenu = !state.setmenu) },
-	ArrowUp: { keyDown: menuHandler },
-	ArrowDown: { keyDown: menuHandler },
-	ArrowLeft: { keyDown: menuHandler },
-	ArrowRight: { keyDown: menuHandler },
-	Enter: { keyDown: menuHandler },
-}
-
-const menuActions = {
-	0: () => menu.choose.pressed && music.play(),
-	1: () => menu.choose.pressed && music.pause(),
-	2: () => {
-		if (menu.ArrowLeft.pressed) {
-			music.volume(Math.max(music.audio.volume - 0.08, 0)) // уменьшаем громкость, но не ниже 0
-		}
-		if (menu.ArrowRight.pressed) {
-			music.volume(Math.min(music.audio.volume + 0.08, 1)) // увеличиваем громкость, но не выше 1
-		}
-	},
-}
-
-function menuHandler(e) {
-	menu.keyDownHandler(e)
-	menu.update()
-	menu.keyUpHandler(e)
+	KeyW: { keyDown: () => keys.W.keyDownHandler(), keyUp: () => keys.W.keyUpHandler() },
+	KeyS: { keyDown: () => keys.S.keyDownHandler(), keyUp: () => keys.S.keyUpHandler() },
+	KeyA: { keyDown: () => keys.A.keyDownHandler(), keyUp: () => keys.A.keyUpHandler() },
+	KeyD: { keyDown: () => keys.D.keyDownHandler(), keyUp: () => keys.D.keyUpHandler() },
+	KeyE: { keyDown: () => player.collect(), keyUp: () => player.endState() },
+	ArrowUp: { keyDown: () => keys.ArrowUp.keyDownHandler(), keyUp: () => keys.ArrowUp.keyUpHandler() },
+	ArrowDown: { keyDown: () => keys.ArrowDown.keyDownHandler(), keyUp: () => keys.ArrowDown.keyUpHandler() },
+	ArrowLeft: { keyDown: () => keys.ArrowLeft.keyDownHandler(), keyUp: () => keys.ArrowLeft.keyUpHandler() },
+	ArrowRight: { keyDown: () => keys.ArrowRight.keyDownHandler(), keyUp: () => keys.ArrowRight.keyUpHandler() },
+	Enter: { keyDown: () => keys.Enter.keyDownHandler(), keyUp: () => keys.Enter.keyUpHandler() },
+	Escape: { keyDown: () => keys.Esc.keyPressChange() },
 }
 
 // События
 window.addEventListener('keydown', e => {
-	console.log(e.key)
-	keyActions[e.code]?.keyDown?.(e)
-	if (state.setmenu) {
-		menuActions[menu.index]()
+	if (!e.repeat) {
+		keyActions[e.code]?.keyDown?.(e)
 	}
 })
 
 window.addEventListener('keyup', e => {
-	keyActions[e.code]?.keyUp?.(e)
+	if (!e.repeat) {
+		keyActions[e.code]?.keyUp?.(e)
+	}
 })
 
 // Инициализация
