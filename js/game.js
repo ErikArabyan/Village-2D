@@ -19,9 +19,7 @@ const CONFIG = {
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
 
-// Controlliamo se giocatore si muove e no, e se aperto menu e no
 const state = {
-	move: true,
 	setmenu: false,
 	action: undefined,
 }
@@ -37,7 +35,6 @@ player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 // Функция для создания границ
 const col = collisions =>
 	collisions.reduce((boundaries, symbol, index) => {
-		// математические действия над списком
 		if (symbol !== 0) {
 			const row = Math.floor(index / 40)
 			const col = index % 40
@@ -49,6 +46,7 @@ const col = collisions =>
 					height: typeof symbol == 'object' ? symbol[2] * 16 : 16,
 				})
 			)
+			boundaries.push(new Boundary({ position: { x: 0, y: 14 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }), new Boundary({ position: { x: 0, y: 30 * 16 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 40 * 16 - 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }))
 		}
 		return boundaries
 	}, [])
@@ -58,45 +56,29 @@ let boundaries = col(collisions)
 
 // Функция для анимации
 const animate = () => {
-	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
+	// ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
-	// boundaries.forEach(b => b.draw()) //   отрисовка границ колизии не нужно
+	// отрисовка границ колизии не нужно
+	boundaries.forEach(b => b.draw()) 
 	player.draw()
-	player.update()
+	player.updateFrame()
 	items.drawResources()
-	// player.update()
-
 	if (state.setmenu) menu.draw()
 
-	if (state.setmenu) {
-		const menuActions = {
-			0: () => menu.choose.pressed && music.play(),
-			1: () => menu.choose.pressed && music.pause(),
-			2: () => {
-				if (menu.ArrowLeft.pressed) {
-					music.volume(Math.max(music.audio.volume - 0.08, 0)) // уменьшаем громкость, но не ниже 0
-				}
-				if (menu.ArrowRight.pressed) {
-					music.volume(Math.min(music.audio.volume + 0.08, 1)) // увеличиваем громкость, но не выше 1
-				}
-			},
-		}
-		menuActions[menu.index]()
-	}
+
+
 	window.requestAnimationFrame(animate)
 }
 
 // Функция для движения игрока
-const movePlayer = (dx, dy, num) => {	
-	state.move = !boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))
-	if (state.move && background.collide(player.position.x + dx, player.position.y + dy, player.width, player.height)) {
+const movePlayer = (dx, dy) => {
+	if (!boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))) {
 		player.position.set(player.position.x + dx, player.position.y + dy)
 	}
-	player.update(num + 1)
 }
 
 // Обработчик событий для клавиш
-const keyDown = (e, key, num) => {
+const keyDown = num => {
 	const directions = [
 		{ dx: 0, dy: -4 }, // Вверх
 		{ dx: 0, dy: 4 }, // Вниз
@@ -105,37 +87,52 @@ const keyDown = (e, key, num) => {
 	]
 
 	const { dx, dy } = directions[num - 1]
-	key.keyDownHandler(e)
-	movePlayer(dx, dy, num - 1)
+	if (!state.action) {
+		movePlayer(dx, dy, num - 1)
+	}
 	player.changeState(num, true)
 }
 
 const keyActions = {
-	KeyW: { keyDown: e => keyDown(e, new Key('w'), 1), keyUp: () => player.changeState(1) },
-	KeyS: { keyDown: e => keyDown(e, new Key('s'), 2), keyUp: () => player.changeState(2) },
-	KeyA: { keyDown: e => keyDown(e, new Key('a'), 3), keyUp: () => player.changeState(3) },
-	KeyD: { keyDown: e => keyDown(e, new Key('d'), 4), keyUp: () => player.changeState(4) },
+	KeyW: { keyDown: () => keyDown(1), keyUp: () => player.changeState(1) },
+	KeyS: { keyDown: () => keyDown(2), keyUp: () => player.changeState(2) },
+	KeyA: { keyDown: () => keyDown(3), keyUp: () => player.changeState(3) },
+	KeyD: { keyDown: () => keyDown(4), keyUp: () => player.changeState(4) },
 	KeyE: { keyDown: () => player.collect(true), keyUp: () => player.endState() },
 	Escape: { keyDown: () => (state.setmenu = !state.setmenu) },
 	ArrowUp: { keyDown: menuHandler },
 	ArrowDown: { keyDown: menuHandler },
-	ArrowLeft: { keyDown: menuHandler, keyUp: menuHandler },
-	ArrowRight: { keyDown: menuHandler, keyUp: menuHandler },
-	Enter: { keyDown: menuHandler, keyUp: menuHandler },
+	ArrowLeft: { keyDown: menuHandler },
+	ArrowRight: { keyDown: menuHandler },
+	Enter: { keyDown: menuHandler },
+}
+
+const menuActions = {
+	0: () => menu.choose.pressed && music.play(),
+	1: () => menu.choose.pressed && music.pause(),
+	2: () => {
+		if (menu.ArrowLeft.pressed) {
+			music.volume(Math.max(music.audio.volume - 0.08, 0)) // уменьшаем громкость, но не ниже 0
+		}
+		if (menu.ArrowRight.pressed) {
+			music.volume(Math.min(music.audio.volume + 0.08, 1)) // увеличиваем громкость, но не выше 1
+		}
+	},
 }
 
 function menuHandler(e) {
 	menu.keyDownHandler(e)
 	menu.update()
-	setTimeout(() => {
-		menu.keyUpHandler(e)
-	}, 20)
+	menu.keyUpHandler(e)
 }
 
 // События
 window.addEventListener('keydown', e => {
-	state.move = true
+	console.log(e.key)
 	keyActions[e.code]?.keyDown?.(e)
+	if (state.setmenu) {
+		menuActions[menu.index]()
+	}
 })
 
 window.addEventListener('keyup', e => {

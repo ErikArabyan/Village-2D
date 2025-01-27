@@ -172,7 +172,7 @@ class Key {
 	 * @param {Object} e - Parametro relativo all'evento.
 	 */
 	keyDownHandler(e) {
-		if (e.key == this.key) this.pressed = true
+		this.pressed = true
 	}
 
 	/**
@@ -180,7 +180,7 @@ class Key {
 	 * @param {Object} e - Parametro relativo all'evento.
 	 */
 	keyUpHandler(e) {
-		if (e.key == this.key) this.pressed = false
+		this.pressed = false
 	}
 }
 
@@ -351,7 +351,7 @@ class Animation {
 		this.action = false
 	}
 
-	update() {
+	updateFrame() {
 		this.timer.doTick()
 		if (this.timer.tick()) {
 			if (this.action) {
@@ -398,6 +398,7 @@ class Animation {
 			this.frame = 0
 			this.move = (this.move / 3) * 2
 			this.position.set(this.position.x + 8, this.position.y + 8)
+			state.action = undefined
 		}
 	}
 
@@ -526,11 +527,7 @@ class Menu {
 		this.items = items
 		this.x = x
 		this.y = y
-		this.up = new Key('ArrowUp')
-		this.down = new Key('ArrowDown')
-		this.ArrowLeft = new Key('ArrowLeft')
-		this.ArrowRight = new Key('ArrowRight')
-		this.choose = new Key('Enter')
+		this.action = new Key('ArrowUp')
 		this.font = 'Arial'
 		this.size = 22
 		this.standardColor = 'white'
@@ -548,11 +545,7 @@ class Menu {
 	 * @param {Object} e - Parametro relativo all'evento.
 	 */
 	keyDownHandler(e) {
-		this.up.keyDownHandler(e)
-		this.down.keyDownHandler(e)
-		this.choose.keyDownHandler(e)
-		this.ArrowLeft.keyDownHandler(e)
-		this.ArrowRight.keyDownHandler(e)
+		this.action.keyDownHandler(e)
 	}
 
 	/**
