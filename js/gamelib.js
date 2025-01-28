@@ -324,17 +324,16 @@ class Timer {
  * Classe per la gestione di un'animazione.
  */
 class Animation {
-	/**
-	 * Crea un nuovo oggetto Animation.
-	 * @param {string[]} path - Percorso delle risorse.
-	 * @param {number} delay - Tempo di attesa dell'animazione.
-	 */
+	static DEFAULT_SIZE = 32
+	static COLLECT_SIZE = 48
+
 	constructor(path, delay, pic_width, pic_height, p_width, p_height) {
-		this.images = path.map(e => {
-			let img = new Image()
-			img.src = e
+		this.images = path.map(src => {
+			const img = new Image()
+			img.src = src
 			return img
 		})
+
 		this.frame = 0
 		this.move = 0
 		this.timer = new Timer(delay)
@@ -348,11 +347,21 @@ class Animation {
 		this.collecting = false
 	}
 
+	_setSize(size, frameReset = 0) {
+		;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
+		this.picWidth = size
+		this.picHeight = size
+		this.width = size
+		this.height = size
+		this.frame = frameReset
+	}
+
 	updateFrame() {
 		this.timer.doTick()
+
 		if (this.timer.tick()) {
 			if (this.action && keys.E.pressed) {
-				if (items.items[this.action - 7] != 100) {
+				if (items.items[this.action - 7] !== 100) {
 					items.items[this.action - 7] += 1
 				}
 				this.frame = this.frame === 0 ? this.picWidth : 0
@@ -365,12 +374,7 @@ class Animation {
 
 	endState() {
 		if (this.action) {
-			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
-			this.picWidth = 32
-			this.picHeight = 32
-			this.width = 32
-			this.height = 32
-			this.frame = 0
+			this._setSize(Animation.DEFAULT_SIZE)
 			this.move = (this.move / 3) * 2
 			this.position.set(this.position.x + 8, this.position.y + 8)
 			keys.E.keyUpHandler()
@@ -381,51 +385,23 @@ class Animation {
 	changeState(x, ismove = false) {
 		if (!this.action || !keys.E.pressed) {
 			this.side = x
-			switch (x) {
-				case 0:
-					this.move = 96
-					break
-				case 1:
-					this.move = 0
-					break
-				case 2:
-					this.move = 64
-					break
-				case 3:
-					this.move = 32
-					break
-			}
-			if (ismove) this.move += 128
+			const moveValues = [96, 0, 64, 32]
+			this.move = moveValues[x] + (ismove ? 128 : 0)
 		}
 	}
 
 	collect() {
 		if (this.action && keys.E.pressed && !this.collecting) {
-			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
-			this.picWidth = 48
-			this.picHeight = 48
-			this.width = 48
-			this.height = 48
-			this.frame = 0
+			this._setSize(Animation.COLLECT_SIZE)
 			this.move = (this.move / 2) * 3
 			this.position.set(this.position.x - 8, this.position.y - 8)
 			this.collecting = true
+			const collectMoveValues = [144, 0, 96, 48]
+			this.move = collectMoveValues[this.side]
 
-			switch (this.side) {
-				case 0:
-					this.move = 144
-					break
-				case 1:
-					this.move = 0
-					break
-				case 2:
-					this.move = 96
-					break
-				case 3:
-					this.move = 48
-					break
+			if (this.action === 7 && this.move < 192) {
+				this.move += 192
 			}
-			if (this.action == 7 && this.move < 192) this.move += 192
 		}
 	}
 
