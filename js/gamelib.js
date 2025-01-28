@@ -116,7 +116,7 @@ class Boundary {
 	}
 
 	collide(px, py, pw, ph) {
-		state.actionAvailable = undefined
+		player.action = undefined
 		if (px < this.position.x + this.width - 12 && px + pw > this.position.x + 12 && py < this.position.y + this.height - 18 && py + ph > this.position.y + 9) {
 			if (this.action == 1) return true
 			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
@@ -138,7 +138,7 @@ class Boundary {
 					boundaries = col(collisionsStones)
 					break
 				default:
-					state.actionAvailable = this.action
+					player.action = this.action
 					return true
 			}
 		}
@@ -344,15 +344,16 @@ class Animation {
 		this.width = p_width
 		this.height = p_height
 		this.side = undefined
-		this.action = false
+		this.action = undefined
+		this.collecting = false
 	}
 
 	updateFrame() {
 		this.timer.doTick()
 		if (this.timer.tick()) {
-			if (this.action) {
-				if (items.items[state.actionAvailable - 7] != 100) {
-					items.items[state.actionAvailable - 7] += 1
+			if (this.action && keys.E.pressed) {
+				if (items.items[this.action - 7] != 100) {
+					items.items[this.action - 7] += 1
 				}
 				this.frame = this.frame === 0 ? this.picWidth : 0
 			} else {
@@ -362,8 +363,23 @@ class Animation {
 		}
 	}
 
+	endState() {
+		if (this.action) {
+			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
+			this.picWidth = 32
+			this.picHeight = 32
+			this.width = 32
+			this.height = 32
+			this.frame = 0
+			this.move = (this.move / 3) * 2
+			this.position.set(this.position.x + 8, this.position.y + 8)
+			keys.E.keyUpHandler()
+			this.collecting = false
+		}
+	}
+
 	changeState(x, ismove = false) {
-		if (!this.action) {
+		if (!this.action || !keys.E.pressed) {
 			this.side = x
 			switch (x) {
 				case 0:
@@ -383,32 +399,17 @@ class Animation {
 		}
 	}
 
-	endState() {
-		if (this.action && state.actionAvailable) {
-			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
-			this.picWidth = 32
-			this.picHeight = 32
-			this.width = 32
-			this.height = 32
-			this.action = false
-			this.frame = 0
-			this.move = (this.move / 3) * 2
-			this.position.set(this.position.x + 8, this.position.y + 8)
-			keys.E.keyUpHandler()
-		}
-	}
-
 	collect() {
-		if (!this.action && state.actionAvailable) {
+		if (this.action && keys.E.pressed && !this.collecting) {
 			;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
 			this.picWidth = 48
 			this.picHeight = 48
 			this.width = 48
 			this.height = 48
-			this.action = true
 			this.frame = 0
 			this.move = (this.move / 2) * 3
 			this.position.set(this.position.x - 8, this.position.y - 8)
+			this.collecting = true
 
 			switch (this.side) {
 				case 0:
@@ -424,7 +425,7 @@ class Animation {
 					this.move = 48
 					break
 			}
-			if (state.actionAvailable == 7 && this.move < 192) this.move += 192
+			if (this.action == 7 && this.move < 192) this.move += 192
 		}
 	}
 

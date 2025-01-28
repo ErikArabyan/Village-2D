@@ -18,10 +18,7 @@ const CONFIG = {
 	ICONS: ['assets/items/wood.png', 'assets/items/rock.png', 'assets/items/diamond.png'],
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
-
-const state = {
-	num: 1,
-}
+let num = 1
 
 // Объекты
 const player = new Animation(CONFIG.PLAYER.IMAGES, 10, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT)
@@ -80,7 +77,6 @@ const animate = () => {
 		menu.update()
 	}
 	keyDown()
-
 	window.requestAnimationFrame(animate)
 }
 
@@ -104,7 +100,7 @@ const keyDown = () => {
 	directions.forEach(({ key, axis, value, stateNum }) => {
 		if (key.pressed && dir[axis] !== value) {
 			dir[axis] += value
-			state.num = stateNum
+			num = stateNum
 		}
 	})
 	if (dir.dx && dir.dy) {
@@ -114,7 +110,7 @@ const keyDown = () => {
 	if (dir.dx) movePlayer(dir.dx, 0)
 	if (dir.dy) movePlayer(0, dir.dy)
 
-	player.changeState(state.num, dir.dx || dir.dy)
+	player.changeState(num, dir.dx || dir.dy)
 }
 
 const keyActions = {
@@ -122,7 +118,16 @@ const keyActions = {
 	KeyS: { keyDown: () => keys.S.keyDownHandler(), keyUp: () => keys.S.keyUpHandler() },
 	KeyA: { keyDown: () => keys.A.keyDownHandler(), keyUp: () => keys.A.keyUpHandler() },
 	KeyD: { keyDown: () => keys.D.keyDownHandler(), keyUp: () => keys.D.keyUpHandler() },
-	KeyE: { keyDown: () => player.collect(), keyUp: () => player.endState() },
+	KeyE: {
+		keyDown: () => {
+			keys.E.keyDownHandler()
+			player.collect()
+		},
+		keyUp: () => {
+			keys.E.keyUpHandler()
+			player.endState()
+		},
+	},
 	ArrowUp: { keyDown: () => keys.ArrowUp.keyDownHandler(), keyUp: () => keys.ArrowUp.keyUpHandler() },
 	ArrowDown: { keyDown: () => keys.ArrowDown.keyDownHandler(), keyUp: () => keys.ArrowDown.keyUpHandler() },
 	ArrowLeft: { keyDown: () => keys.ArrowLeft.keyDownHandler(), keyUp: () => keys.ArrowLeft.keyUpHandler() },
