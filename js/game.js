@@ -15,7 +15,7 @@ const CONFIG = {
 		IMAGES: ['assets/players/Player.png', 'assets/players/Player_Actions.png'],
 	},
 	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png'],
-	ICONS: ['blob:https://github.com/fdae397a-e49a-44ca-b4c1-0540bf8abcd5', 'https://github.com/463c70cd-1193-419d-b2e9-f8c2deb26010', 'https://github.com/4ebc2e59-9340-4419-aa72-54c98204d0cb'],
+	ICONS: ['https://github.com/fdae397a-e49a-44ca-b4c1-0540bf8abcd5', 'https://github.com/463c70cd-1193-419d-b2e9-f8c2deb26010', 'https://github.com/4ebc2e59-9340-4419-aa72-54c98204d0cb'],
 	BG_SONG: 'assets/funny-bgm.mp3',
 }
 let num = 1
