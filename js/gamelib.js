@@ -373,7 +373,7 @@ class Animation {
 	}
 
 	endState() {
-		if (this.action) {
+		if (this.action && !keys.E.pressed && this.collecting) {
 			this._setSize(Animation.DEFAULT_SIZE)
 			this.move = (this.move / 3) * 2
 			this.position.set(this.position.x + 8, this.position.y + 8)
@@ -399,7 +399,7 @@ class Animation {
 			const collectMoveValues = [144, 0, 96, 48]
 			this.move = collectMoveValues[this.side]
 
-			if (this.action === 7 && this.move < 192) {
+			if (this.action === 7 && this.move < 192) {				
 				this.move += 192
 			}
 		}
