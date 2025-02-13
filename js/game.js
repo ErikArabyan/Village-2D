@@ -16,12 +16,12 @@ const CONFIG = {
 	},
 	MAPS: ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png'],
 	ICONS: ['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/wood.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/rock.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/diamond.png'],
-	BG_SONG: 'assets/funny-bgm.mp3',
+	BG_SONG: 'assets/music/funny-bgm.mp3',
 }
 let num = 1
 
 // Объекты
-const player = new Animation(CONFIG.PLAYER.IMAGES, 10, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT)
+const player = new Animation(CONFIG.PLAYER.IMAGES, 10, CONFIG.PLAYER.PICWIDTH, CONFIG.PLAYER.PICHEIGHT, CONFIG.PLAYER.ACTUALWIDTH, CONFIG.PLAYER.ACTUALHEIGHT, CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 const music = new Sound(CONFIG.BG_SONG)
 const menu = new Menu(CONFIG.STAGE.WIDTH / 2, CONFIG.STAGE.HEIGHT / 2, ['Play Music (Enter)', 'Pause Music (Enter)', 'Volume Change (<-- -->)'])
 const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
@@ -39,36 +39,16 @@ const keys = {
 	ArrowRight: new Key('ArrowRight'),
 	Enter: new Key('Enter'),
 }
-player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
-
-// Функция для создания границ
-const col = collisions =>
-	collisions.reduce((boundaries, symbol, index) => {
-		if (symbol !== 0) {
-			const row = Math.floor(index / 40)
-			const col = index % 40
-			boundaries.push(
-				new Boundary({
-					position: { x: col * Boundary.width, y: row * Boundary.height },
-					action: typeof symbol == 'object' ? symbol[0] : symbol,
-					width: typeof symbol == 'object' ? symbol[1] * 16 : 16,
-					height: typeof symbol == 'object' ? symbol[2] * 16 : 16,
-				})
-			)
-			boundaries.push(new Boundary({ position: { x: 0, y: 14 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }), new Boundary({ position: { x: 0, y: 30 * 16 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 40 * 16 - 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }))
-		}
-		return boundaries
-	}, [])
 
 // установка колизии
-let boundaries = col(collisions)
+Collisions.col(collisions)
 
 // Функция для анимации
 const animate = () => {
 	ctx.clearRect(0, 0, CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 	background.draw()
 	// отрисовка границ колизии не нужно
-	// boundaries.forEach(b => b.draw())
+	Collisions.boundaries.forEach(b => b.draw())
 	player.draw()
 	player.updateFrame()
 	items.drawResources()
@@ -82,7 +62,7 @@ const animate = () => {
 
 // Функция для движения игрока
 const movePlayer = (dx = 0, dy = 0) => {
-	if (!boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))) {
+	if (!Collisions.boundaries.some(b => b.collide(player.position.x + dx, player.position.y + dy, player.width, player.height))) {
 		player.position.set(player.position.x + dx, player.position.y + dy)
 	}
 }
@@ -98,7 +78,7 @@ const keyDown = () => {
 	]
 
 	directions.forEach(({ key, axis, value, stateNum }) => {
-		if (key.pressed && dir[axis] !== value) {
+		if (key.pressed && dir[axis] !== value && !player.collecting) {
 			dir[axis] += value
 			num = stateNum
 		}

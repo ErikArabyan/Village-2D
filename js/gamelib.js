@@ -99,6 +99,31 @@ class Sprite {
 
 // -----------------------------------------------------------------------------
 
+class Collisions {
+	static boundaries = []
+
+	static col(collisions) {
+		Collisions.boundaries = collisions.reduce((acc, cell, index) => {
+			if (cell !== 0) {
+				const row = Math.floor(index / 40)
+				const col = index % 40
+				acc.push(
+					new Boundary({
+						position: new Vector2(col * Boundary.width, row * Boundary.height),
+						action: typeof cell == 'object' ? cell[0] : cell,
+						width: typeof cell == 'object' ? cell[1] * 16 : 16,
+						height: typeof cell == 'object' ? cell[2] * 16 : 16,
+					})
+				)
+				acc.push(new Boundary({ position: { x: 0, y: 14 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }), new Boundary({ position: { x: 0, y: 30 * 16 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 40 * 16 - 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }))
+			}
+			return acc
+		}, [])
+	}
+}
+
+// -----------------------------------------------------------------------------
+
 class Boundary {
 	/**
 	 * @param {object} position
@@ -123,19 +148,19 @@ class Boundary {
 			switch (this.action) {
 				case 2:
 					player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
-					boundaries = col(collisions)
+					Collisions.col(collisions)
 					break
 				case 3:
 					player.position.set(220, 200)
-					boundaries = col(colissionsTree)
+					Collisions.col(colissionsTree)
 					break
 				case 4:
-					player.position.set(304, 242)
-					boundaries = col(collisionsJewerly)
+					player.position.set(310, 230)
+					Collisions.col(collisionsJewerly)
 					break
 				case 5:
 					player.position.set(100, 150)
-					boundaries = col(collisionsStones)
+					Collisions.col(collisionsStones)
 					break
 				default:
 					player.action = this.action
@@ -327,7 +352,7 @@ class Animation {
 	static DEFAULT_SIZE = 32
 	static COLLECT_SIZE = 48
 
-	constructor(path, delay, pic_width, pic_height, p_width, p_height) {
+	constructor(path, delay, pic_width, pic_height, p_width, p_height, posx, posy) {
 		this.images = path.map(src => {
 			const img = new Image()
 			img.src = src
@@ -337,7 +362,7 @@ class Animation {
 		this.frame = 0
 		this.move = 0
 		this.timer = new Timer(delay)
-		this.position = new Vector2()
+		this.position = new Vector2(posx, posy)
 		this.picWidth = pic_width
 		this.picHeight = pic_height
 		this.width = p_width
@@ -399,7 +424,7 @@ class Animation {
 			const collectMoveValues = [144, 0, 96, 48]
 			this.move = collectMoveValues[this.side]
 
-			if (this.action === 7 && this.move < 192) {				
+			if (this.action === 7 && this.move < 192) {
 				this.move += 192
 			}
 		}

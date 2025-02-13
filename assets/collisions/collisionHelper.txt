@@ -4,4 +4,4 @@ maps - actions
    3 - 7 Tree
    4 - 9 jewelery
    5 - 8 stone
-
+   10 - game over
