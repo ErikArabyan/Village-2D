@@ -5,3 +5,7 @@ maps - actions
    4 - 9 jewelery
    5 - 8 stone
    10 - game over
+
+items
+100 - home
+101 - tree

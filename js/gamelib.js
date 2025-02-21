@@ -20,17 +20,25 @@ function init(id, width, height) {
 	canvas.width = width
 	canvas.height = height
 
-	// Определяем размеры канваса
-	const aspectRatio = 640 / 480
-	const screenWidth = window.innerWidth
-	const screenHeight = window.innerHeight
-	if (screenWidth / screenHeight > aspectRatio) {
-		canvas.style.height = `${screenHeight}px`
-		canvas.style.width = `${screenHeight * aspectRatio}px`
-	} else {
-		canvas.style.width = `${screenWidth}px`
-		canvas.style.height = `${screenWidth / aspectRatio}px`
+	function updateCanvasSize() {
+		const aspectRatio = 640 / 480
+		const screenWidth = window.innerWidth
+		const screenHeight = window.innerHeight
+
+		if (screenWidth / screenHeight > aspectRatio) {
+			canvas.style.height = `${screenHeight}px`
+			canvas.style.width = `${screenHeight * aspectRatio}px`
+		} else {
+			canvas.style.width = `${screenWidth}px`
+			canvas.style.height = `${screenWidth / aspectRatio}px`
+		}
 	}
+
+	// Подстраиваем размер при загрузке
+	updateCanvasSize()
+
+	// Обновляем размер при изменении окна
+	window.addEventListener('resize', updateCanvasSize)
 }
 
 // -----------------------------------------------------------------------------
@@ -74,25 +82,13 @@ class Sprite {
 	constructor(path, width, height) {
 		this.image = new Image()
 		this.image.src = path
-		this.position = new Vector2()
+		this.mapPosition = new Vector2()
 		this.width = width
 		this.height = height
-		this.speed = new Vector2()
+		// this.speed = new Vector2()
 	}
 
-	/**
-	 * Verifica la collisione tra due sprite.
-	 * @param {Sprite} sprite - Sprite con cui verificare la collisione.
-	 * @return {boolean} true se i due sprite collidono, altrimenti false.
-	 */
-	collide(px, py) {
-		return px < this.position.x + this.width - 22 && px > this.position.x - 4 && py < this.position.y + this.height - 28 && py > this.position.y - 12
-	}
-
-	/**
-	 * Disegna lo sprite.
-	 */
-	draw(x = this.position.x, y = this.position.y) {
+	draw(x = this.mapPosition.x, y = this.mapPosition.y) {
 		ctx.drawImage(this.image, x, y)
 	}
 }
@@ -101,65 +97,98 @@ class Sprite {
 
 class Collisions {
 	static boundaries = []
+	static items = []
 
-	static col(collisions) {
+	static col(collisions, ...boundaries) {
+		Collisions.items = []
 		Collisions.boundaries = collisions.reduce((acc, cell, index) => {
-			if (cell !== 0) {
-				const row = Math.floor(index / 40)
-				const col = index % 40
+			const row = Math.floor(index / 40)
+			const col = index % 40
+			if (cell[0] == 100) {
+				const x = new Home(col, row, cell[1])
+				Collisions.items.push(x)
+				x.boundaries.map(i => acc.push(i))
+
+			} else if (cell[0] == 101) {
+				const x = new Tree(col, row)
+				Collisions.items.push(x)
+				x.boundaries.map(i => acc.push(i))
+				
+			} else if (cell !== 0) {
 				acc.push(
 					new Boundary({
-						position: new Vector2(col * Boundary.width, row * Boundary.height),
+						mapPosition: new Vector2(col * Boundary.width, row * Boundary.height),
 						action: typeof cell == 'object' ? cell[0] : cell,
 						width: typeof cell == 'object' ? cell[1] * 16 : 16,
 						height: typeof cell == 'object' ? cell[2] * 16 : 16,
 					})
 				)
-				acc.push(new Boundary({ position: { x: 0, y: 14 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }), new Boundary({ position: { x: 0, y: 30 * 16 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ position: { x: 40 * 16 - 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }))
+				acc.push(new Boundary({ mapPosition: { x: 0, y: 14 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ mapPosition: { x: 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }), new Boundary({ mapPosition: { x: 0, y: 30 * 16 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ mapPosition: { x: 40 * 16 - 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }))
+				acc.push(...boundaries)
+			}
+			return acc
+		}, [])
+	}
+
+	static draw(mapItems) {
+		Collisions.items = mapItems.reduce((acc, cell) => {
+			if (cell[0] == 100) {
+				acc.push(new Home(...cell.slice(1)))
+			}
+			if (cell[0] == 101) {
+				acc.push(new Tree(...cell.slice(1)))
 			}
 			return acc
 		}, [])
 	}
 }
-
 // -----------------------------------------------------------------------------
 
 class Boundary {
 	/**
-	 * @param {object} position
+	 * @param {object} mapPosition
 	 * @param {number | undefined} action
 	 * @param {number} width
 	 * @param {number} height
 	 */
 	static width = 16
 	static height = 16
-	constructor({ position, action = undefined, width = 16, height = 16 }) {
-		this.position = position
+	constructor({ mapPosition, action = undefined, width = 16, height = 16 }) {
+		this.mapPosition = mapPosition
 		this.action = action
 		this.width = width
 		this.height = height
+		if (this.width<0) {
+			this.mapPosition.x += this.width+16
+			this.width *= -1
+		}
+		if (this.height<0) {
+			this.mapPosition.y += this.height+16
+			this.height *= -1
+		}
 	}
 
 	collide(px, py, pw, ph) {
 		player.action = undefined
-		if (px < this.position.x + this.width - 12 && px + pw > this.position.x + 12 && py < this.position.y + this.height - 18 && py + ph > this.position.y + 9) {
+		if (px < this.mapPosition.x + this.width - 12 && px + pw > this.mapPosition.x + 12 && py < this.mapPosition.y + this.height - 18 && py + ph > this.mapPosition.y + 9) {
 			if (this.action == 1) return true
 			background.image.src = CONFIG.MAPS[this.action - 2] ? CONFIG.MAPS[this.action - 2] : background.image.src
+
 			switch (this.action) {
 				case 2:
-					player.position.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
+					player.mapPosition.set(CONFIG.PLAYER.START_X, CONFIG.PLAYER.START_Y)
 					Collisions.col(collisions)
 					break
 				case 3:
-					player.position.set(220, 200)
+					player.mapPosition.set(220, 200)
 					Collisions.col(colissionsTree)
 					break
 				case 4:
-					player.position.set(310, 230)
+					player.mapPosition.set(310, 230)
 					Collisions.col(collisionsJewerly)
 					break
 				case 5:
-					player.position.set(100, 150)
+					player.mapPosition.set(100, 150)
 					Collisions.col(collisionsStones)
 					break
 				default:
@@ -172,7 +201,7 @@ class Boundary {
 
 	draw() {
 		ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'
-		ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+		ctx.fillRect(this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 	}
 }
 
@@ -275,7 +304,7 @@ class Text {
 	 * Crea un nuovo oggetto Text.
 	 */
 	constructor() {
-		this.position = new Vector2()
+		this.mapPosition = new Vector2()
 		this.text = ''
 		this.font = 'Arial'
 		this.size = 20
@@ -288,7 +317,7 @@ class Text {
 	draw() {
 		ctx.font = `${this.size}px ${this.font}`
 		ctx.fillStyle = this.color
-		ctx.fillText(this.text, this.position.x, this.position.y)
+		ctx.fillText(this.text, this.mapPosition.x, this.mapPosition.y)
 	}
 }
 
@@ -352,7 +381,7 @@ class Animation {
 	static DEFAULT_SIZE = 32
 	static COLLECT_SIZE = 48
 
-	constructor(path, delay, pic_width, pic_height, p_width, p_height, posx, posy) {
+	constructor(path, delay, pic_width, pic_height, p_width, p_height, posx, posy, speed) {
 		this.images = path.map(src => {
 			const img = new Image()
 			img.src = src
@@ -362,7 +391,7 @@ class Animation {
 		this.frame = 0
 		this.move = 0
 		this.timer = new Timer(delay)
-		this.position = new Vector2(posx, posy)
+		this.mapPosition = new Vector2(posx, posy)
 		this.picWidth = pic_width
 		this.picHeight = pic_height
 		this.width = p_width
@@ -370,6 +399,7 @@ class Animation {
 		this.side = undefined
 		this.action = undefined
 		this.collecting = false
+		this.speed = speed
 	}
 
 	_setSize(size, frameReset = 0) {
@@ -401,7 +431,7 @@ class Animation {
 		if (this.action && !keys.E.pressed && this.collecting) {
 			this._setSize(Animation.DEFAULT_SIZE)
 			this.move = (this.move / 3) * 2
-			this.position.set(this.position.x + 8, this.position.y + 8)
+			this.mapPosition.set(this.mapPosition.x + 8, this.mapPosition.y + 8)
 			keys.E.keyUpHandler()
 			this.collecting = false
 		}
@@ -419,7 +449,7 @@ class Animation {
 		if (this.action && keys.E.pressed && !this.collecting) {
 			this._setSize(Animation.COLLECT_SIZE)
 			this.move = (this.move / 2) * 3
-			this.position.set(this.position.x - 8, this.position.y - 8)
+			this.mapPosition.set(this.mapPosition.x - 8, this.mapPosition.y - 8)
 			this.collecting = true
 			const collectMoveValues = [144, 0, 96, 48]
 			this.move = collectMoveValues[this.side]
@@ -431,7 +461,7 @@ class Animation {
 	}
 
 	draw() {
-		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.position.x, this.position.y, this.width, this.height)
+		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 	}
 }
 
