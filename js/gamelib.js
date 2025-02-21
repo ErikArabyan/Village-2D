@@ -43,22 +43,15 @@ function init(id, width, height) {
 
 // -----------------------------------------------------------------------------
 
-/**
- * Classe per la gestione di un vettore 2D.
- */
 class Vector2 {
-	/**
-	 * Crea un nuovo oggetto Vector2.
-	 */
 	constructor(x = 0, y = 0) {
 		this.x = x
 		this.y = y
 	}
 
 	/**
-	 * Imposta le componenti x e y del vettore.
-	 * @param {number} x - Componente x del vettore.
-	 * @param {number} y - Componente y del vettore.
+	 * @param {number} x
+	 * @param {number} y
 	 */
 	set(x, y) {
 		this.x = x
@@ -68,15 +61,11 @@ class Vector2 {
 
 // -----------------------------------------------------------------------------
 
-/**
- * Classe per la gestione di uno sprite.
- */
 class Sprite {
 	/**
-	 * Crea un nuovo oggetto Sprite.
-	 * @param {string} path - Percorso della risorsa.
-	 * @param {number} width - Larghezza dello sprite.
-	 * @param {number} height - Altezza dello sprite.
+	 * @param {string} path
+	 * @param {number} width
+	 * @param {number} height
 	 */
 
 	constructor(path, width, height) {
@@ -95,6 +84,98 @@ class Sprite {
 
 // -----------------------------------------------------------------------------
 
+class Animation {
+	static DEFAULT_SIZE = 32
+	static COLLECT_SIZE = 48
+
+	constructor(path, delay, pic_width, pic_height, p_width, p_height, posx, posy, speed) {
+		this.images = path.map(src => {
+			const img = new Image()
+			img.src = src
+			return img
+		})
+
+		this.frame = 0
+		this.move = 0
+		this.timer = new Timer(delay)
+		this.mapPosition = new Vector2(posx, posy)
+		this.picWidth = pic_width
+		this.picHeight = pic_height
+		this.width = p_width
+		this.height = p_height
+		this.side = undefined
+		this.action = undefined
+		this.collecting = false
+		this.speed = speed
+	}
+
+	_setSize(size, frameReset = 0) {
+		;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
+		this.picWidth = size
+		this.picHeight = size
+		this.width = size
+		this.height = size
+		this.frame = frameReset
+	}
+
+	updateFrame() {
+		this.timer.doTick()
+
+		if (this.timer.tick()) {
+			if (this.action && keys.KeyE) {
+				if (items.items[this.action - 7] !== 100) {
+					items.items[this.action - 7] += 1
+				}
+				this.frame = this.frame === 0 ? this.picWidth : 0
+			} else {
+				this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+			}
+			this.timer.reset()
+		}
+	}
+
+	endState() {
+		if (this.action && !keys.KeyE && this.collecting) {
+			this._setSize(Animation.DEFAULT_SIZE)
+			this.move = (this.move / 3) * 2
+			this.mapPosition.set(this.mapPosition.x + 8, this.mapPosition.y + 8)
+			keys.KeyE = false
+			this.collecting = false
+		}
+	}
+
+	changeState(x, ismove = false) {
+		if (!this.action || !keys.KeyE) {
+			this.side = x
+			const moveValues = [96, 0, 64, 32]
+			this.move = moveValues[x] + (ismove ? 128 : 0)
+		}
+	}
+
+	collect(num) {
+		if (this.action && keys.KeyE && !this.collecting) {
+			this.side = num
+			this._setSize(Animation.COLLECT_SIZE)
+			this.move = (this.move / 2) * 3
+			this.mapPosition.set(this.mapPosition.x - 8, this.mapPosition.y - 8)
+			this.collecting = true
+			const collectMoveValues = [144, 0, 96, 48]
+			this.move = collectMoveValues[this.side]
+
+			if (this.action === 7 && this.move < 192) {
+				this.move += 192
+			}
+		}
+	}
+
+	draw() {
+		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
+	}
+}
+
+
+// -----------------------------------------------------------------------------
+
 class Collisions {
 	static boundaries = []
 	static items = []
@@ -108,12 +189,10 @@ class Collisions {
 				const x = new Home(col, row, cell[1])
 				Collisions.items.push(x)
 				x.boundaries.map(i => acc.push(i))
-
 			} else if (cell[0] == 101) {
 				const x = new Tree(col, row)
 				Collisions.items.push(x)
 				x.boundaries.map(i => acc.push(i))
-				
 			} else if (cell !== 0) {
 				acc.push(
 					new Boundary({
@@ -158,12 +237,12 @@ class Boundary {
 		this.action = action
 		this.width = width
 		this.height = height
-		if (this.width<0) {
-			this.mapPosition.x += this.width+16
+		if (this.width < 0) {
+			this.mapPosition.x += this.width + 16
 			this.width *= -1
 		}
-		if (this.height<0) {
-			this.mapPosition.y += this.height+16
+		if (this.height < 0) {
+			this.mapPosition.y += this.height + 16
 			this.height *= -1
 		}
 	}
@@ -207,41 +286,104 @@ class Boundary {
 
 // -----------------------------------------------------------------------------
 
-/**
- * Classe per la gestione di un tasto.
- */
-class Key {
+class Menu {
 	/**
-	 * Crea un nuovo oggetto Key.
-	 * @param {string} key - Codice o carattere associato al tasto.
-	 * @param {boolean} pressed - Codice o carattere associato al tasto.
+	 * @param {number} x - Posizione x del menu.
+	 * @param {number} y - Posizione y del menu.
+	 * @param {string[]} items - Voci di menu.
 	 */
-	constructor(key) {
-		this.key = key
-		this.pressed = false
+	constructor(x, y, items, icons = []) {
+		this.items = items
+		this.x = x
+		this.y = y
+		this.font = 'Arial'
+		this.size = 22
+		this.standardColor = 'white'
+		this.selectedColor = 'red'
+		this.index = 0
+		this.showMenu = false
+		this.previousKey = false
+		this.images = icons.map(src => {
+			const img = new Image()
+			img.src = src
+			return img
+		})
 	}
 
-	keyDownHandler() {
-		this.pressed = true
+	show(key) {
+		if (key && !this.previousKey) {
+			this.showMenu = !this.showMenu
+		}
+		this.previousKey = key
+		return this.showMenu
 	}
 
-	keyUpHandler() {
-		this.pressed = false
+	update() {
+		if (keys.ArrowUp) {
+			this.index = (this.index - 1 + this.items.length) % this.items.length
+			keys.ArrowUp = false
+		}
+		if (keys.ArrowDown) {
+			this.index = (this.index + 1) % this.items.length
+			keys.ArrowDown = false
+		}
+		if (keys.Enter) {
+			switch (this.index) {
+				case 0:
+					music.play()
+					break
+				case 1:
+					music.pause()
+					break
+			}
+			keys.Enter = false
+		}
+		if (keys.ArrowLeft) {
+			music.volume(Math.max(music.audio.volume - 0.08, 0))
+			keys.ArrowLeft = false
+		}
+		if (keys.ArrowRight) {
+			music.volume(Math.min(music.audio.volume + 0.08, 1))
+			keys.ArrowRight = false
+		}
 	}
 
-	keyPressChange() {
-		this.pressed = !this.pressed
+	draw() {
+		if (this.showMenu) {
+			let y = this.y
+			ctx.font = `${this.size}px ${this.font}`
+			ctx.fillStyle = 'rgba(77, 77, 77, 0.9)'
+			ctx.textAlign = 'center'
+			ctx.fillRect(0, 0, 640, 480)
+			for (let i = 0; i < this.items.length; i++) {
+				ctx.fillStyle = i === this.index ? this.selectedColor : this.standardColor
+				ctx.fillText(this.items[i], this.x, y)
+				y += this.size + 10
+			}
+		}
+	}
+
+	drawResources() {
+		let y = this.y
+		ctx.font = `${this.size}px ${this.font}`
+		ctx.fillStyle = 'rgba(77, 77, 77, 0.9)'
+		ctx.fillRect(540, 0, 100, 90)
+		for (let i = 0; i < this.items.length; i++) {
+			ctx.fillStyle = this.standardColor
+			ctx.drawImage(this.images[i], 545, y - 18, 24, 24)
+			ctx.fillStyle = this.items[i] == 100 ? 'green' : 'red'
+			ctx.fillText(Math.floor(this.items[i] / 10), this.x, y)
+			ctx.fillText(['/', '/', '/'][i], this.x + (this.items[i] == 100 ? 30 : 15), y)
+			ctx.fillText(10, this.x + (this.items[i] == 100 ? 40 : 25), y)
+			y += this.size + 10
+		}
 	}
 }
 
 // -----------------------------------------------------------------------------
 
-/**
- * Classe per la gestione di un suono.
- */
 class Sound {
 	/**
-	 * Crea un nuovo oggetto Sound.
 	 * @param {string} path - Percorso della risorsa.
 	 */
 	constructor(path) {
@@ -296,9 +438,6 @@ class Sound {
 
 // -----------------------------------------------------------------------------
 
-/**
- * Classe per la gestione di un testo.
- */
 class Text {
 	/**
 	 * Crea un nuovo oggetto Text.
@@ -328,7 +467,6 @@ class Text {
  */
 class Timer {
 	/**
-	 * Crea un nuovo oggetto Timer.
 	 * @param {number} delay - Tempo di attesa del timer.
 	 */
 	constructor(delay) {
@@ -369,99 +507,6 @@ class Timer {
 		if (this.elapsed < this.delay) {
 			this.elapsed += 17 // 1000 ms / 60 fps = 16.7
 		}
-	}
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Classe per la gestione di un'animazione.
- */
-class Animation {
-	static DEFAULT_SIZE = 32
-	static COLLECT_SIZE = 48
-
-	constructor(path, delay, pic_width, pic_height, p_width, p_height, posx, posy, speed) {
-		this.images = path.map(src => {
-			const img = new Image()
-			img.src = src
-			return img
-		})
-
-		this.frame = 0
-		this.move = 0
-		this.timer = new Timer(delay)
-		this.mapPosition = new Vector2(posx, posy)
-		this.picWidth = pic_width
-		this.picHeight = pic_height
-		this.width = p_width
-		this.height = p_height
-		this.side = undefined
-		this.action = undefined
-		this.collecting = false
-		this.speed = speed
-	}
-
-	_setSize(size, frameReset = 0) {
-		;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
-		this.picWidth = size
-		this.picHeight = size
-		this.width = size
-		this.height = size
-		this.frame = frameReset
-	}
-
-	updateFrame() {
-		this.timer.doTick()
-
-		if (this.timer.tick()) {
-			if (this.action && keys.E.pressed) {
-				if (items.items[this.action - 7] !== 100) {
-					items.items[this.action - 7] += 1
-				}
-				this.frame = this.frame === 0 ? this.picWidth : 0
-			} else {
-				this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
-			}
-			this.timer.reset()
-		}
-	}
-
-	endState() {
-		if (this.action && !keys.E.pressed && this.collecting) {
-			this._setSize(Animation.DEFAULT_SIZE)
-			this.move = (this.move / 3) * 2
-			this.mapPosition.set(this.mapPosition.x + 8, this.mapPosition.y + 8)
-			keys.E.keyUpHandler()
-			this.collecting = false
-		}
-	}
-
-	changeState(x, ismove = false) {
-		if (!this.action || !keys.E.pressed) {
-			this.side = x
-			const moveValues = [96, 0, 64, 32]
-			this.move = moveValues[x] + (ismove ? 128 : 0)
-		}
-	}
-
-	collect() {
-		if (this.action && keys.E.pressed && !this.collecting) {
-			this._setSize(Animation.COLLECT_SIZE)
-			this.move = (this.move / 2) * 3
-			this.mapPosition.set(this.mapPosition.x - 8, this.mapPosition.y - 8)
-			this.collecting = true
-			const collectMoveValues = [144, 0, 96, 48]
-			this.move = collectMoveValues[this.side]
-
-			if (this.action === 7 && this.move < 192) {
-				this.move += 192
-			}
-		}
-	}
-
-	draw() {
-		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 	}
 }
 
@@ -535,95 +580,6 @@ class List {
 	remove(index) {
 		if (index >= 0 && index < this.items.length) {
 			this.items.splice(index, 1)
-		}
-	}
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Classe per la gestione di un menu.
- */
-class Menu {
-	/**
-	 * Crea un nuovo oggetto Menu.
-	 * @param {number} x - Posizione x del menu.
-	 * @param {number} y - Posizione y del menu.
-	 * @param {string[]} items - Voci di menu.
-	 */
-	constructor(x, y, items, icons = []) {
-		this.items = items
-		this.x = x
-		this.y = y
-		this.action = new Key('ArrowUp')
-		this.font = 'Arial'
-		this.size = 22
-		this.standardColor = 'white'
-		this.selectedColor = 'red'
-		this.index = 0
-		this.images = icons.map(src => {
-			const img = new Image()
-			img.src = src
-			return img
-		})
-	}
-
-	update() {
-		if (keys.ArrowUp.pressed) {
-			this.index = (this.index - 1 + this.items.length) % this.items.length
-			keys.ArrowUp.keyUpHandler()
-		}
-		if (keys.ArrowDown.pressed) {
-			this.index = (this.index + 1) % this.items.length
-			keys.ArrowDown.keyUpHandler()
-		}
-		if (keys.Enter.pressed) {
-			switch (this.index) {
-				case 0:
-					music.play()
-					break
-				case 1:
-					music.pause()
-					break
-			}
-			keys.Enter.keyUpHandler()
-		}
-		if (keys.ArrowLeft.pressed) {
-			music.volume(Math.max(music.audio.volume - 0.08, 0))
-			keys.ArrowLeft.keyUpHandler()
-		}
-		if (keys.ArrowRight.pressed) {
-			music.volume(Math.min(music.audio.volume + 0.08, 1))
-			keys.ArrowRight.keyUpHandler()
-		}
-	}
-
-	draw() {
-		let y = this.y
-		ctx.font = `${this.size}px ${this.font}`
-		ctx.fillStyle = 'rgba(77, 77, 77, 0.9)'
-		ctx.textAlign = 'center'
-		ctx.fillRect(0, 0, 640, 480)
-		for (let i = 0; i < this.items.length; i++) {
-			ctx.fillStyle = i === this.index ? this.selectedColor : this.standardColor
-			ctx.fillText(this.items[i], this.x, y)
-			y += this.size + 10
-		}
-	}
-
-	drawResources() {
-		let y = this.y
-		ctx.font = `${this.size}px ${this.font}`
-		ctx.fillStyle = 'rgba(77, 77, 77, 0.9)'
-		ctx.fillRect(540, 0, 100, 90)
-		for (let i = 0; i < this.items.length; i++) {
-			ctx.fillStyle = this.standardColor
-			ctx.drawImage(this.images[i], 545, y - 18, 24, 24)
-			ctx.fillStyle = this.items[i] == 100 ? 'green' : 'red'
-			ctx.fillText(Math.floor(this.items[i] / 10), this.x, y)
-			ctx.fillText(['/', '/', '/'][i], this.x + (this.items[i] == 100 ? 30 : 15), y)
-			ctx.fillText(10, this.x + (this.items[i] == 100 ? 40 : 25), y)
-			y += this.size + 10
 		}
 	}
 }

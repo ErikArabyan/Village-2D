@@ -31,20 +31,6 @@ const menu = new Menu(CONFIG.STAGE.WIDTH / 2, CONFIG.STAGE.HEIGHT / 2, ['Play Mu
 const items = new Menu(575, 20, [0, 0, 0], CONFIG.ICONS)
 const background = new Sprite(CONFIG.MAPS[0], CONFIG.STAGE.WIDTH, CONFIG.STAGE.HEIGHT)
 
-const keys = {
-	W: new Key('KeyW'),
-	S: new Key('KeyS'),
-	A: new Key('KeyA'),
-	D: new Key('KeyD'),
-	E: new Key('KeyE'),
-	Esc: new Key('Escape'),
-	ArrowUp: new Key('ArrowUp'),
-	ArrowDown: new Key('ArrowDown'),
-	ArrowLeft: new Key('ArrowLeft'),
-	ArrowRight: new Key('ArrowRight'),
-	Enter: new Key('Enter'),
-}
-
 // установка колизии
 Collisions.col(collisions)
 
@@ -75,7 +61,7 @@ function animate(time) {
 	draw()
 	player.updateFrame()
 	items.drawResources()
-	if (keys.Esc.pressed) {
+	if (menu.show(keys.Escape)) {
 		menu.draw()
 		menu.update()
 	}
@@ -93,64 +79,49 @@ const movePlayer = (dx = 0, dy = 0) => {
 }
 
 // Обработчик событий для клавиш
-const keyDown = (moveSpeed) => {
+const keyDown = moveSpeed => {
 	const dir = { dx: 0, dy: 0 }
 	const directions = [
-		{ key: keys.W, axis: 'dy', value: -1, stateNum: 0 },
-		{ key: keys.S, axis: 'dy', value: 1, stateNum: 1 },
-		{ key: keys.D, axis: 'dx', value: 1, stateNum: 3 },
-		{ key: keys.A, axis: 'dx', value: -1, stateNum: 2 },
+		{ key: keys.KeyW || keys.ArrowUp, axis: 'dy', value: -1, stateNum: 0 },
+		{ key: keys.KeyS || keys.ArrowDown, axis: 'dy', value: 1, stateNum: 1 },
+		{ key: keys.KeyD || keys.ArrowRight, axis: 'dx', value: 1, stateNum: 3 },
+		{ key: keys.KeyA || keys.ArrowLeft, axis: 'dx', value: -1, stateNum: 2 },
 	]
 
 	directions.forEach(({ key, axis, value, stateNum }) => {
-		if (key.pressed && dir[axis] !== value && !player.collecting) {
+		if (key && dir[axis] !== value && !player.collecting) {
 			dir[axis] += value * moveSpeed
 			num = stateNum
 		}
 	})
+
 	if (dir.dx && dir.dy) {
 		dir.dx *= 7 / 10
 		dir.dy *= 7 / 10
 	}
+
 	if (dir.dx) movePlayer(dir.dx, 0)
 	if (dir.dy) movePlayer(0, dir.dy)
 
 	player.changeState(num, dir.dx || dir.dy)
+	if (keys.KeyE) {
+		player.collect(num)
+	} else {
+		player.endState()
+	}
 }
 
-const keyActions = {
-	KeyW: { keyDown: () => keys.W.keyDownHandler(), keyUp: () => keys.W.keyUpHandler() },
-	KeyS: { keyDown: () => keys.S.keyDownHandler(), keyUp: () => keys.S.keyUpHandler() },
-	KeyA: { keyDown: () => keys.A.keyDownHandler(), keyUp: () => keys.A.keyUpHandler() },
-	KeyD: { keyDown: () => keys.D.keyDownHandler(), keyUp: () => keys.D.keyUpHandler() },
-	KeyE: {
-		keyDown: () => {
-			keys.E.keyDownHandler()
-			player.collect()
-		},
-		keyUp: () => {
-			keys.E.keyUpHandler()
-			player.endState()
-		},
-	},
-	ArrowUp: { keyDown: () => keys.ArrowUp.keyDownHandler(), keyUp: () => keys.ArrowUp.keyUpHandler() },
-	ArrowDown: { keyDown: () => keys.ArrowDown.keyDownHandler(), keyUp: () => keys.ArrowDown.keyUpHandler() },
-	ArrowLeft: { keyDown: () => keys.ArrowLeft.keyDownHandler(), keyUp: () => keys.ArrowLeft.keyUpHandler() },
-	ArrowRight: { keyDown: () => keys.ArrowRight.keyDownHandler(), keyUp: () => keys.ArrowRight.keyUpHandler() },
-	Enter: { keyDown: () => keys.Enter.keyDownHandler(), keyUp: () => keys.Enter.keyUpHandler() },
-	Escape: { keyDown: () => keys.Esc.keyPressChange() },
-}
-
-// События
+// События клавиатуры
+let keys = {}
 window.addEventListener('keydown', e => {
 	if (!e.repeat) {
-		keyActions[e.code]?.keyDown?.(e)
+		keys[e.code] = true
 	}
 })
 
 window.addEventListener('keyup', e => {
 	if (!e.repeat) {
-		keyActions[e.code]?.keyUp?.(e)
+		keys[e.code] = false
 	}
 })
 

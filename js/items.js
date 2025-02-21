@@ -24,9 +24,9 @@ class MapItem {
 
 	draw() {
     // this.boundaries[0].draw()
-    if (this.boundaries[1]) {
+    // if (this.boundaries[1]) {
       // this.boundaries[1].draw()
-    }
+    // }
 		ctx.drawImage(this.image, this.imgPosition.x, this.imgPosition.y, this.picWidth, this.picHeight, this.mapPosition.x, this.mapPosition.y, this.picWidth, this.picHeight)
 	}
 }
