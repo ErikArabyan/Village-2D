@@ -103,12 +103,12 @@ const keyDown = moveSpeed => {
 	if (dir.dx) movePlayer(dir.dx, 0)
 	if (dir.dy) movePlayer(0, dir.dy)
 
-	player.changeState(num, dir.dx || dir.dy)
 	if (keys.KeyE) {
 		player.collect(num)
 	} else {
 		player.endState()
 	}
+	player.changeState(num, dir.dx || dir.dy)
 }
 
 // События клавиатуры
