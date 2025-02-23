@@ -4,14 +4,13 @@ const CONFIG = {
 	BLOCK_SIZE: 16,
 }
 
-let position
-let num = 1
-
 // Объекты
 const player = new Player()
 const resources = new Resources(540, 0, 104, 100)
 const settings = new Settings(0, 0, 640, 480)
 const background = new Map()
+let position
+let num = 1
 
 // установка колизии
 Collisions.col(collisions)

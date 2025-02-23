@@ -1,5 +1,5 @@
 class Map extends Sprite {
-	static MAPS = ['assets/maps/village_style_game.jpg', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png']
+	static MAPS = ['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/village_style_game.jpg', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/ForestMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/JewerlyMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/StoneMap.png']
 	static WIDTH = 640
 	static HEIGHT = 480
 	static ID = 'stage'
@@ -21,7 +21,7 @@ class Home extends MapItem {
 				{ x: 9, y: 36, width: 45, height: 26 },
 				{ x: 22, y: 62, width: 18, height: 1, action: action, teleport: [teleportX, teleportY] },
 			], // bsize
-			'assets/map_items/TopdownForest-Props.png'
+			'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -36,7 +36,7 @@ class Tree extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 6, y: 20, width: 18, height: 12, action: 7 }], // bsize
-			'assets/map_items/TopdownForest-Props.png'
+			'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -45,7 +45,7 @@ class Player extends Animation {
 	static DEFAULT_SIZE = 32
 	static COLLECT_SIZE = 48
 	constructor() {
-		super(['assets/players/Player1.png', 'assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, 640 / 2 - 16, 480 / 2 - 38, 50)
+		super(['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player1.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, 640 / 2 - 16, 480 / 2 - 38, 50)
 		this.collecting = false
 		this.colHeight = 0
 	}
@@ -163,8 +163,8 @@ class Option {
 class Settings extends Menu {
 	constructor(x, y, width, height) {
 		super(x, y, width, height)
-		this.music = new Sound('assets/music/funny-bgm.mp3')
-		this.help = [new Sprite('assets/items/enter.png', (x + width) / 2 - 86, (y + height) / 2 - 100), new Sprite('assets/items/arrows.png', (x + width) / 2 - 20, (y + height) / 2 - 146)]
+		this.music = new Sound('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/music/funny-bgm.mp3')
+		this.help = [new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/items/enter.png', (x + width) / 2 - 86, (y + height) / 2 - 100), new Sprite('assets/items/arrows.png', (x + width) / 2 - 20, (y + height) / 2 - 146)]
 		this.items = [new Option('Play Music (Enter)', (x + width) / 2 - 86, (y + height) / 2 - 32, () => this.music.play(), 0), new Option('Pause Music (Enter)', (x + width) / 2 - 86, (y + height) / 2, () => this.music.pause(), 1), new Option('Volume Change (<-- -->)', (x + width) / 2 - 86, (y + height) / 2 + 32, () => this.volume(), 2)]
 		this.activeItem = 0
 		this.show = false
