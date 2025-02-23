@@ -164,7 +164,7 @@ class Settings extends Menu {
 	constructor(x, y, width, height) {
 		super(x, y, width, height)
 		this.music = new Sound('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/music/funny-bgm.mp3')
-		this.help = [new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/items/enter.png', (x + width) / 2 - 86, (y + height) / 2 - 100), new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/items/arrows.png', (x + width) / 2 - 20, (y + height) / 2 - 146)]
+		this.help = [new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/enter.png', (x + width) / 2 - 86, (y + height) / 2 - 100), new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/arrows.png', (x + width) / 2 - 20, (y + height) / 2 - 146)]
 		this.items = [new Option('Play Music (Enter)', (x + width) / 2 - 86, (y + height) / 2 - 32, () => this.music.play(), 0), new Option('Pause Music (Enter)', (x + width) / 2 - 86, (y + height) / 2, () => this.music.pause(), 1), new Option('Volume Change (<-- -->)', (x + width) / 2 - 86, (y + height) / 2 + 32, () => this.volume(), 2)]
 		this.activeItem = 0
 		this.show = false
