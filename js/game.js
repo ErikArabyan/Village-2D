@@ -2,7 +2,6 @@
 const CONFIG = {
 	TILE_SIZE: 8,
 	BLOCK_SIZE: 16,
-	ICONS: ['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/wood.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/rock.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/diamond.png'],
 }
 
 let position
