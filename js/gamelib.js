@@ -10,21 +10,23 @@ let ctx
 function init(id, width, height) {
 	let canvas = document.getElementById(id)
 	ctx = canvas.getContext('2d')
-	canvas.width = width
-	canvas.height = height
+	canvas.width = GameSettings.windowWidth
+	canvas.height = GameSettings.windowHeight
 
 	function updateCanvasSize() {
 		const aspectRatio = 640 / 480
 		const screenWidth = window.innerWidth
 		const screenHeight = window.innerHeight
+		// canvas.style.height = `${screenHeight}px`
+		// canvas.style.width = `${screenHeight}px`
 
-		if (screenWidth / screenHeight > aspectRatio) {
-			canvas.style.height = `${screenHeight}px`
-			canvas.style.width = `${screenHeight * aspectRatio}px`
-		} else {
-			canvas.style.width = `${screenWidth}px`
-			canvas.style.height = `${screenWidth / aspectRatio}px`
-		}
+		// if (screenWidth / screenHeight > aspectRatio) {
+		// 	canvas.style.height = `${screenHeight}px`
+		// 	canvas.style.width = `${screenHeight * aspectRatio}px`
+		// } else {
+		// 	canvas.style.width = `${screenWidth}px`
+		// 	canvas.style.height = `${screenWidth / aspectRatio}px`
+		// }
 	}
 
 	// Подстраиваем размер при загрузке
@@ -57,21 +59,33 @@ class Vector2 {
 class Sprite {
 	/**
 	 * @param {string} path
-	 * @param {number} width
-	 * @param {number} height
+	 * @param {number} mapX // позиция на карте
+	 * @param {number} mapY // позиция на карте
+	 * @param {number} frame // позиция среза
+	 * @param {number} move // позиция среза
+	 * @param {number} frameWidth // размер среза
+	 * @param {number} moveHeight // размер среза
+	 * @param {number} width // размер на карте
+	 * @param {number} height // размер на карте
 	 */
 
-	constructor(path, x, y) {
+	constructor(path, mapX, mapY, width, height, frame, move, frameWidth, moveHeight) {
 		this.image = new Image()
 		this.image.src = path
-		this.mapPosition = new Vector2(x, y)
+		this.mapPosition = new Vector2(mapX * GameSettings.scale, mapY * GameSettings.scale)
+		this.frame = frame
+		this.move = move
+		this.frameWidth = frameWidth
+		this.moveHeight = moveHeight
+		this.width = width * GameSettings.scale
+		this.height = height * GameSettings.scale
 	}
 
-	draw(sx = 0, sy = 0, swidth = 0, sheight = 0) {
-		if (sx !== 0 && swidth !== 0) {
-			ctx.drawImage(this.image, sx, sy, swidth, sheight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
-		} else if (sx !== 0) {
-			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y, sx, sy)
+	draw() {
+		if (this.frameWidth) {
+			ctx.drawImage(this.image, this.frame, this.move, this.frameWidth, this.moveHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
+		} else if (this.width) {
+			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 		} else {
 			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y)
 		}
@@ -80,31 +94,22 @@ class Sprite {
 
 // -----------------------------------------------------------------------------
 // класс для отображения существ
-class Animation {
-	constructor(path, delay, pic_width, pic_height, p_width, p_height, posx, posy, speed) {
-		this.images = path.map(src => {
-			const img = new Image()
-			img.src = src
-			return img
-		})
-
-		this.frame = 0
-		this.move = 0
+class Animation extends Sprite {
+	constructor(paths, delay, pic_width, pic_height, width, height, x, y, speed) {
+		super(paths[0], x, y, width, height, 0, 0, pic_width, pic_height)
+		this.images = paths
 		this.timer = new Timer(delay)
-		this.mapPosition = new Vector2(posx, posy)
-		this.picWidth = pic_width
-		this.picHeight = pic_height
-		this.width = p_width
-		this.height = p_height
-		this.side = undefined
-		this.action = undefined
+		this.side = null
+		this.action = null
 		this.speed = speed
 	}
 
 	updateFrame() {
 		this.timer.doTick()
-		this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
-		this.timer.reset()
+		if (this.timer.tick()) {
+			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+			this.timer.reset()
+		}
 	}
 
 	changeState(x, ismove = false) {
@@ -114,47 +119,39 @@ class Animation {
 			this.move = moveValues[x] + (ismove ? 128 : 0)
 		}
 	}
-
-	draw() {
-		ctx.drawImage(this.images[0], this.frame, this.move, this.picWidth, this.picHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
-	}
 }
 
 // -----------------------------------------------------------------------------
 // класс для отображения предметов на карте
-class MapItem {
-	image = new Image()
-
-	constructor(mapPosX, mapPosY, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc) {
-		this.mapPosition = new Vector2(mapPosX * CONFIG.BLOCK_SIZE, mapPosY * CONFIG.BLOCK_SIZE)
-		this.imgPosition = new Vector2(imgPosX * CONFIG.TILE_SIZE, imgPosY * CONFIG.TILE_SIZE)
-		this.picWidth = picWidth * CONFIG.TILE_SIZE
-		this.picHeight = picHeight * CONFIG.TILE_SIZE
-		this.height = this.picHeight - boundaryConfigs[0].height
-		this.image.src = imageSrc
+class MapItem extends Sprite {
+	static TILE_SIZE = 8
+	static BLOCK_SIZE = 16
+	constructor(x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide=0) {
+		super(imageSrc, x * MapItem.BLOCK_SIZE + Map.offsetX, y * MapItem.BLOCK_SIZE + Map.offsetY, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE, imgPosX * MapItem.TILE_SIZE, imgPosY * MapItem.TILE_SIZE, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE)
 		this.boundaries = boundaryConfigs.map(
 			config =>
 				new Boundary({
-					mapPosition: {
-						x: this.mapPosition.x + config.x,
-						y: this.mapPosition.y + config.y,
-					},
+					x: x * MapItem.BLOCK_SIZE + config.x,
+					y: y * MapItem.BLOCK_SIZE + config.y,
 					action: config.action ? config.action : 1,
 					width: config.width,
 					height: config.height,
 					teleport: config.teleport,
 				})
 		)
+		this.hide = hide
 	}
 
-	draw() {
-		// границы колизии предмета
-		// this.boundaries[0].draw()
-		// if (this.boundaries[1]) {
-		// this.boundaries[1].draw()
-		// }
-		ctx.drawImage(this.image, this.imgPosition.x, this.imgPosition.y, this.picWidth, this.picHeight, this.mapPosition.x, this.mapPosition.y, this.picWidth, this.picHeight)
+	moveItem(x, y) {
+		this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y)
 	}
+
+	// draw() {
+	// границы колизии предмета
+	// this.boundaries[0].draw()
+	// if (this.boundaries[1]) {
+	// this.boundaries[1].draw()
+	// }
 }
 
 // -----------------------------------------------------------------------------
@@ -162,7 +159,6 @@ class MapItem {
 class Action {
 	static handlers = {
 		2: () => {
-			player.mapPosition.set(304, 204)
 			Collisions.col(collisions)
 		},
 		3: () => {
@@ -174,6 +170,12 @@ class Action {
 		5: () => {
 			Collisions.col(collisionsStones)
 		},
+	}
+
+	static move(dx, dy) {
+		background.mapPosition.set(background.mapPosition.x - dx, background.mapPosition.y - dy)
+		Collisions.items.map(i => i.moveItem(dx, dy))
+		Collisions.boundaries.map(i => i.move(dx, dy))
 	}
 
 	static processObject(row, col, cell) {
@@ -189,6 +191,11 @@ class Action {
 				Collisions.items.push(tree)
 				return tree.boundaries
 
+			case 102:
+				const stamp = new Stamp(row, col)
+				Collisions.items.push(stamp)
+				return stamp.boundaries
+
 			default:
 				if (cell !== 0) {
 					return [Collisions.createBoundary(row, col, cell)]
@@ -198,14 +205,25 @@ class Action {
 	}
 
 	static execute(action, t) {
-		background.image.src = Map.MAPS[action - 2] ? Map.MAPS[action - 2] : background.image.src
+		background.image.src = Map.MAPS[action - 2] || background.image.src
 		this.handlers[action]?.()
-		if (t) player.mapPosition.set(...t)
+
+		const deviationX = Map.offsetX * GameSettings.scale
+		const deviationY = Map.offsetY * GameSettings.scale
+
+		t[0] = GameSettings.windowWidth / 2 - t[0] * GameSettings.scale
+		t[1] = GameSettings.windowHeight / 2 - t[1] * GameSettings.scale
+
+		background.mapPosition.set(t[0], t[1])
+		;[...Collisions.boundaries, ...Collisions.items].forEach(i => {
+			i.mapPosition.x += t[0] - deviationX
+			i.mapPosition.y += t[1] - deviationY
+		})
 	}
 }
 
 // -----------------------------------------------------------------------------
-// ОДИН объект коллизии
+// ОДИН объект колизии
 class Boundary {
 	/**
 	 * @param {object} mapPosition
@@ -215,28 +233,35 @@ class Boundary {
 	 */
 	static width = 16
 	static height = 16
-	constructor({ mapPosition, action = undefined, width = 16, height = 16, teleport }) {
-		this.mapPosition = mapPosition
+	constructor({ x, y, action = undefined, width = 16, height = 16, teleport }) {
+		this.mapPosition = new Vector2(x * GameSettings.scale + Map.offsetX * GameSettings.scale, y * GameSettings.scale + Map.offsetY * GameSettings.scale)
 		this.action = action
-		this.width = width
-		this.height = height
+		this.width = width * GameSettings.scale
+		this.height = height * GameSettings.scale
 		this.teleport = teleport
 		if (this.width < 0) {
-			this.mapPosition.x += this.width + 16
+			this.mapPosition.x += this.width + 16 * GameSettings.scale
 			this.width *= -1
 		}
 		if (this.height < 0) {
-			this.mapPosition.y += this.height + 16
+			this.mapPosition.y += this.height + 16 * GameSettings.scale
 			this.height *= -1
 		}
 	}
 
+	move(x, y) {
+		this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y)
+	}
+
 	collide(px, py, pw, ph) {
 		player.action = undefined
-		if (px < this.mapPosition.x + this.width - 12 && px + pw > this.mapPosition.x + 12 && py < this.mapPosition.y + this.height - 18 && py + ph > this.mapPosition.y + 9) {
+		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && 
+				px + pw > this.mapPosition.x + 12 * GameSettings.scale && 
+				py < this.mapPosition.y + this.height - 18 * GameSettings.scale && 
+				py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
 			if (this.action !== 1) {
-				Action.execute(this.action, this.teleport)
 				player.action = this.action
+				if (this.teleport) Action.execute(this.action, this.teleport)
 			}
 			return true
 		}
@@ -260,7 +285,8 @@ class Collisions {
 		const height = typeof cell === 'object' ? cell[2] * 16 : 16
 
 		return new Boundary({
-			mapPosition: new Vector2(row * Boundary.width, col * Boundary.height),
+			x: row * Boundary.width,
+			y: col * Boundary.height,
 			action: typeof cell === 'object' ? cell[0] : cell,
 			width: width,
 			height: height,
@@ -268,7 +294,7 @@ class Collisions {
 	}
 
 	static addStaticBoundaries(acc) {
-		acc.push(new Boundary({ mapPosition: { x: 0, y: 14 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ mapPosition: { x: 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }), new Boundary({ mapPosition: { x: 0, y: 30 * 16 }, action: 1, width: 40 * 16, height: 0 }), new Boundary({ mapPosition: { x: 40 * 16 - 4, y: 0 }, action: 1, width: 0, height: 30 * 16 }))
+		acc.push(new Boundary({ x: 0, y: 14, action: 1, width: 40 * 16, height: 0 }), new Boundary({ x: 4, y: 0, action: 1, width: 0, height: 30 * 16 }), new Boundary({ x: 0, y: 30 * 16, action: 1, width: 40 * 16, height: 0 }), new Boundary({ x: 40 * 16 - 4, y: 0, action: 1, width: 0, height: 30 * 16 }))
 	}
 
 	static col(collisions) {
@@ -318,6 +344,7 @@ class Sound {
 	 */
 	constructor(path) {
 		this.audio = new Audio(path)
+		this.audio.volume = 0.3
 	}
 
 	/**
