@@ -1,10 +1,18 @@
+class GameSettings {
+	static scale = 2
+	static windowWidth = window.innerWidth
+	static windowHeight = window.innerHeight
+}
+
 class Map extends Sprite {
 	static MAPS = ['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/village_style_game.jpg', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/ForestMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/JewerlyMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/StoneMap.png']
-	static WIDTH = 640
-	static HEIGHT = 480
+	static width = 640
+	static height = 480
+	static offsetX = (GameSettings.windowWidth - Map.width * GameSettings.scale) / 2 / GameSettings.scale
+	static offsetY = (GameSettings.windowHeight - Map.height * GameSettings.scale) / 2 / GameSettings.scale
 	static ID = 'stage'
 	constructor() {
-		super(Map.MAPS[0], 0, 0)
+		super(Map.MAPS[0], Map.offsetX, Map.offsetY, Map.width, Map.height)
 	}
 }
 
@@ -18,8 +26,8 @@ class Home extends MapItem {
 			8, // picWidth, picHeight
 			8,
 			[
-				{ x: 9, y: 36, width: 45, height: 26 },
-				{ x: 22, y: 62, width: 18, height: 1, action: action, teleport: [teleportX, teleportY] },
+				{ x: 9, y: 35, width: 45, height: 26 },
+				{ x: 20, y: 61, width: 22, height: 2, action: action, teleport: [teleportX, teleportY] },
 			], // bsize
 			'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/map_items/TopdownForest-Props.png'
 		)
@@ -41,32 +49,48 @@ class Tree extends MapItem {
 	}
 }
 
+
+class Stamp extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			mapPosX,
+			mapPosY,
+			8, // imgPosition X, Y
+			0,
+			4, // picWidth, picHeight
+			4,
+			[{ x: 7, y: 13, width: 18, height: 12, action: 7 }], // bsize
+			'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/map_items/TopdownForest-Props.png',
+			-12 // hide height
+		)
+	}
+}
+
 class Player extends Animation {
 	static DEFAULT_SIZE = 32
 	static COLLECT_SIZE = 48
 	constructor() {
-		super(['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player1.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, 640 / 2 - 16, 480 / 2 - 38, 50)
+		super(['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player1.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, (GameSettings.windowWidth / 2 - 16 * GameSettings.scale) / GameSettings.scale, (GameSettings.windowHeight / 2 - 16 * GameSettings.scale) / GameSettings.scale, 80*GameSettings.scale)
 		this.collecting = false
 		this.colHeight = 0
 	}
 
-	_setSize(size, frameReset = 0) {
-		;[this.images[0], this.images[1]] = [this.images[1], this.images[0]]
-		this.picWidth = size
-		this.picHeight = size
-		this.width = size
-		this.height = size
-		this.frame = frameReset
+	_setSize(size) {
+		!this.collecting ? (this.image.src = this.images[1]) : (this.image.src = this.images[0])
+		this.moveHeight = size
+		this.frameWidth = size
+		this.width = size * GameSettings.scale
+		this.height = size * GameSettings.scale
+		this.frame = 0
 	}
 
 	endState() {
 		if (this.action && !keys.KeyE && this.collecting) {
 			this._setSize(Player.DEFAULT_SIZE)
 			this.move = (this.move / 3) * 2
-			this.mapPosition.set(this.mapPosition.x + 8, this.mapPosition.y + 8)
-			keys.KeyE = false
+			this.mapPosition.set(this.mapPosition.x + 8 * GameSettings.scale, this.mapPosition.y + 8 * GameSettings.scale)
 			this.collecting = false
-			this.colHeight -= 8
+			this.colHeight -= 8 * GameSettings.scale
 		}
 	}
 
@@ -77,9 +101,9 @@ class Player extends Animation {
 				if (resources.items[this.action] !== 100) {
 					resources.items[this.action].collect()
 				}
-				this.frame = this.frame === 0 ? this.picWidth : 0
+				this.frame = this.frame === 0 ? this.frameWidth : 0
 			} else {
-				this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+				this.frame = (this.frame + this.frameWidth) % (this.frameWidth * 6)
 			}
 			this.timer.reset()
 		}
@@ -90,7 +114,7 @@ class Player extends Animation {
 			this.side = num
 			this._setSize(Player.COLLECT_SIZE)
 			this.move = (this.move / 2) * 3
-			this.mapPosition.set(this.mapPosition.x - 8, this.mapPosition.y - 8)
+			this.mapPosition.set(this.mapPosition.x - 8 * GameSettings.scale, this.mapPosition.y - 8 * GameSettings.scale)
 			this.collecting = true
 			const collectMoveValues = [144, 0, 96, 48]
 			this.move = collectMoveValues[this.side]
@@ -105,7 +129,7 @@ class Player extends Animation {
 
 class Resource {
 	constructor(img, x, y) {
-		this.sprite = new Sprite(img, x, y)
+		this.sprite = new Sprite(img, x / GameSettings.scale, y / GameSettings.scale, 32 / GameSettings.scale, 32 / GameSettings.scale)
 		this.collected = 0
 		this.inventorySize = 10
 		this.text = new Text(`${this.collected} / ${this.inventorySize}`, x + 36, y + 7)
@@ -122,7 +146,7 @@ class Resource {
 	}
 
 	draw() {
-		this.sprite.draw(32, 32)
+		this.sprite.draw(32 / GameSettings.scale, 32 / GameSettings.scale)
 		this.text.draw()
 	}
 }
@@ -130,6 +154,7 @@ class Resource {
 class Resources extends Menu {
 	constructor(x, y, width, height) {
 		super(x, y, width, height)
+
 		this.items = {
 			7: new Resource('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/wood.png', x + 4, y),
 			8: new Resource('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/rock.png', x + 4, y + 32),
@@ -164,7 +189,7 @@ class Settings extends Menu {
 	constructor(x, y, width, height) {
 		super(x, y, width, height)
 		this.music = new Sound('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/music/funny-bgm.mp3')
-		this.help = [new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/enter.png', (x + width) / 2 - 86, (y + height) / 2 - 100), new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/arrows.png', (x + width) / 2 - 20, (y + height) / 2 - 146)]
+		this.help = [new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/enter.png', ((x + width) / 2 - 86) / GameSettings.scale, ((y + height) / 2 - 100) / GameSettings.scale), new Sprite('https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/Items/arrows.png', ((x + width) / 2 - 10) / GameSettings.scale, ((y + height) / 2 - 146) / GameSettings.scale)]
 		this.items = [new Option('Play Music (Enter)', (x + width) / 2 - 86, (y + height) / 2 - 32, () => this.music.play(), 0), new Option('Pause Music (Enter)', (x + width) / 2 - 86, (y + height) / 2, () => this.music.pause(), 1), new Option('Volume Change (<-- -->)', (x + width) / 2 - 86, (y + height) / 2 + 32, () => this.volume(), 2)]
 		this.activeItem = 0
 		this.show = false

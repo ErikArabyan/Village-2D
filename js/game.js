@@ -1,13 +1,7 @@
-// Конфигурация
-const CONFIG = {
-	TILE_SIZE: 8,
-	BLOCK_SIZE: 16,
-}
-
 // Объекты
 const player = new Player()
-const resources = new Resources(540, 0, 104, 100)
-const settings = new Settings(0, 0, 640, 480)
+const resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100)
+const settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 const background = new Map()
 let position
 let num = 1
@@ -17,19 +11,22 @@ Collisions.col(collisions)
 
 // отображение всех предметов и очередь отображения
 const draw = () => {
-	background.draw()
+	background.draw(Map.width * GameSettings.scale, Map.height * GameSettings.scale)
 	// отрисовка границ колизии не нужно
 	Collisions.boundaries.forEach(b => b.draw())
 
 	const objects = [player, ...Collisions.items]
 
 	objects.sort((a, b) => {
-		const aY = a.boundaries ? a.mapPosition.y + a.boundaries[0].height : a.mapPosition.y + a.colHeight
-		const bY = b.boundaries ? b.mapPosition.y + b.boundaries[0].height : b.mapPosition.y + b.colHeight
+		// item , player
+		const aY = a.boundaries ? a.mapPosition.y + a.height - 6 * GameSettings.scale + a.hide : a.mapPosition.y + a.height / 2
+		const bY = b.boundaries ? b.mapPosition.y + b.height - 6 * GameSettings.scale + b.hide : b.mapPosition.y + b.height / 2
 		return aY - bY
 	})
 
 	objects.forEach(obj => obj.draw())
+	player.updateFrame()
+	resources.draw()
 }
 
 // Функция для анимации
@@ -38,10 +35,8 @@ function animate(time) {
 	lastTime = time
 	moveSpeed = player.speed * deltaTime
 
-	ctx.clearRect(0, 0, Map.WIDTH, Map.HEIGHT)
+	ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 	draw()
-	player.updateFrame()
-	resources.draw()
 	settings.handleInput()
 	keyDown(moveSpeed)
 	window.requestAnimationFrame(animate)
@@ -50,7 +45,7 @@ function animate(time) {
 // Функция для движения игрока
 const movePlayer = (dx = 0, dy = 0) => {
 	if (!Collisions.boundaries.some(b => b.collide(player.mapPosition.x + dx, player.mapPosition.y + dy, player.width, player.height))) {
-		player.mapPosition.set(player.mapPosition.x + dx, player.mapPosition.y + dy)
+		Action.move(dx, dy)
 	}
 }
 
@@ -89,7 +84,7 @@ const keyDown = moveSpeed => {
 
 // События клавиатуры
 let keys = {}
-window.addEventListener('keydown', e => {
+window.addEventListener('keydown', e => {	
 	if (!e.repeat) {
 		keys[e.code] = true
 	}
