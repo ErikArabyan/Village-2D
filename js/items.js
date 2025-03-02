@@ -1,5 +1,5 @@
 class GameSettings {
-	static scale = 2
+	static scale = 4
 	static windowWidth = window.innerWidth
 	static windowHeight = window.innerHeight
 }
@@ -70,7 +70,7 @@ class Player extends Animation {
 	static DEFAULT_SIZE = 32
 	static COLLECT_SIZE = 48
 	constructor() {
-		super(['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, (GameSettings.windowWidth / 2 - 16 * GameSettings.scale) / GameSettings.scale, (GameSettings.windowHeight / 2 - 16 * GameSettings.scale) / GameSettings.scale, 80*GameSettings.scale)
+		super(['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, (GameSettings.windowWidth / 2 - 16 * GameSettings.scale) / GameSettings.scale, (GameSettings.windowHeight / 2 - 16 * GameSettings.scale) / GameSettings.scale, 80 * GameSettings.scale)
 		this.collecting = false
 		this.colHeight = 0
 	}
