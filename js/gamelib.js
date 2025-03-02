@@ -81,9 +81,7 @@ class Sprite {
 		this.height = height * GameSettings.scale
 	}
 
-	draw() {
-		console.log(this.image);
-		
+	draw() {		
 		if (this.frameWidth) {
 			ctx.drawImage(this.image, this.frame, this.move, this.frameWidth, this.moveHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 		} else if (this.width) {
