@@ -1,5 +1,5 @@
 class GameSettings {
-	static scale = 2
+	static scale = 1
 	static windowWidth = window.innerWidth
 	static windowHeight = window.innerHeight
 }
