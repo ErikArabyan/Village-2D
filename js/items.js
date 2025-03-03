@@ -1,3 +1,30 @@
+function debounce(callee, timeoutMs = 0) {
+	return function perform(...args) {
+		let previousCall = this.lastCall
+
+		this.lastCall = Date.now()
+
+		if (previousCall && this.lastCall - previousCall <= timeoutMs) {
+			clearTimeout(this.lastCallTimer)
+		}
+
+		this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs)
+	}
+}
+
+function throttle(callee, timeout) {
+	let timer = null
+
+	return function perform(...args) {
+		if (timer) return
+		timer = setTimeout(() => {
+			callee(...args)
+			clearTimeout(timer)
+			timer = null
+		}, timeout)
+	}
+}
+
 class GameSettings {
 	static scale = 4
 	static windowWidth = window.innerWidth
@@ -5,9 +32,9 @@ class GameSettings {
 }
 
 class Map extends Sprite {
-	static MAPS = ['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/village_style_game.jpg', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/ForestMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/JewerlyMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/StoneMap.png']
-	static width = 640
-	static height = 480
+	static MAPS = ['assets/maps/base.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/ForestMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/JewerlyMap.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/maps/StoneMap.png']
+	static width = 1920
+	static height = 1088
 	static offsetX = (GameSettings.windowWidth - Map.width * GameSettings.scale) / 2 / GameSettings.scale
 	static offsetY = (GameSettings.windowHeight - Map.height * GameSettings.scale) / 2 / GameSettings.scale
 	static ID = 'stage'
@@ -49,7 +76,6 @@ class Tree extends MapItem {
 	}
 }
 
-
 class Stamp extends MapItem {
 	constructor(mapPosX, mapPosY) {
 		super(
@@ -73,6 +99,8 @@ class Player extends Animation {
 		super(['https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player.png', 'https://raw.githubusercontent.com/ErikArabyan/Village-2D/refs/heads/main/assets/players/Player_Actions.png'], 10, 32, 32, 32, 32, (GameSettings.windowWidth / 2 - 16 * GameSettings.scale) / GameSettings.scale, (GameSettings.windowHeight / 2 - 16 * GameSettings.scale) / GameSettings.scale, 80 * GameSettings.scale)
 		this.collecting = false
 		this.colHeight = 0
+		this.moveX = 0
+		this.moveY = 0
 	}
 
 	_setSize(size) {
@@ -122,6 +150,36 @@ class Player extends Animation {
 
 			if (this.action === 7 && this.move < 192) {
 				this.move += 192
+			}
+		}
+	}
+
+	smoothMove(x, y) {
+		if (this.moveX + x > -60 && this.moveX + x < 60 && x) {
+			this.moveX += x
+			this.mapPosition.x += x
+		}
+		if (this.moveY + y > -60 && this.moveY + y < 60 && y) {
+			this.moveY += y
+			this.mapPosition.y += y
+		}
+	}
+
+	smoothStop(moveSpeed) {
+		const move = throttle(() => {
+			this.mapPosition.x -= moveSpeed
+		}, 300)
+
+		const doit = debounce(() => {
+			while (this.moveX > 0) {
+				this.moveX = this.moveX < moveSpeed ? 0 : this.moveX - moveSpeed
+				move()
+			}
+		}, 300)
+
+		if (this.moveX || this.moveY) {
+			if (this.moveX) {
+				doit()
 			}
 		}
 	}

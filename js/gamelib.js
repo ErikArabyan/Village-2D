@@ -81,7 +81,7 @@ class Sprite {
 		this.height = height * GameSettings.scale
 	}
 
-	draw() {		
+	draw() {
 		if (this.frameWidth) {
 			ctx.drawImage(this.image, this.frame, this.move, this.frameWidth, this.moveHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 		} else if (this.width) {
@@ -126,7 +126,7 @@ class Animation extends Sprite {
 class MapItem extends Sprite {
 	static TILE_SIZE = 8
 	static BLOCK_SIZE = 16
-	constructor(x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide=0) {
+	constructor(x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide = 0) {
 		super(imageSrc, x * MapItem.BLOCK_SIZE + Map.offsetX, y * MapItem.BLOCK_SIZE + Map.offsetY, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE, imgPosX * MapItem.TILE_SIZE, imgPosY * MapItem.TILE_SIZE, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE)
 		this.boundaries = boundaryConfigs.map(
 			config =>
@@ -173,6 +173,8 @@ class Action {
 	}
 
 	static move(dx, dy) {
+		player.smoothMove(dx, dy)
+		// timeout 0.5 sec
 		background.mapPosition.set(background.mapPosition.x - dx, background.mapPosition.y - dy)
 		Collisions.items.map(i => i.moveItem(dx, dy))
 		Collisions.boundaries.map(i => i.move(dx, dy))
@@ -255,10 +257,7 @@ class Boundary {
 
 	collide(px, py, pw, ph) {
 		player.action = undefined
-		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && 
-				px + pw > this.mapPosition.x + 12 * GameSettings.scale && 
-				py < this.mapPosition.y + this.height - 18 * GameSettings.scale && 
-				py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
+		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && px + pw > this.mapPosition.x + 12 * GameSettings.scale && py < this.mapPosition.y + this.height - 18 * GameSettings.scale && py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
 			if (this.action !== 1) {
 				player.action = this.action
 				if (this.teleport) Action.execute(this.action, this.teleport)

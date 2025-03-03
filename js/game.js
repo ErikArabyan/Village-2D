@@ -5,6 +5,7 @@ const settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windo
 const background = new Map()
 let position
 let num = 1
+let called
 
 // установка колизии
 Collisions.col(collisions)
@@ -73,6 +74,7 @@ const keyDown = moveSpeed => {
 
 	if (dir.dx) movePlayer(dir.dx, 0)
 	if (dir.dy) movePlayer(0, dir.dy)
+	if (!dir.dx && !dir.dy && !called) player.smoothStop(moveSpeed)
 
 	if (keys.KeyE) {
 		player.collect(num)
@@ -98,5 +100,6 @@ window.addEventListener('keyup', e => {
 
 // Инициализация
 init(Map.ID, Map.WIDTH, Map.HEIGHT)
+ctx.imageSmoothingEnabled = false
 let lastTime = 0
 window.requestAnimationFrame(animate)
