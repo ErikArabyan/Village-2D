@@ -81,7 +81,7 @@ class Sprite {
 		this.height = height * GameSettings.scale
 	}
 
-	draw() {
+	draw() {		
 		if (this.frameWidth) {
 			ctx.drawImage(this.image, this.frame, this.move, this.frameWidth, this.moveHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 		} else if (this.width) {
@@ -95,13 +95,14 @@ class Sprite {
 // -----------------------------------------------------------------------------
 // класс для отображения существ
 class Animation extends Sprite {
-	constructor(paths, delay, pic_width, pic_height, width, height, x, y, speed) {
+	constructor(paths, delay, pic_width, pic_height, width, height, x, y, speed, sideCound=4) {
 		super(paths[0], x, y, width, height, 0, 0, pic_width, pic_height)
 		this.images = paths
 		this.timer = new Timer(delay)
 		this.side = null
 		this.action = null
 		this.speed = speed
+		this.sideCound = sideCound
 	}
 
 	updateFrame() {
@@ -113,10 +114,10 @@ class Animation extends Sprite {
 	}
 
 	changeState(x, ismove = false) {
-		if (!this.action || !keys.KeyE) {
-			this.side = x
-			const moveValues = [96, 0, 64, 32]
-			this.move = moveValues[x] + (ismove ? 128 : 0)
+		if (!this.action || !keys.KeyE) {					
+			this.side = x			
+			const moveValues = [0, 32, 64, 96, 128, 160, 192, 224]
+			this.move = moveValues[x] + (ismove ? (this.sideCound==8 ? 256 : 128) : 0)
 		}
 	}
 }
@@ -126,8 +127,8 @@ class Animation extends Sprite {
 class MapItem extends Sprite {
 	static TILE_SIZE = 8
 	static BLOCK_SIZE = 16
-	constructor(x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide = 0) {
-		super(imageSrc, x * MapItem.BLOCK_SIZE + Map.offsetX, y * MapItem.BLOCK_SIZE + Map.offsetY, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE, imgPosX * MapItem.TILE_SIZE, imgPosY * MapItem.TILE_SIZE, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE)
+	constructor(x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide=0) {
+		super(imageSrc, x * MapItem.BLOCK_SIZE + GameMap.offsetX, y * MapItem.BLOCK_SIZE + GameMap.offsetY, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE, imgPosX * MapItem.TILE_SIZE, imgPosY * MapItem.TILE_SIZE, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE)
 		this.boundaries = boundaryConfigs.map(
 			config =>
 				new Boundary({
@@ -172,10 +173,14 @@ class Action {
 		},
 	}
 
-	static move(dx, dy) {
-		player.smoothMove(dx, dy)
-		// timeout 0.5 sec
-		background.mapPosition.set(background.mapPosition.x - dx, background.mapPosition.y - dy)
+	static move(dx, dy, speed) {
+		dx = background.mapPosition.x - dx < 0 ? dx : background.mapPosition.x
+		dy = background.mapPosition.y - dy < 0 ? dy : background.mapPosition.y
+		dx = -background.mapPosition.x + GameSettings.windowWidth + dx < background.width ? dx : dx + background.width - GameSettings.windowWidth + background.mapPosition.x
+		dy = -background.mapPosition.y + GameSettings.windowHeight + dy < background.height ? dy : dy + background.height - GameSettings.windowHeight + background.mapPosition.y
+		
+		player.smoothMove(dx, dy, speed)
+		background.smoothMove(dx, dy)
 		Collisions.items.map(i => i.moveItem(dx, dy))
 		Collisions.boundaries.map(i => i.move(dx, dy))
 	}
@@ -207,18 +212,18 @@ class Action {
 	}
 
 	static execute(action, t) {
-		background.image.src = Map.MAPS[action - 2] || background.image.src
+		background.image.src = GameMap.MAPS[action - 2] || background.image.src
 		this.handlers[action]?.()
 
-		const deviationX = Map.offsetX * GameSettings.scale
-		const deviationY = Map.offsetY * GameSettings.scale
+		const deviationX = GameMap.offsetX * GameSettings.scale
+		const deviationY = GameMap.offsetY * GameSettings.scale
 
 		t[0] = GameSettings.windowWidth / 2 - t[0] * GameSettings.scale
 		t[1] = GameSettings.windowHeight / 2 - t[1] * GameSettings.scale
 
 		background.mapPosition.set(t[0], t[1])
 		;[...Collisions.boundaries, ...Collisions.items].forEach(i => {
-			i.mapPosition.x += t[0] - deviationX
+			i.mapPositionyx += t[0] - deviationX
 			i.mapPosition.y += t[1] - deviationY
 		})
 	}
@@ -236,7 +241,7 @@ class Boundary {
 	static width = 16
 	static height = 16
 	constructor({ x, y, action = undefined, width = 16, height = 16, teleport }) {
-		this.mapPosition = new Vector2(x * GameSettings.scale + Map.offsetX * GameSettings.scale, y * GameSettings.scale + Map.offsetY * GameSettings.scale)
+		this.mapPosition = new Vector2(x * GameSettings.scale + GameMap.offsetX * GameSettings.scale, y * GameSettings.scale + GameMap.offsetY * GameSettings.scale)
 		this.action = action
 		this.width = width * GameSettings.scale
 		this.height = height * GameSettings.scale
@@ -257,7 +262,10 @@ class Boundary {
 
 	collide(px, py, pw, ph) {
 		player.action = undefined
-		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && px + pw > this.mapPosition.x + 12 * GameSettings.scale && py < this.mapPosition.y + this.height - 18 * GameSettings.scale && py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
+		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && 
+				px + pw > this.mapPosition.x + 12 * GameSettings.scale && 
+				py < this.mapPosition.y + this.height - 18 * GameSettings.scale && 
+				py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
 			if (this.action !== 1) {
 				player.action = this.action
 				if (this.teleport) Action.execute(this.action, this.teleport)
