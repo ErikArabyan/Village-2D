@@ -1,0 +1,5 @@
+import "./gamelib.js"
+import "./itemlibs.js"
+import "./items.js"
+import "./game.js"
+import "../assets/collisions/collisions.js"
