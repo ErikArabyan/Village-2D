@@ -173,8 +173,10 @@ class Action {
 		},
 	}
 
-	static move(dx, dy, speed) {		
-		player.smoothMove(dx, dy, speed)
+	static move(dx, dy, speed) {
+		const smooth = 2
+		speed/=2
+		player.smoothMove(dx, dy, speed, smooth)
 		background.smoothMove(dx, dy, speed)
 	}
 

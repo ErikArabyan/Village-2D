@@ -84,11 +84,9 @@ class Player extends Animation {
 		}
 	}
 
-	smoothMove(x, y, speed) {
-		const smooth = 2
+	smoothMove(x, y, speed, smooth) {
 		x /= smooth
 		y /= smooth
-		speed /= smooth
 		const { windowWidth, windowHeight } = GameSettings
 		const { mapPosition } = background
 
