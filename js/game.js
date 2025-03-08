@@ -30,19 +30,17 @@ const draw = () => {
 }
 
 // Функция для анимации
-// function animate(time) {
-const animate =	setInterval(() => {
-		let deltaTime = (5 - lastTime) / 1000
-		lastTime = 5
+function animate(time) {
+		let deltaTime = (time - lastTime) / 1000
+		lastTime = time
 		moveSpeed = player.speed * deltaTime
 
 		ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 		draw()
 		settings.handleInput()		
-		keyDown(5)
-		// window.requestAnimationFrame(animate)
-	}, 20)
-// }
+		keyDown(moveSpeed)
+		window.requestAnimationFrame(animate)
+}
 
 // Функция для движения игрока
 const movePlayer = (dx = 0, dy = 0, speed) => {
@@ -122,4 +120,4 @@ window.addEventListener('keyup', e => {
 init(GameMap.ID, GameMap.WIDTH, GameMap.HEIGHT)
 ctx.imageSmoothingEnabled = false
 let lastTime = 0
-// window.requestAnimationFrame(animate)
+window.requestAnimationFrame(animate)
