@@ -1,5 +1,5 @@
 class GameMap extends Sprite {
-	static MAPS = ['assets/maps/base.png', 'assets/maps/ForestMap.png', 'assets/maps/JewerlyMap.png', 'assets/maps/StoneMap.png']
+	static MAPS = ['https://erikarabyan.github.io/Village-2D/assets/maps/Base.png', 'https://erikarabyan.github.io/Village-2D/assets/maps/ForestMap.png', 'https://erikarabyan.github.io/Village-2D/assets/maps/JewerlyMap.png', 'https://erikarabyan.github.io/Village-2D/assets/maps/StoneMap.png']
 	static width = 1920
 	static height = 1088
 	static offsetX = (GameSettings.windowWidth - GameMap.width * GameSettings.scale) / 2 / GameSettings.scale
@@ -18,7 +18,7 @@ class GameMap extends Sprite {
 		const { windowWidth, windowHeight } = GameSettings
 		const x = dx
 		const y = dy
-		
+
 		// не дает выходить за границу
 		dx = this.mapPosition.x - dx <= 0 ? dx : this.mapPosition.x
 		dy = this.mapPosition.y - dy <= 0 ? dy : this.mapPosition.y
@@ -53,7 +53,7 @@ class Home extends MapItem {
 				{ x: 9, y: 35, width: 45, height: 26 },
 				{ x: 20, y: 61, width: 22, height: 2, action: action, teleport: [teleportX, teleportY] },
 			], // bsize
-			'assets/map_items/TopdownForest-Props.png'
+			'https://erikarabyan.github.io/Village-2D/assets/map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -68,7 +68,7 @@ class Tree extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 6, y: 20, width: 18, height: 12, action: 7 }], // bsize
-			'assets/map_items/TopdownForest-Props.png'
+			'https://erikarabyan.github.io/Village-2D/assets/map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -83,7 +83,7 @@ class Stamp extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 7, y: 13, width: 18, height: 12, action: 7 }], // bsize
-			'assets/map_items/TopdownForest-Props.png',
+			'https://erikarabyan.github.io/Village-2D/assets/map_items/TopdownForest-Props.png',
 			-12 // hide height
 		)
 	}

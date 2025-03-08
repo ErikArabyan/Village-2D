@@ -13,7 +13,7 @@ class Player extends Animation {
 	static actualPosX = Player.initialPosX * GameSettings.scale
 	static actualPosY = Player.initialPosY * GameSettings.scale
 	constructor() {
-		super(['assets/players/Player1.png', 'assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 80 * GameSettings.scale, 8)
+		super(['https://erikarabyan.github.io/Village-2D/assets/players/Player1.png', 'https://erikarabyan.github.io/Village-2D/assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 80 * GameSettings.scale, 8)
 		this.collecting = false
 		this.colHeight = 0
 		this.moveX = 0
@@ -135,9 +135,9 @@ class Resources extends Menu {
 		super(x, y, width, height)
 
 		this.items = {
-			7: new Resource('assets/Items/wood.png', x + 4, y),
-			8: new Resource('assets/Items/rock.png', x + 4, y + 32),
-			9: new Resource('assets/Items/diamond.png', x + 4, y + 64),
+			7: new Resource('https://erikarabyan.github.io/Village-2D/assets/Items/wood.png', x + 4, y),
+			8: new Resource('https://erikarabyan.github.io/Village-2D/assets/Items/rock.png', x + 4, y + 32),
+			9: new Resource('https://erikarabyan.github.io/Village-2D/assets/Items/diamond.png', x + 4, y + 64),
 		}
 	}
 
