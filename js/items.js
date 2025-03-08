@@ -5,17 +5,36 @@ class GameMap extends Sprite {
 	// static offsetX = (GameSettings.windowWidth - GameMap.width * GameSettings.scale) / 2 / GameSettings.scale
 	// static offsetY = (GameSettings.windowHeight - GameMap.height * GameSettings.scale) / 2 / GameSettings.scale
 	static offsetX = -10
-	static offsetY = -400
+	static offsetY = -500
 	static ID = 'stage'
 	constructor() {
 		super(GameMap.MAPS[0], GameMap.offsetX, GameMap.offsetY, GameMap.width, GameMap.height)
 	}
 
-	smoothMove(dx, dy) {
-		this.mapPosition.set(
-			background.mapPosition.x - dx,
-			background.mapPosition.y - dy
-		)
+	smoothMove(dx, dy, speed) {
+		const { windowWidth, windowHeight } = GameSettings
+		const x = dx
+		const y = dy
+
+		// не дает выходить за границу
+		dx = this.mapPosition.x - dx <= 0 ? dx : this.mapPosition.x
+		dy = this.mapPosition.y - dy <= 0 ? dy : this.mapPosition.y
+		dx = -this.mapPosition.x + windowWidth + dx < this.width ? dx : dx + this.width - windowWidth + this.mapPosition.x
+		dy = -this.mapPosition.y + windowHeight + dy < this.height ? dy : dy + this.height - windowHeight + this.mapPosition.y
+
+		// плавное движение
+		const calcX = Player.actualPosX - player.mapPosition.x
+		const calcY = Player.actualPosY - player.mapPosition.y
+		if (x === 0 && Math.abs(calcX) >= 8) dx = calcX > 0 ? -speed / 2 : speed / 2
+		if (y === 0 && Math.abs(calcY) >= 8) dy = calcY > 0 ? -speed / 2 : speed / 2
+
+		// останавливаем игрока если он находится дальше своей границы
+		
+		dx = player.mapPosition.x <= Player.actualPosX+30 && player.mapPosition.x >= Player.actualPosX-30 ? dx : 0
+		dy = player.mapPosition.y <= Player.actualPosY+30 && player.mapPosition.y >= Player.actualPosY-30 ? dy : 0
+		
+		this.mapPosition.set(this.mapPosition.x - dx, this.mapPosition.y - dy)
+		;[...Collisions.items, ...Collisions.boundaries].forEach(i => i.moveItem(dx, dy))
 	}
 }
 

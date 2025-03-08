@@ -86,32 +86,37 @@ class Player extends Animation {
 
 	smoothMove(x, y, speed) {
 		const smooth = 2
-		let dx = 0,
-			dy = 0
 		x /= smooth
 		y /= smooth
 		speed /= smooth
+		const { windowWidth, windowHeight } = GameSettings
+		const { mapPosition } = background
 
+		// не дает выходить за храницу карты
 		const calcX = Player.actualPosX - this.mapPosition.x
 		const calcY = Player.actualPosY - this.mapPosition.y
 
-		if (Math.abs(calcX + x) < 30) dx = x
-		if (Math.abs(calcY + y) < 30) dy = y
+		let dx = Math.abs(calcX - 2 * x) <= 30 ? x : 0
+		let dy = Math.abs(calcY - 2 * y) <= 30 ? y : 0
 
-		if (x === 0 && Math.abs(calcX) > 8) dx = calcX > 0 ? -speed : speed
-		if (y === 0 && Math.abs(calcY) > 8) dy = calcY > 0 ? -speed : speed
+		// плавное движение
+		if (x === 0 && Math.abs(calcX) >= 8) dx = calcX > 0 ? speed : -speed
+		if (y === 0 && Math.abs(calcY) >= 8) dy = calcY > 0 ? speed : -speed
+		dx = this.mapPosition.x + 31 >= Player.actualPosX && this.mapPosition.x - 31 <= Player.actualPosX ? dx : 0
+		dy = this.mapPosition.y + 31 >= Player.actualPosY && this.mapPosition.y - 31 <= Player.actualPosY ? dy : 0
+		if (mapPosition.x <= 0 && mapPosition.x >= windowWidth - mapPosition.x >= background.width) dx += dx / 4
+		if (mapPosition.y <= 0 && mapPosition.y >= windowHeight - mapPosition.y >= background.height) dx += dy / 4
 
-		if (dx || dy) {
-			background.mapPosition.x -= dx
-			background.mapPosition.y -= dy
-			;[...Collisions.boundaries, ...Collisions.items].forEach(i => {
-				i.mapPosition.x -= dx
-				i.mapPosition.y -= dy
-			})
-			
-			this.mapPosition.x -= dx
-			this.mapPosition.y -= dy
-		}
+		// логика движения при остановлении карты
+		if (mapPosition.x >= 0) this.mapPosition.x += x * 2
+		if (mapPosition.y >= 0) this.mapPosition.y += y * 2
+		if (windowWidth - mapPosition.x >= background.width) this.mapPosition.x += x * smooth
+		if (windowHeight - mapPosition.y >= background.height) this.mapPosition.y += y * smooth
+		if (windowWidth - mapPosition.x >= background.width) dx = 0
+		if (windowHeight - mapPosition.y >= background.height) dy = 0
+
+		this.mapPosition.x += dx
+		this.mapPosition.y += dy
 	}
 }
 

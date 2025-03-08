@@ -173,16 +173,9 @@ class Action {
 		},
 	}
 
-	static move(dx, dy, speed) {
-		dx = background.mapPosition.x - dx < 0 ? dx : background.mapPosition.x
-		dy = background.mapPosition.y - dy < 0 ? dy : background.mapPosition.y
-		dx = -background.mapPosition.x + GameSettings.windowWidth + dx < background.width ? dx : dx + background.width - GameSettings.windowWidth + background.mapPosition.x
-		dy = -background.mapPosition.y + GameSettings.windowHeight + dy < background.height ? dy : dy + background.height - GameSettings.windowHeight + background.mapPosition.y
-		
+	static move(dx, dy, speed) {		
 		player.smoothMove(dx, dy, speed)
-		background.smoothMove(dx, dy)
-		Collisions.items.map(i => i.moveItem(dx, dy))
-		Collisions.boundaries.map(i => i.move(dx, dy))
+		background.smoothMove(dx, dy, speed)
 	}
 
 	static processObject(row, col, cell) {
@@ -256,16 +249,13 @@ class Boundary {
 		}
 	}
 
-	move(x, y) {
+	moveItem(x, y) {
 		this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y)
 	}
 
 	collide(px, py, pw, ph) {
 		player.action = undefined
-		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && 
-				px + pw > this.mapPosition.x + 12 * GameSettings.scale && 
-				py < this.mapPosition.y + this.height - 18 * GameSettings.scale && 
-				py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
+		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && px + pw > this.mapPosition.x + 12 * GameSettings.scale && py < this.mapPosition.y + this.height - 18 * GameSettings.scale && py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
 			if (this.action !== 1) {
 				player.action = this.action
 				if (this.teleport) Action.execute(this.action, this.teleport)

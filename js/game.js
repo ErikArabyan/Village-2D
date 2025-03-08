@@ -30,20 +30,23 @@ const draw = () => {
 }
 
 // Функция для анимации
-function animate(time) {
-	let deltaTime = (time - lastTime) / 1000
-	lastTime = time
-	moveSpeed = player.speed * deltaTime
+// function animate(time) {
+const animate =	setInterval(() => {
+		let deltaTime = (5 - lastTime) / 1000
+		lastTime = 5
+		moveSpeed = player.speed * deltaTime
 
-	ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
-	draw()
-	settings.handleInput()
-	keyDown(moveSpeed)
-	window.requestAnimationFrame(animate)
-}
+		ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
+		draw()
+		settings.handleInput()		
+		keyDown(5)
+		// window.requestAnimationFrame(animate)
+	}, 20)
+// }
 
 // Функция для движения игрока
 const movePlayer = (dx = 0, dy = 0, speed) => {
+	
 	const canMoveX = !Collisions.boundaries.some(b => b.collide(player.mapPosition.x + dx, player.mapPosition.y, player.width, player.height))
 	const canMoveY = !Collisions.boundaries.some(b => b.collide(player.mapPosition.x, player.mapPosition.y + dy, player.width, player.height))
 
@@ -78,7 +81,7 @@ const keyDown = moveSpeed => {
 
 		const move = movementMap[keyCombination] || null
 
-		if (move) {
+		if (move) {			
 			dir.dx = move.dx * moveSpeed
 			dir.dy = move.dy * moveSpeed
 			num = move.num
@@ -91,8 +94,7 @@ const keyDown = moveSpeed => {
 		dir.dy *= Math.SQRT1_2
 	}
 
-	movePlayer(dir.dx, dir.dy, moveSpeed)
-
+	movePlayer(dir.dx, dir.dy, moveSpeed)	
 	if (keys.KeyE) {
 		player.collect(num)
 	} else {
@@ -120,4 +122,4 @@ window.addEventListener('keyup', e => {
 init(GameMap.ID, GameMap.WIDTH, GameMap.HEIGHT)
 ctx.imageSmoothingEnabled = false
 let lastTime = 0
-window.requestAnimationFrame(animate)
+// window.requestAnimationFrame(animate)
