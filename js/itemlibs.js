@@ -98,12 +98,10 @@ class Player extends Animation {
 		let dy = Math.abs(calcY - 2 * y) <= 30 ? y : 0
 
 		// плавное движение
-		if (x === 0 && Math.abs(calcX) >= 8) dx = calcX > 0 ? speed : -speed
-		if (y === 0 && Math.abs(calcY) >= 8) dy = calcY > 0 ? speed : -speed
-		dx = this.mapPosition.x + 31 >= Player.actualPosX && this.mapPosition.x - 31 <= Player.actualPosX ? dx : 0
-		dy = this.mapPosition.y + 31 >= Player.actualPosY && this.mapPosition.y - 31 <= Player.actualPosY ? dy : 0
-		if (mapPosition.x <= 0 && mapPosition.x >= windowWidth - mapPosition.x >= background.width) dx += dx / 4
-		if (mapPosition.y <= 0 && mapPosition.y >= windowHeight - mapPosition.y >= background.height) dx += dy / 4
+		if (x === 0 && Math.abs(calcX) >= 2) dx = calcX > 0 ? speed : -speed
+		if (y === 0 && Math.abs(calcY) >= 2) dy = calcY > 0 ? speed : -speed
+		dx = this.mapPosition.x + 30 >= Player.actualPosX && this.mapPosition.x - 30 <= Player.actualPosX ? dx : 0
+		dy = this.mapPosition.y + 30 >= Player.actualPosY && this.mapPosition.y - 30 <= Player.actualPosY ? dy : 0
 
 		// логика движения при остановлении карты
 		if (mapPosition.x >= 0) this.mapPosition.x += x * 2

@@ -15,12 +15,12 @@ class GameMap extends Sprite {
 		const { windowWidth, windowHeight } = GameSettings
 		const x = dx
 		const y = dy
-		
+
 		// плавное движение
 		const calcX = Player.actualPosX - player.mapPosition.x
 		const calcY = Player.actualPosY - player.mapPosition.y
-		if (x === 0 && Math.abs(calcX) >= 8) dx = calcX > 0 ? -speed : speed
-		if (y === 0 && Math.abs(calcY) >= 8) dy = calcY > 0 ? -speed : speed
+		if (x === 0 && Math.abs(calcX) >= 2) dx = calcX > 0 ? -speed : speed
+		if (y === 0 && Math.abs(calcY) >= 2) dy = calcY > 0 ? -speed : speed
 
 		// не дает выходить за границу
 		dx = this.mapPosition.x - dx <= 0 ? dx : this.mapPosition.x
