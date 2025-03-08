@@ -71,8 +71,7 @@ class Player extends Animation {
 		}
 	}
 
-	smoothMove(x, y, speed) {
-		const smooth = 2
+	smoothMove(x, y, speed, smooth) {
 		x /= smooth
 		y /= smooth
 		speed /= smooth
@@ -82,16 +81,14 @@ class Player extends Animation {
 		// не дает выходить за храницу карты
 		const calcX = Player.actualPosX - this.mapPosition.x
 		const calcY = Player.actualPosY - this.mapPosition.y
-		let dx = Math.abs(calcX) <= 30 ? x : 0
-		let dy = Math.abs(calcY) <= 30 ? y : 0
+		let dx = Math.abs(calcX - x) <= 30 ? x : 0
+		let dy = Math.abs(calcY - y) <= 30 ? y : 0
 
 		// плавное движение
 		if (x === 0 && Math.abs(calcX) >= 8) dx = calcX > 0 ? speed : -speed
 		if (y === 0 && Math.abs(calcY) >= 8) dy = calcY > 0 ? speed : -speed
-		dx = this.mapPosition.x + 31 >= Player.actualPosX && this.mapPosition.x - 31 <= Player.actualPosX ? dx : 0
-		dy = this.mapPosition.y + 31 >= Player.actualPosY && this.mapPosition.y - 31 <= Player.actualPosY ? dy : 0
-		if (mapPosition.x <= 0 && mapPosition.x >= windowWidth - mapPosition.x >= background.width) dx += dx / 4
-		if (mapPosition.y <= 0 && mapPosition.y >= windowHeight - mapPosition.y >= background.height) dx += dy / 4
+		dx = this.mapPosition.x + 30 >= Player.actualPosX && this.mapPosition.x - 30 <= Player.actualPosX ? dx : 0
+		dy = this.mapPosition.y + 30 >= Player.actualPosY && this.mapPosition.y - 30 <= Player.actualPosY ? dy : 0
 
 		// логика движения при остановлении карты
 		if (mapPosition.x >= 0) this.mapPosition.x += x * 2
