@@ -244,10 +244,10 @@ class Boundary {
 		this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y)
 	}
 
-	collide(px, py, pw, ph) {
+	collide(px, py, pw, ph) {		
 		player.action = undefined
 		if (px < this.mapPosition.x + this.width - 12 * GameSettings.scale && px + pw > this.mapPosition.x + 12 * GameSettings.scale && py < this.mapPosition.y + this.height - 18 * GameSettings.scale && py + ph > this.mapPosition.y + 9 * GameSettings.scale) {
-			if (this.action !== 1) {
+			if (this.action !== 1) {				
 				player.action = this.action
 				if (this.teleport) Action.execute(this.action, this.teleport)
 			}

@@ -61,7 +61,7 @@ class Player extends Animation {
 			this.move = (this.move / 2) * 3
 			this.mapPosition.set(this.mapPosition.x - 8 * GameSettings.scale, this.mapPosition.y - 8 * GameSettings.scale)
 			this.collecting = true
-			const collectMoveValues = [144, 0, 96, 48]
+			const collectMoveValues = [0, 48, 96, 144]
 			this.move = collectMoveValues[this.side]
 			this.colHeight += 8
 

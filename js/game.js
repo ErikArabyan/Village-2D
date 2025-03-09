@@ -69,10 +69,11 @@ const keyDown = moveSpeed => {
 	const keysPressed = [keys.KeyW || keys.ArrowUp ? 'W' : null, keys.KeyA || keys.ArrowLeft ? 'A' : null, keys.KeyS || keys.ArrowDown ? 'S' : null, keys.KeyD || keys.ArrowRight ? 'D' : null].filter(Boolean)
 
 	if (keysPressed.length) {
+		
 		const keyCombination = keysPressed.join('')
 		const move = movementMap[keyCombination] || null
 
-		if (move) {
+		if (move) {			
 			dir.dx = move.dx * moveSpeed
 			dir.dy = move.dy * moveSpeed
 			num = move.num
@@ -85,10 +86,10 @@ const keyDown = moveSpeed => {
 		dir.dy *= Math.SQRT1_2
 	}
 
-	movePlayer(dir.dx, 0, moveSpeed)
-	movePlayer(0, dir.dy, moveSpeed)
+	if (dir.dx) movePlayer(dir.dx, 0, moveSpeed)
+	if (dir.dy) movePlayer(0, dir.dy, moveSpeed)
 
-	if (keys.KeyE) {
+	if (keys.KeyE) {		
 		player.collect(num)
 	} else {
 		player.endState()

@@ -7,7 +7,7 @@ class GameMap extends Sprite {
 	// static offsetX = -2000
 	// static offsetY = -2000
 	static offsetY = 0
-	static offsetX = -500
+	static offsetX = -200
 
 	static ID = 'stage'
 	constructor() {
