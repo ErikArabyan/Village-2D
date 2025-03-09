@@ -164,7 +164,7 @@ class Action {
 
 	static move(dx, dy, speed) {
 		const smooth = 2
-		speed/=2
+		speed/=smooth
 		player.smoothMove(dx, dy, speed, smooth)
 		background.smoothMove(dx, dy, speed)
 	}

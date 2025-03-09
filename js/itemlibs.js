@@ -78,25 +78,15 @@ class Player extends Animation {
 		const { windowWidth, windowHeight } = GameSettings
 		const { mapPosition } = background
 
-		// не дает выходить за храницу карты
+		// не дает выходить за границу
 		const calcX = Player.actualPosX - this.mapPosition.x
 		const calcY = Player.actualPosY - this.mapPosition.y
-		let dx = Math.abs(calcX - x) <= 30 ? x : 0
-		let dy = Math.abs(calcY - y) <= 30 ? y : 0
+		let dx = Math.abs(calcX - x) <= 30 ? x : mapPosition.x == 0 ? x * 2 : 0
+		let dy = Math.abs(calcY - y) <= 30 ? y : mapPosition.y == 0 ? y * 2 : 0
 
 		// плавное движение
-		if (x === 0 && Math.abs(calcX) >= 8) dx = calcX > 0 ? speed : -speed
-		if (y === 0 && Math.abs(calcY) >= 8) dy = calcY > 0 ? speed : -speed
-		dx = this.mapPosition.x + 30 >= Player.actualPosX && this.mapPosition.x - 30 <= Player.actualPosX ? dx : 0
-		dy = this.mapPosition.y + 30 >= Player.actualPosY && this.mapPosition.y - 30 <= Player.actualPosY ? dy : 0
-
-		// логика движения при остановлении карты
-		if (mapPosition.x >= 0) this.mapPosition.x += x * 2
-		if (mapPosition.y >= 0) this.mapPosition.y += y * 2
-		if (windowWidth - mapPosition.x >= background.width) this.mapPosition.x += x * smooth
-		if (windowHeight - mapPosition.y >= background.height) this.mapPosition.y += y * smooth
-		if (windowWidth - mapPosition.x >= background.width) dx = 0
-		if (windowHeight - mapPosition.y >= background.height) dy = 0
+		if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0) calcX > 0 ? (this.mapPosition.x += speed) : (this.mapPosition.x -= speed)
+		if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0) calcY > 0 ? (this.mapPosition.y += speed) : (this.mapPosition.y -= speed)
 
 		this.mapPosition.x += dx
 		this.mapPosition.y += dy
