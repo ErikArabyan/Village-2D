@@ -5,6 +5,16 @@ const settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windo
 const background = new GameMap()
 let position
 let num = 0
+const movementMap = {
+	S: { dx: 0, dy: 1, num: 0 },
+	D: { dx: 1, dy: 0, num: 1 },
+	A: { dx: -1, dy: 0, num: 2 },
+	W: { dx: 0, dy: -1, num: 3 },
+	SD: { dx: 1, dy: 1, num: 4 },
+	WD: { dx: 1, dy: -1, num: 5 },
+	AS: { dx: -1, dy: 1, num: 6 },
+	WA: { dx: -1, dy: -1, num: 7 },
+}
 
 // установка колизии
 Collisions.col(collisions)
@@ -23,7 +33,7 @@ const draw = () => {
 		const bY = b.boundaries ? b.mapPosition.y + b.height - 6 * GameSettings.scale + b.hide : b.mapPosition.y + b.height / 2
 		return aY - bY
 	})
-	
+
 	objects.forEach(obj => obj.draw())
 	player.updateFrame()
 	resources.draw()
@@ -42,20 +52,13 @@ function animate(time) {
 	ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 	draw()
 	if (!GameSettings.pause) keyDown(moveSpeed)
-		
+
 	window.requestAnimationFrame(animate)
 }
 // Функция для движения игрока
 const movePlayer = (dx = 0, dy = 0, speed) => {
-	const canMoveX = !Collisions.boundaries.some(b => b.collide(player.mapPosition.x + dx, player.mapPosition.y, player.width, player.height))
-	const canMoveY = !Collisions.boundaries.some(b => b.collide(player.mapPosition.x, player.mapPosition.y + dy, player.width, player.height))
-
-	if (canMoveX && canMoveY) {
+	if (!Collisions.boundaries.some(b => b.collide(player.mapPosition.x + dx, player.mapPosition.y + dy, player.width, player.height))) {
 		Action.move(dx, dy, speed)
-	} else if (canMoveX) {
-		Action.move(dx, 0, speed)
-	} else if (canMoveY) {
-		Action.move(0, dy, speed)
 	}
 }
 
@@ -67,18 +70,6 @@ const keyDown = moveSpeed => {
 
 	if (keysPressed.length) {
 		const keyCombination = keysPressed.join('')
-
-		const movementMap = {
-			W: { dx: 0, dy: -1, num: 3 },
-			A: { dx: -1, dy: 0, num: 2 },
-			S: { dx: 0, dy: 1, num: 0 },
-			D: { dx: 1, dy: 0, num: 1 },
-			WA: { dx: -1, dy: -1, num: 7 },
-			WD: { dx: 1, dy: -1, num: 5 },
-			AS: { dx: -1, dy: 1, num: 6 },
-			SD: { dx: 1, dy: 1, num: 4 },
-		}
-
 		const move = movementMap[keyCombination] || null
 
 		if (move) {
@@ -94,7 +85,8 @@ const keyDown = moveSpeed => {
 		dir.dy *= Math.SQRT1_2
 	}
 
-	movePlayer(dir.dx, dir.dy, moveSpeed)
+	movePlayer(dir.dx, 0, moveSpeed)
+	movePlayer(0, dir.dy, moveSpeed)
 
 	if (keys.KeyE) {
 		player.collect(num)
@@ -127,7 +119,6 @@ document.addEventListener('visibilitychange', () => {
 		}
 	} else {
 		GameSettings.pause = false
-		// lastFrameTime = performance.now() // Сбрасываем таймер, чтобы не было скачков
 	}
 })
 

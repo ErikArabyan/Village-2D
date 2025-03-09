@@ -13,7 +13,7 @@ class Player extends Animation {
 	static actualPosX = Player.initialPosX * GameSettings.scale
 	static actualPosY = Player.initialPosY * GameSettings.scale
 	constructor() {
-		super(['https://erikarabyan.github.io/Village-2D/assets/players/Player1.png', 'https://erikarabyan.github.io/Village-2D/assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 80 * GameSettings.scale, 8)
+		super(['https://erikarabyan.github.io/Village-2D/assets/players/Player1.png', 'https://erikarabyan.github.io/Village-2D/assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 50 * GameSettings.scale, 8)
 		this.collecting = false
 		this.colHeight = 0
 		this.moveX = 0
@@ -75,21 +75,26 @@ class Player extends Animation {
 		x /= smooth
 		y /= smooth
 		speed /= smooth
-		const { windowWidth, windowHeight } = GameSettings
+		const { windowWidth, windowHeight, scale } = GameSettings
 		const { mapPosition } = background
 
 		// не дает выходить за границу
 		const calcX = Player.actualPosX - this.mapPosition.x
 		const calcY = Player.actualPosY - this.mapPosition.y
-		let dx = Math.abs(calcX - x) <= 30 ? x : mapPosition.x == 0 ? x * 2 : 0
-		let dy = Math.abs(calcY - y) <= 30 ? y : mapPosition.y == 0 ? y * 2 : 0
+		let dx = Math.abs(calcX - x) <= 30 ? x : mapPosition.x == 0 || GameMap.width * scale == windowWidth - mapPosition.x ? x * 2 : 0
+		let dy = Math.abs(calcY - y) <= 30 ? y : mapPosition.y == 0 || GameMap.height * scale == windowHeight - mapPosition.y ? y * 2 : 0
 
 		// плавное движение
-		if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0) calcX > 0 ? (this.mapPosition.x += speed) : (this.mapPosition.x -= speed)
-		if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0) calcY > 0 ? (this.mapPosition.y += speed) : (this.mapPosition.y -= speed)
+		if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0 && GameMap.width * scale != windowWidth - mapPosition.x) calcX > 0 ? (dx = speed) : (dx = -speed)
+		if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0 && GameMap.height * scale != windowHeight - mapPosition.y) calcY > 0 ? (dy = speed) : (dy = -speed)
 
-		this.mapPosition.x += dx
-		this.mapPosition.y += dy
+		// не дает выходить за экран
+		if (this.mapPosition.x + dx >= 0 && this.mapPosition.x + this.width + dx <= GameSettings.windowWidth) {
+			this.mapPosition.x += dx
+		}
+		if (this.mapPosition.y + dy >= 0 && this.mapPosition.y + this.height + dy <= GameSettings.windowHeight) {
+			this.mapPosition.y += dy
+		}
 	}
 }
 
