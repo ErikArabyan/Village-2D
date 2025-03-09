@@ -57,7 +57,7 @@ function animate(time) {
 }
 // Функция для движения игрока
 const movePlayer = (dx = 0, dy = 0, speed) => {
-	if (!Collisions.boundaries.some(b => b.collide(player.mapPosition.x + dx, player.mapPosition.y + dy, player.width, player.height))) {
+	if (!Collisions.boundaries.some(b => b.collide(player.mapPosition.x + 2 * dx, player.mapPosition.y + 2 * dy, player.width, player.height))) {
 		Action.move(dx, dy, speed)
 	}
 }

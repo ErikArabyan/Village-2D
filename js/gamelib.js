@@ -12,7 +12,7 @@ function init(id) {
 	ctx = canvas.getContext('2d')
 	canvas.width = GameSettings.windowWidth
 	canvas.height = GameSettings.windowHeight
-	
+
 	function updateCanvasSize() {
 		ctx.imageSmoothingEnabled = false
 		canvas.width = window.innerWidth
@@ -164,7 +164,7 @@ class Action {
 
 	static move(dx, dy, speed) {
 		const smooth = 2
-		speed/=smooth
+		speed /= smooth
 		player.smoothMove(dx, dy, speed, smooth)
 		background.smoothMove(dx, dy, speed)
 	}
@@ -281,10 +281,6 @@ class Collisions {
 		})
 	}
 
-	static addStaticBoundaries(acc) {
-		acc.push(new Boundary({ x: 1550, y: 50, action: 1, width: 14 * 16, height: 40 }), new Boundary({ x: 0, y: 14, action: 1, width: 40 * 16, height: 0 }), new Boundary({ x: 4, y: 0, action: 1, width: 0, height: 30 * 16 }), new Boundary({ x: 0, y: 30 * 16, action: 1, width: 40 * 16, height: 0 }), new Boundary({ x: 40 * 16 - 4, y: 0, action: 1, width: 0, height: 30 * 16 }))
-	}
-
 	static col(collisions) {
 		Collisions.items = []
 		Collisions.boundaries = collisions.reduce((acc, cell, index) => {
@@ -294,9 +290,6 @@ class Collisions {
 			const newBoundaries = Action.processObject(row, col, cell)
 			acc.push(...newBoundaries)
 
-			if (cell !== 0) {
-				Collisions.addStaticBoundaries(acc)
-			}
 			return acc
 		}, [])
 	}
