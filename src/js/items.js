@@ -3,7 +3,7 @@ import { Vector2, Sprite, Menu, Animation, Text, Sound, GameSettings } from './g
 // -----------------------------------------------------------------------------
 
 export class GameMap extends Sprite {
-	static MAPS = ['https://erikarabyan.github.io/Village-2D/assets/maps/Base.png', 'https://erikarabyan.github.io/Village-2D/assets/maps/ForestMap.png', 'https://erikarabyan.github.io/Village-2D/assets/maps/JewerlyMap.png', 'https://erikarabyan.github.io/Village-2D/assets/maps/StoneMap.png']
+	static MAPS = ['https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/Base.png?raw=true', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/ForestMap.png', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/JewerlyMap.png', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/StoneMap.png']
 	static width = 1920
 	static height = 1088
 	static offsetX = (GameSettings.windowWidth - GameMap.width * GameSettings.scale) / 2 / GameSettings.scale
@@ -52,7 +52,7 @@ export class Player extends Animation {
 	static actualPosX = Player.initialPosX * GameSettings.scale
 	static actualPosY = Player.initialPosY * GameSettings.scale
 	constructor() {
-		super(['https://erikarabyan.github.io/Village-2D/assets/players/Player1.png', 'https://erikarabyan.github.io/Village-2D/assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 60 * GameSettings.scale, 8)
+		super(['https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player1.png?raw=true', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 60 * GameSettings.scale, 8)
 		this.collecting = false
 		this.colHeight = 0
 		this.moveX = 0
@@ -185,7 +185,7 @@ export class Home extends MapItem {
 				{ x: 9, y: 35, width: 45, height: 26 },
 				{ x: 20, y: 61, width: 22, height: 2, action: action, teleport: [teleportX, teleportY] },
 			], // bsize
-			'https://erikarabyan.github.io/Village-2D/assets/map_items/TopdownForest-Props.png'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
 		)
 	}
 }
@@ -201,7 +201,7 @@ export class Tree extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 6, y: 20, width: 18, height: 12, action: 7 }], // bsize
-			'https://erikarabyan.github.io/Village-2D/assets/map_items/TopdownForest-Props.png'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -217,7 +217,7 @@ export class Stamp extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 7, y: 13, width: 18, height: 12, action: 7 }], // bsize
-			'https://erikarabyan.github.io/Village-2D/assets/map_items/TopdownForest-Props.png',
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png',
 			-12 // hide height
 		)
 	}
@@ -252,9 +252,9 @@ export class Resources extends Menu {
 		super(x, y, width, height)
 
 		this.items = {
-			7: new Resource('https://erikarabyan.github.io/Village-2D/assets/Items/wood.png', x + 4, y),
-			8: new Resource('https://erikarabyan.github.io/Village-2D/assets/Items/rock.png', x + 4, y + 32),
-			9: new Resource('https://erikarabyan.github.io/Village-2D/assets/Items/diamond.png', x + 4, y + 64),
+			7: new Resource('https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/Items/wood.png?raw=true', x + 4, y),
+			8: new Resource('https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/Items/rock.png?raw=true', x + 4, y + 32),
+			9: new Resource('https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/Items/diamond.png?raw=true', x + 4, y + 64),
 		}
 	}
 

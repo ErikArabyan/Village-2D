@@ -42,23 +42,23 @@ def unique(replace_list):
             j = 0
     print(']')
 
-# unique(replace_list)
+unique(replace_list)
 
 
-# удаляет из коллизий
-with open('./src/assets/collisions/collisions.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
+# # удаляет из коллизий
+# with open('./src/assets/collisions/collisions.json', 'r', encoding='utf-8') as f:
+#     data = json.load(f)
 
 
-def replace_values(json_data, replace_list):
-    for key in json_data:
-        json_data[key] = [
-            0 if value in replace_list else value for value in json_data[key]]
-    return json_data
+# def replace_values(json_data, replace_list):
+#     for key in json_data:
+#         json_data[key] = [
+#             0 if value in replace_list else value for value in json_data[key]]
+#     return json_data
 
 
-# Замена значений
-updated_data = replace_values(data, replace_list)
+# # Замена значений
+# updated_data = replace_values(data, replace_list)
 
-with open('./src/assets/collisions/collisions.json', 'w', encoding='utf-8') as f:
-    json.dump(updated_data, f, indent=2, ensure_ascii=False)
+# with open('./src/assets/collisions/collisions.json', 'w', encoding='utf-8') as f:
+#     json.dump(updated_data, f, indent=2, ensure_ascii=False)
