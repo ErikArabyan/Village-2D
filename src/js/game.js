@@ -1,6 +1,9 @@
 import { init, GameSettings } from './gamelib.js'
-import { GameMap, Player, Resources, Settings, Action, Collisions } from './items.js'
+import { Player, Resources, Settings } from './items.js'
+import { Action, Collisions } from './utils.js'
 import collisions from '../assets/collisions/collisions.json'
+import { GameMap } from './MapItems.js'
+
 
 Collisions.col(GameMap, collisions.object1)
 
@@ -113,7 +116,7 @@ addEventListener('keyup', e => {
 document.addEventListener('visibilitychange', () => {
 	if (document.hidden) {
 		GameSettings.pause = true
-		for (i in keys) {
+		for (let i in keys) {
 			keys[i] = false
 		}
 	} else {
