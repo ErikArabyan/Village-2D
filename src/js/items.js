@@ -1,5 +1,6 @@
 import { Sprite, Menu, Animation, Text, Sound, GameSettings } from './gamelib.js'
 import { GameMap } from './MapItems.js'
+import { resources } from './game.js'
 
 // -----------------------------------------------------------------------------
 
@@ -11,7 +12,7 @@ export class Player extends Animation {
 	static actualPosX = Player.initialPosX * GameSettings.scale
 	static actualPosY = Player.initialPosY * GameSettings.scale
 	constructor() {
-		super(['https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player1.png?raw=true', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 60 * GameSettings.scale, 8)
+		super(['https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player1.png?raw=true', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player_Actions.png?raw=true'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 60 * GameSettings.scale, 8)
 		this.collecting = false
 		this.colHeight = 0
 		this.moveX = 0
@@ -136,7 +137,7 @@ export class Resources extends Menu {
 
 	draw() {
 		super.draw()
-		Object.values(this.items).forEach(i => i.draw())
+		for (const i of Object.values(this.items)) i.draw()
 	}
 }
 
@@ -193,8 +194,7 @@ export class Settings extends Menu {
 
 	_draw() {
 		super.draw()
-		this.help.forEach(h => h.draw())
-		this.items.forEach(item => item.draw(this.activeItem))
+		for (let i of [...this.help, ...this.items]) item.draw(this.activeItem)
 	}
 
 	volume(keys) {
@@ -210,4 +210,3 @@ export class Settings extends Menu {
 }
 
 // -----------------------------------------------------------------------------
-

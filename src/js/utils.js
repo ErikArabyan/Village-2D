@@ -1,6 +1,5 @@
-import { Vector2, GameSettings } from "./gamelib.js"
-import { Home, Tree } from './MapItems.js'
-
+import { Vector2, GameSettings } from './gamelib.js'
+import * as MapItems from './MapItems.js'
 
 export class Action {
 	static handlers = {
@@ -27,20 +26,190 @@ export class Action {
 	static processObject(GameMap, row, col, cell) {
 		switch (cell[0]) {
 			case 2472:
-				const home = new Home(row, col, cell[1], cell[2], cell[3])
+				const home = new MapItems.Home(row, col, cell[1], cell[2], cell[3])
 				Collisions.items.push(home)
 				this.teleport = home.teleportPosition
 				return home.boundaries
 
 			case 2536:
-				const tree = new Tree(row, col)
+				const tree = new MapItems.Tree(row, col)
 				Collisions.items.push(tree)
 				return tree.boundaries
 
-			case 102:
-				const stamp = new Stamp(row, col)
+			case 2535:
+				const tree1 = new MapItems.Tree1(row, col)
+				Collisions.items.push(tree1)
+				return tree1.boundaries
+
+			case 2551:
+				const ice = new MapItems.Ice(row, col)
+				Collisions.items.push(ice)
+				return ice.boundaries
+
+			case 2565:
+				const ice1 = new MapItems.Ice1(row, col)
+				Collisions.items.push(ice1)
+				return ice1.boundaries
+
+			case 2540:
+				const bone = new MapItems.Bone(row, col)
+				Collisions.items.push(bone)
+				return bone.boundaries
+
+			case 2543:
+				const stone = new MapItems.Stone(row, col)
+				Collisions.items.push(stone)
+				return stone.boundaries
+
+			case 2663:
+				const streetLight = new MapItems.StreetLight(row, col)
+				Collisions.items.push(streetLight)
+				return streetLight.boundaries
+
+			case 2531:
+				const greenTree = new MapItems.GreenTree(row, col)
+				Collisions.items.push(greenTree)
+				return greenTree.boundaries
+
+			case 2532:
+				const orangeTree = new MapItems.OrangeTree(row, col)
+				Collisions.items.push(orangeTree)
+				return orangeTree.boundaries
+
+			case 2533:
+				const pinkTree = new MapItems.PinkTree(row, col)
+				Collisions.items.push(pinkTree)
+				return pinkTree.boundaries
+
+			case 2523:
+				const grass = new MapItems.Grass(row, col)
+				Collisions.items.push(grass)
+				return grass.boundaries
+
+			case 2537:
+				const grass1 = new MapItems.Grass1(row, col)
+				Collisions.items.push(grass1)
+				return grass1.boundaries
+
+			case 2660:
+				const stamp = new MapItems.Stamp(row, col)
 				Collisions.items.push(stamp)
 				return stamp.boundaries
+
+			case 2662:
+				const stone2 = new MapItems.Stone2(row, col)
+				Collisions.items.push(stone2)
+				return stone2.boundaries
+
+			case 2600:
+				const campFire = new MapItems.CampFire(row, col)
+				Collisions.items.push(campFire)
+				return campFire.boundaries
+
+			case 2469:
+				const barierLeft = new MapItems.BarierLeft(row, col)
+				Collisions.items.push(barierLeft)
+				return barierLeft.boundaries
+
+			case 2470:
+				const barierMiddle = new MapItems.BarierMiddle(row, col)
+				Collisions.items.push(barierMiddle)
+				return barierMiddle.boundaries
+
+			case 2471:
+				const barierRight = new MapItems.BarierRight(row, col)
+				Collisions.items.push(barierRight)
+				return barierRight.boundaries
+
+			case 2468:
+				const barierTop = new MapItems.BarierTop(row, col)
+				Collisions.items.push(barierTop)
+				return barierTop.boundaries
+
+			case 2479:
+				const barierVerticalMiddle = new MapItems.BarierVerticalMiddle(row, col)
+				Collisions.items.push(barierVerticalMiddle)
+				return barierVerticalMiddle.boundaries
+
+			case 2490:
+				const barierDown = new MapItems.BarierDown(row, col)
+				Collisions.items.push(barierDown)
+				return barierDown.boundaries
+
+			case 2480:
+				const barierTopLeft = new MapItems.BarierTopLeft(row, col)
+				Collisions.items.push(barierTopLeft)
+				return barierTopLeft.boundaries
+
+			case 2482:
+				const barierTopRight = new MapItems.BarierTopRight(row, col)
+				Collisions.items.push(barierTopRight)
+				return barierTopRight.boundaries
+
+			case 2502:
+				const barierDownLeft = new MapItems.BarierDownLeft(row, col)
+				Collisions.items.push(barierDownLeft)
+				return barierDownLeft.boundaries
+
+			case 2504:
+				const barierDownRight = new MapItems.BarierDownRight(row, col)
+				Collisions.items.push(barierDownRight)
+				return barierDownRight.boundaries
+
+			case 2827:
+				const barierLeft1 = new MapItems.BarierLeft1(row, col)
+				Collisions.items.push(barierLeft1)
+				return barierLeft1.boundaries
+
+			case 2828:
+				const barierMiddle1 = new MapItems.BarierMiddle1(row, col)
+				Collisions.items.push(barierMiddle1)
+				return barierMiddle1.boundaries
+
+			case 2829:
+				const barierRight1 = new MapItems.BarierRight1(row, col)
+				Collisions.items.push(barierRight1)
+				return barierRight1.boundaries
+
+			case 2779:
+				const barierTop1 = new MapItems.BarierTop1(row, col)
+				Collisions.items.push(barierTop1)
+				return barierTop1.boundaries
+
+			case 2796:
+				const barierVerticalMiddle1 = new MapItems.BarierVerticalMiddle1(row, col)
+				Collisions.items.push(barierVerticalMiddle1)
+				return barierVerticalMiddle1.boundaries
+
+			case 2813:
+				const barierDown1 = new MapItems.BarierDown1(row, col)
+				Collisions.items.push(barierDown1)
+				return barierDown1.boundaries
+
+			case 2776:
+				const barierTopLeft1 = new MapItems.BarierTopLeft1(row, col)
+				Collisions.items.push(barierTopLeft1)
+				return barierTopLeft1.boundaries
+
+			case 2778:
+				const barierTopRight1 = new MapItems.BarierTopRight1(row, col)
+				Collisions.items.push(barierTopRight1)
+				return barierTopRight1.boundaries
+
+			case 2810:
+				const barierDownLeft1 = new MapItems.BarierDownLeft1(row, col)
+				Collisions.items.push(barierDownLeft1)
+				return barierDownLeft1.boundaries
+
+			case 2812:
+				const barierDownRight1 = new MapItems.BarierDownRight1(row, col)
+				Collisions.items.push(barierDownRight1)
+				return barierDownRight1.boundaries
+
+			// case 102:
+			// 	const stamp = new MapItems.Stamp(row, col)
+			// 	Collisions.items.push(stamp)
+			// 	return stamp.boundaries
 
 			default:
 				if (cell !== 0) {
@@ -61,10 +230,10 @@ export class Action {
 		t[1] = GameSettings.windowHeight / 2 - t[1] * GameSettings.scale
 
 		background.mapPosition.set(t[0], t[1])
-		;[...Collisions.boundaries, ...Collisions.items].forEach(i => {
+		for (let i of [...Collisions.items, ...Collisions.boundaries]) {
 			i.mapPositionyx += t[0] - deviationX
 			i.mapPosition.y += t[1] - deviationY
-		})
+		}
 	}
 }
 

@@ -4,12 +4,11 @@ import { Action, Collisions } from './utils.js'
 import collisions from '../assets/collisions/collisions.json'
 import { GameMap } from './MapItems.js'
 
-
 Collisions.col(GameMap, collisions.object1)
 
 // Объекты
 const player = new Player()
-const resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100)
+export const resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100)
 const settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 const background = new GameMap()
 // let position
@@ -29,7 +28,7 @@ const movementMap = {
 const draw = () => {
 	background.draw(GameMap.width * GameSettings.scale, GameMap.height * GameSettings.scale)
 	// отрисовка границ колизии не нужно
-	Collisions.boundaries.forEach(b => b.draw(ctx))
+	for(const i of Collisions.boundaries) i.draw(ctx)
 
 	const objects = [player, ...Collisions.items]
 
@@ -40,7 +39,7 @@ const draw = () => {
 		return aY - bY
 	})
 
-	objects.forEach(obj => obj.draw())
+	for (const i of objects) i.draw()
 	player.updateFrame(keys)
 	resources.draw()
 

@@ -1,4 +1,4 @@
-import { Sprite, GameSettings } from './gamelib.js'
+import { Sprite, GameSettings, Animation } from './gamelib.js'
 import { Player } from './items.js'
 import { Collisions } from './utils.js'
 import { Boundary } from './utils.js'
@@ -10,9 +10,9 @@ export class GameMap extends Sprite {
 	static offsetX = (GameSettings.windowWidth - GameMap.width * GameSettings.scale) / 2 / GameSettings.scale
 	static offsetY = (GameSettings.windowHeight - GameMap.height * GameSettings.scale) / 2 / GameSettings.scale
 	// static offsetX = -2000
-	// static offsetY = -2000
-	static offsetY = 0
-	static offsetX = -10
+	static offsetX = -200
+	static offsetY = -600
+	// static offsetY = 0
 
 	static ID = 'stage'
 	constructor() {
@@ -39,7 +39,7 @@ export class GameMap extends Sprite {
 		dy = windowHeight + dy - this.mapPosition.y < this.height ? dy : this.height - (GameSettings.windowHeight - this.mapPosition.y)
 
 		this.mapPosition.set(this.mapPosition.x - dx, this.mapPosition.y - dy)
-		;[...Collisions.items, ...Collisions.boundaries].forEach(i => i.moveItem(dx, dy))
+		for (let i of [...Collisions.items, ...Collisions.boundaries]) i.moveItem(dx, dy)
 	}
 }
 
@@ -63,6 +63,14 @@ export class MapItem extends Sprite {
 		this.hide = hide
 	}
 
+	updateFrame() {
+		this.timer.doTick()
+		if (this.timer.tick()) {
+			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+			this.timer.reset()
+		}
+	}
+
 	moveItem(x, y) {
 		this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y)
 	}
@@ -81,8 +89,8 @@ export class Home extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY - 3,
-			12, // imgPosition X, Y
-			4,
+			8, // imgPosition X, Y
+			0,
 			8, // picWidth, picHeight
 			8,
 			[
@@ -94,7 +102,7 @@ export class Home extends MapItem {
 	}
 }
 
-export class Tree extends MapItem {
+export class OldTree extends MapItem {
 	constructor(mapPosX, mapPosY) {
 		super(
 			GameMap,
@@ -109,21 +117,203 @@ export class Tree extends MapItem {
 		)
 	}
 }
-// export class Tree extends MapItem {
-// 	constructor(mapPosX, mapPosY) {
-// 		super(
-// 			GameMap,
-// 			mapPosX,
-// 			mapPosY - 3,
-// 			12, // imgPosition X, Y
-// 			0,
-// 			4, // picWidth, picHeight
-// 			4,
-// 			[{ x: 6, y: 20, width: 18, height: 12, action: 7 }], // bsize
-// 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
-// 		)
-// 	}
-// }
+
+export class Tree extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			20, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+		)
+	}
+}
+
+export class Tree1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			18, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+		)
+	}
+}
+
+export class Ice extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			22, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 6, width: 12, height: 8 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+export class Ice1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			22, // imgPosition X, Y
+			6,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 1, y: 6, width: 14, height: 9 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+
+export class Bone extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 10, width: 12, height: 5 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+
+export class Stone extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 5, width: 12, height: 8 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+
+export class StreetLight extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 2,
+			22, // imgPosition X, Y
+			16,
+			2, // picWidth, picHeight
+			6,
+			[{ x: 3, y: 40, width: 9, height: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+		)
+	}
+}
+
+export class GreenTree extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			10, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+		)
+	}
+}
+
+export class OrangeTree extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			12, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+		)
+	}
+}
+
+export class PinkTree extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			14, // imgPosition X, Y
+			0,
+			4, // picWidth, picHeight
+			4,
+			[{ x: 11, y: 20, width: 10, height: 8, action: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+		)
+	}
+}
+
+export class Grass extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			22, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 3, y: 5, width: 10, height: 8 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+
+export class Grass1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			22, // imgPosition X, Y
+			2,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 6, width: 12, height: 9 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
 
 export class Stamp extends MapItem {
 	constructor(mapPosX, mapPosY) {
@@ -131,13 +321,412 @@ export class Stamp extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			8, // imgPosition X, Y
-			0,
-			4, // picWidth, picHeight
-			4,
-			[{ x: 7, y: 13, width: 18, height: 12, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			16, // imgPosition X, Y
+			20,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 1, y: 6, width: 14, height: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
 			-12 // hide height
+		)
+	}
+}
+
+// export class Stamp extends MapItem {
+// 	constructor(mapPosX, mapPosY) {
+// 		super(
+// 			GameMap,
+// 			mapPosX,
+// 			mapPosY,
+// 			8, // imgPosition X, Y
+// 			0,
+// 			4, // picWidth, picHeight
+// 			4,
+// 			[{ x: 7, y: 13, width: 18, height: 12 }], // bsize
+// 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+// 			-12 // hide height
+// 		)
+// 	}
+// }
+
+export class Stone2 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			20, // imgPosition X, Y
+			20,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 1, y: 6, width: 14, height: 6 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+
+export class CampFire extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			10, // imgPosition X, Y
+			12,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 1, y: 6, width: 14, height: 10 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			-12 // hide height
+		)
+	}
+}
+
+export class BarierLeft extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 12, width: 11, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierMiddle extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			4, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 0, y: 12, width: 16, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierRight extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 0, y: 12, width: 11, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierTop extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			6,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 12, width: 6, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierVerticalMiddle extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 0, width: 6, height: 16 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			-1000
+		)
+	}
+}
+
+export class BarierDown extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			10,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 0, width: 6, height: 14 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			-1000
+		)
+	}
+}
+
+export class BarierTopLeft extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 12, width: 6, height: 4 },
+				{ x: 11, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierTopRight extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 12, width: 6, height: 4 },
+				{ x: 0, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierDownLeft extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			12,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 0, width: 6, height: 16 },
+				{ x: 11, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierDownRight extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			12,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 0, width: 6, height: 16 },
+				{ x: 0, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierLeft1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 12, width: 11, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierMiddle1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			4, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 0, y: 12, width: 16, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierRight1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 0, y: 12, width: 11, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierTop1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			6,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 12, width: 6, height: 4 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierVerticalMiddle1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 0, width: 6, height: 16 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			-1000
+		)
+	}
+}
+
+export class BarierDown1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			10,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 5, y: 0, width: 6, height: 14 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			-1000
+		)
+	}
+}
+
+export class BarierTopLeft1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 12, width: 6, height: 4 },
+				{ x: 11, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierTopRight1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			8,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 12, width: 6, height: 4 },
+				{ x: 0, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierDownLeft1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			12,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 0, width: 6, height: 16 },
+				{ x: 11, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+		)
+	}
+}
+
+export class BarierDownRight1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			12,
+			2, // picWidth, picHeight
+			2,
+			[
+				{ x: 5, y: 0, width: 6, height: 16 },
+				{ x: 0, y: 12, width: 5, height: 4 },
+			], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
 		)
 	}
 }
