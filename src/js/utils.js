@@ -315,10 +315,6 @@ export class Action {
 				const desertStone3 = new MapItems.DesertStone3(row, col)
 				Collisions.items.push(desertStone3)
 				return desertStone3.boundaries
-			case 1143:
-				const palm1 = new MapItems.Palm1(row, col)
-				Collisions.items.push(palm1)
-				return palm1.boundaries
 			case 1144:
 				const palm2 = new MapItems.Palm2(row, col)
 				Collisions.items.push(palm2)

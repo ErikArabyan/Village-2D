@@ -14,7 +14,7 @@ export function init(id) {
 	canvas.height = GameSettings.windowHeight
 
 	function updateCanvasSize() {
-		ctx.imageSmoothingEnabled = false
+		ctx.imageSmoothingEnabled = !1
 		canvas.width = window.innerWidth
 		canvas.height = window.innerHeight
 	}

@@ -222,7 +222,7 @@ export class Stone3 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			2, // imgPosition X, Y
 			4,
 			4, // picWidth, picHeight
@@ -818,14 +818,12 @@ export class CristmasTree1 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-2,
+			mapPosY - 2,
 			14, // imgPosition X, Y
 			0,
 			4, // picWidth, picHeight
 			6,
-			[
-				{ x: 10, y: 38, width: 12, height: 8 },
-			], // bsize
+			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
 		)
 	}
@@ -835,14 +833,12 @@ export class CristmasTree2 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-2,
+			mapPosY - 2,
 			18, // imgPosition X, Y
 			0,
 			4, // picWidth, picHeight
 			6,
-			[
-				{ x: 10, y: 38, width: 12, height: 8 },
-			], // bsize
+			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
 		)
 	}
@@ -852,14 +848,12 @@ export class CristmasTree3 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-2,
+			mapPosY - 2,
 			22, // imgPosition X, Y
 			0,
 			4, // picWidth, picHeight
 			6,
-			[
-				{ x: 10, y: 38, width: 12, height: 8 },
-			], // bsize
+			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
 		)
 	}
@@ -869,14 +863,12 @@ export class CristmasTree4 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-2,
+			mapPosY - 2,
 			26, // imgPosition X, Y
 			0,
 			4, // picWidth, picHeight
 			6,
-			[
-				{ x: 10, y: 38, width: 12, height: 8 },
-			], // bsize
+			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
 		)
 	}
@@ -1003,23 +995,18 @@ export class BigBush4 extends MapItem {
 	}
 }
 
-
-
-
-
-
 export class Cactus1 extends MapItem {
 	constructor(mapPosX, mapPosY) {
 		super(
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			6, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
@@ -1029,12 +1016,12 @@ export class Cactus2 extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			8, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
@@ -1044,12 +1031,12 @@ export class Cactus3 extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			10, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
@@ -1059,12 +1046,12 @@ export class Cactus4 extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			12, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
@@ -1074,12 +1061,12 @@ export class DesertStone1 extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			14, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
-			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			[{ x: 1, y: 8, width: 13, height: 8 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
@@ -1089,12 +1076,12 @@ export class DesertStone2 extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			16, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true', -16
 		)
 	}
 }
@@ -1104,42 +1091,28 @@ export class DesertStone3 extends MapItem {
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			18, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
-			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			[{ x: 0, y: 8, width: 16, height: 8 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
-export class Palm1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
-		super(
-			GameMap,
-			mapPosX,
-			mapPosY,
-			20, // imgPosition X, Y
-			8,
-			2, // picWidth, picHeight
-			2,
-			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
-		)
-	}
-}
+
 export class Palm2 extends MapItem {
 	constructor(mapPosX, mapPosY) {
 		super(
 			GameMap,
 			mapPosX,
 			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			22, // imgPosition X, Y
+			6,
 			2, // picWidth, picHeight
 			2,
-			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			[{ x: 2, y: 8, width: 10, height: 8 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
@@ -1148,13 +1121,13 @@ export class Palm3 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY,
-			20, // imgPosition X, Y
-			8,
+			mapPosY - 1,
+			24, // imgPosition X, Y
+			4,
 			2, // picWidth, picHeight
-			2,
-			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			4,
+			[{ x: 2, y: 24, width: 12, height: 8, action: 7 }], // bsize
+			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
 		)
 	}
 }
