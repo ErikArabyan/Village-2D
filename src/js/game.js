@@ -1,7 +1,7 @@
 import { init, GameSettings } from './gamelib.js'
 import { Player, Resources, Settings } from './items.js'
 import { Action, Collisions } from './utils.js'
-import collisions from '../assets/collisions/collisions.json'
+import collisions from '../assets/collisions/collisions.json' assert { type: 'json' }
 import { GameMap } from './MapItems.js'
 
 Collisions.col(GameMap, collisions.object1)
