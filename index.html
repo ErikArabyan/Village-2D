@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Village 2D</title>
 		<style>
 			* {
@@ -20,12 +20,19 @@
 				justify-content: center;
 				align-items: center;
 			}
+
+			canvas {
+				image-rendering: pixelated;
+				image-rendering: crisp-edges;
+				image-rendering: -moz-crisp-edges;
+				image-rendering: -webkit-optimize-contrast;
+			}
 		</style>
-  </head>
-  <body>
-    <div class="game">
+	</head>
+	<body>
+		<div class="game">
 			<canvas id="stage"></canvas>
 		</div>
-    <script type="module" src="/src/js/game.js"></script>
-  </body>
+		<script type="module" src="/src/js/game.js"></script>
+	</body>
 </html>

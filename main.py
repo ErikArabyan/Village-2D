@@ -1,4 +1,5 @@
 import json
+import shutil
 
 replace_list = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 31, 32, 33, 34, 35, 36, 37, 38, 44, 45, 47, 48, 49, 53,
@@ -46,22 +47,18 @@ replace_list = [
     3276, 3277, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3296, 3297, 3298, 3299, 3300, 3301, 3302, 3303, 3304, 3305, 3306]
 
 
+
 # убирает дубликаты replace_list
-def unique(replace_list):
-    x = sorted(set(replace_list))
-    print('[')
-    for idx, value in enumerate(x, start=1):
-        end_char = ', ' if idx < len(x) else ''
-        print(value, end=end_char)
-
-        if idx % 37 == 0:
-            print('')
-
-    print(']')
+def unique(col):
+    new_list = list(set(replace_list))
+    x = len(new_list)
+    with open('t.py', "w") as f:
+        f.writelines('replace_list = [')
+        f.writelines([str(new_list[i: i+col]).replace('[', '').replace(']', ',') + "\n" for i in range(0, x, col)])
+        f.writelines(']')
 
 
-
-# unique(replace_list)
+unique(17)
 
 # удаление значений replace_list
 def replace_values(json_data, replace_list):
@@ -89,8 +86,7 @@ def remove(src):
     arr = {"object": arr}
 
     with open(src, 'w', encoding='utf-8') as f:
-        json.dump(arr, f, indent=1, ensure_ascii=False)
+        json.dump(arr, f, ensure_ascii=False)
 
-remove('./src/collisions/collisions.json')
-
+# remove('./Base.json')
 

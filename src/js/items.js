@@ -55,7 +55,6 @@ export class Player extends Animation {
 
 	collect(keys, num) {
 		if (this.action && keys.KeyE && !this.collecting) {
-			this.ima
 			this.side = num
 			this._setSize(Player.COLLECT_SIZE)
 			this.move = (this.move / 2) * 3
@@ -198,7 +197,7 @@ export class Settings extends Menu {
 		for (let i of [...this.help, ...this.items]) i.draw(this.activeItem)
 	}
 
-	volume(keys) {
+	volume(keys) {	
 		if (keys.ArrowLeft) {
 			this.music.volume(Math.max(this.music.audio.volume - 0.08, 0))
 			keys.ArrowLeft = false

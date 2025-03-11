@@ -14,7 +14,6 @@ export function init(id) {
 	canvas.height = GameSettings.windowHeight
 
 	function updateCanvasSize() {
-		ctx.imageSmoothingEnabled = !1
 		canvas.width = window.innerWidth
 		canvas.height = window.innerHeight
 	}
@@ -81,7 +80,8 @@ export class Sprite {
 	}
 
 	draw() {
-		if (this.frameWidth) {
+		ctx.imageSmoothingEnabled = false
+		if (this.frameWidth) {			
 			ctx.drawImage(this.image, this.frame, this.move, this.frameWidth, this.moveHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
 		} else if (this.width) {
 			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y, this.width, this.height)

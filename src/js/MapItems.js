@@ -129,7 +129,7 @@ export class Tree extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png'
+			'map_items/cave_resources.png'
 		)
 	}
 }
@@ -145,7 +145,7 @@ export class Tree1 extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png'
+			'map_items/cave_resources.png'
 		)
 	}
 }
@@ -161,7 +161,7 @@ export class Ice extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 6, width: 12, height: 8 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -177,7 +177,7 @@ export class Ice1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 9 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -194,7 +194,220 @@ export class Bone extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 10, width: 12, height: 5 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
+			-12 // hide height
+		)
+	}
+}
+
+export class Bone1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			2,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 10, width: 12, height: 5 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+export class Bone2 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			2,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 10, width: 12, height: 5 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+export class Bone3 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			4, // imgPosition X, Y
+			2,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 10, width: 12, height: 4 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+export class Bone4 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			2,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 10, width: 12, height: 4 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+
+export class Pointer1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 12, width: 12, height: 3 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+export class Pointer2 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 12, width: 12, height: 3 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+export class Pointer3 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			4, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 12, width: 12, height: 3 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+export class Pointer4 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			6, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 12, width: 12, height: 3 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+
+export class Vase extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			2, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 2, y: 10, width: 12, height: 6 }], // bsize
+			'map_items/Resources2.png',
+			-12 // hide height
+		)
+	}
+}
+
+export class DesertHouse1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-4,
+			0, // imgPosition X, Y
+			18,
+			8, // picWidth, picHeight
+			12,
+			[{ x: 0, y: 40, width: 64, height: 40 }], // bsize
+			'map_items/DesertTilemapBlankBackground.png',
+			-52 // hide height
+		)
+	}
+}
+
+export class DesertHouse2 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-1,
+			8, // imgPosition X, Y
+			22,
+			4, // picWidth, picHeight
+			5,
+			[{ x: 0, y: 17, width: 33, height: 16 }], // bsize
+			'map_items/DesertTilemapBlankBackground.png',
+			-12 // hide height
+		)
+	}
+}
+export class DesertHouse3 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-1,
+			12, // imgPosition X, Y
+			22,
+			4, // picWidth, picHeight
+			5,
+			[{ x: 0, y: 17, width: 33, height: 16 }], // bsize
+			'map_items/DesertTilemapBlankBackground.png',
+			-12 // hide height
+		)
+	}
+}
+export class DesertHouse4 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-2,
+			16, // imgPosition X, Y
+			20,
+			6, // picWidth, picHeight
+			7,
+			[{ x: 0, y: 33, width: 49, height: 16 }], // bsize
+			'map_items/DesertTilemapBlankBackground.png',
 			-12 // hide height
 		)
 	}
@@ -211,7 +424,7 @@ export class Stone extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -228,7 +441,7 @@ export class Stone3 extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 4, y: 16, width: 24, height: 13 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -245,7 +458,7 @@ export class Emerald1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -261,7 +474,7 @@ export class Emerald2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -277,7 +490,7 @@ export class Emerald3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -293,7 +506,7 @@ export class Emerald4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -310,7 +523,7 @@ export class StreetLight extends MapItem {
 			2, // picWidth, picHeight
 			6,
 			[{ x: 3, y: 40, width: 9, height: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png'
+			'map_items/cave_resources.png'
 		)
 	}
 }
@@ -326,7 +539,7 @@ export class GreenTree extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png'
+			'map_items/cave_resources.png'
 		)
 	}
 }
@@ -342,7 +555,7 @@ export class OrangeTree extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png'
+			'map_items/cave_resources.png'
 		)
 	}
 }
@@ -358,7 +571,7 @@ export class PinkTree extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 11, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png'
+			'map_items/cave_resources.png'
 		)
 	}
 }
@@ -374,7 +587,7 @@ export class Grass extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 3, y: 5, width: 10, height: 8 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -391,7 +604,7 @@ export class Grass1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 6, width: 12, height: 9 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -408,7 +621,7 @@ export class Stamp extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 7 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -442,7 +655,7 @@ export class Stone2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 6 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -459,7 +672,7 @@ export class CampFire extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 10 }], // bsize
-			'map_items/cave_%20%5Bresources%5D.png',
+			'map_items/cave_resources.png',
 			-12 // hide height
 		)
 	}
@@ -650,7 +863,7 @@ export class BarierLeft1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 12, width: 11, height: 4 }], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -666,7 +879,7 @@ export class BarierMiddle1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 8, width: 16, height: 4 }], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -682,7 +895,7 @@ export class BarierRight1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 12, width: 11, height: 4 }], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -698,7 +911,7 @@ export class BarierTop1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 12, width: 6, height: 4 }], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -714,7 +927,7 @@ export class BarierVerticalMiddle1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 0, width: 6, height: 16 }], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png',
+			'map_items/cave_bridgeHorizontal.png',
 			-1000
 		)
 	}
@@ -731,7 +944,7 @@ export class BarierDown1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 0, width: 6, height: 14 }], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png',
+			'map_items/cave_bridgeHorizontal.png',
 			-1000
 		)
 	}
@@ -751,7 +964,7 @@ export class BarierTopLeft1 extends MapItem {
 				{ x: 5, y: 8, width: 6, height: 8 },
 				{ x: 11, y: 8, width: 5, height: 4 },
 			], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -770,7 +983,7 @@ export class BarierTopRight1 extends MapItem {
 				{ x: 5, y: 8, width: 6, height: 8 },
 				{ x: 0, y: 8, width: 5, height: 4 },
 			], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -789,7 +1002,7 @@ export class BarierDownLeft1 extends MapItem {
 				{ x: 5, y: 0, width: 6, height: 12 },
 				{ x: 11, y: 8, width: 5, height: 4 },
 			], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -808,7 +1021,7 @@ export class BarierDownRight1 extends MapItem {
 				{ x: 5, y: 0, width: 6, height: 12 },
 				{ x: 0, y: 8, width: 5, height: 4 },
 			], // bsize
-			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
+			'map_items/cave_bridgeHorizontal.png'
 		)
 	}
 }
@@ -823,8 +1036,8 @@ export class CristmasTree1 extends MapItem {
 			0,
 			4, // picWidth, picHeight
 			6,
-			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			[{ x: 10, y: 38, width: 12, height: 8, action: 7 }], // bsize
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -838,8 +1051,8 @@ export class CristmasTree2 extends MapItem {
 			0,
 			4, // picWidth, picHeight
 			6,
-			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			[{ x: 10, y: 38, width: 12, height: 8, action: 7 }], // bsize
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -853,8 +1066,8 @@ export class CristmasTree3 extends MapItem {
 			0,
 			4, // picWidth, picHeight
 			6,
-			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			[{ x: 10, y: 38, width: 12, height: 8, action: 7 }], // bsize
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -868,8 +1081,8 @@ export class CristmasTree4 extends MapItem {
 			0,
 			4, // picWidth, picHeight
 			6,
-			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			[{ x: 10, y: 38, width: 12, height: 8, action: 7 }], // bsize
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -885,7 +1098,7 @@ export class SmallBush1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -900,7 +1113,7 @@ export class SmallBush2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -915,7 +1128,7 @@ export class SmallBush3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -930,7 +1143,7 @@ export class SmallBush4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -945,7 +1158,7 @@ export class BigBush1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -960,7 +1173,7 @@ export class BigBush2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -975,7 +1188,7 @@ export class BigBush3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -990,7 +1203,7 @@ export class BigBush4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/Resources%202.png'
+			'map_items/Resources2.png'
 		)
 	}
 }
@@ -1055,6 +1268,51 @@ export class Cactus4 extends MapItem {
 		)
 	}
 }
+export class Cactus5 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-1,
+			4, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 2, y: 20, width: 10, height: 8 }], // bsize
+			'map_items/cave_resources.png'
+		)
+	}
+}
+export class Cactus6 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-1,
+			6, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 2, y: 20, width: 10, height: 8 }], // bsize
+			'map_items/cave_resources.png'
+		)
+	}
+}
+export class Cactus7 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-1,
+			8, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 1, y: 19, width: 12, height: 9 }], // bsize
+			'map_items/cave_resources.png'
+		)
+	}
+}
 export class DesertStone1 extends MapItem {
 	constructor(mapPosX, mapPosY) {
 		super(
@@ -1096,6 +1354,21 @@ export class DesertStone3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 8, width: 16, height: 8 }], // bsize
+			'map_items/DesertTilemapBlankBackground.png'
+		)
+	}
+}
+export class DesertStone4 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-1,
+			22, // imgPosition X, Y
+		  8,
+			6, // picWidth, picHeight
+			4,
+			[{ x: 7, y: 25, width: 32, height: 8 }], // bsize
 			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}

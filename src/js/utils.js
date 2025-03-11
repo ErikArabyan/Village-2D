@@ -56,6 +56,64 @@ export class Action {
 				Collisions.items.push(bone)
 				return bone.boundaries
 
+			case 3142:
+				const bone1 = new MapItems.Bone1(row, col)
+				Collisions.items.push(bone1)
+				return bone1.boundaries
+			case 3143:
+				const bone2 = new MapItems.Bone2(row, col)
+				Collisions.items.push(bone2)
+				return bone2.boundaries
+			case 3144:
+				const bone3 = new MapItems.Bone3(row, col)
+				Collisions.items.push(bone3)
+				return bone3.boundaries
+			case 3145:
+				const bone4 = new MapItems.Bone4(row, col)
+				Collisions.items.push(bone4)
+				return bone4.boundaries
+
+			case 3157:
+				const pointer1 = new MapItems.Pointer1(row, col)
+				Collisions.items.push(pointer1)
+				return pointer1.boundaries
+
+			case 1273:
+				const desertHouse1 = new MapItems.DesertHouse1(row, col)
+				Collisions.items.push(desertHouse1)
+				return desertHouse1.boundaries
+
+			case 1263:
+				const desertHouse2 = new MapItems.DesertHouse2(row, col)
+				Collisions.items.push(desertHouse2)
+				return desertHouse2.boundaries
+
+			case 1265:
+				const desertHouse3 = new MapItems.DesertHouse3(row, col)
+				Collisions.items.push(desertHouse3)
+				return desertHouse3.boundaries
+			case 1267:
+				const desertHouse4 = new MapItems.DesertHouse4(row, col)
+				Collisions.items.push(desertHouse4)
+				return desertHouse4.boundaries
+
+			case 3128:
+				const vase = new MapItems.Vase(row, col)
+				Collisions.items.push(vase)
+				return vase.boundaries
+			case 3158:
+				const pointer2 = new MapItems.Pointer2(row, col)
+				Collisions.items.push(pointer2)
+				return pointer2.boundaries
+			case 3159:
+				const pointer3 = new MapItems.Pointer3(row, col)
+				Collisions.items.push(pointer3)
+				return pointer3.boundaries
+			case 3160:
+				const pointer4 = new MapItems.Pointer4(row, col)
+				Collisions.items.push(pointer4)
+				return pointer4.boundaries
+
 			case 2543:
 				const stone = new MapItems.Stone(row, col)
 				Collisions.items.push(stone)
@@ -285,8 +343,6 @@ export class Action {
 				Collisions.items.push(bigBush4)
 				return bigBush4.boundaries
 
-
-
 			case 1136:
 				const cactus1 = new MapItems.Cactus1(row, col)
 				Collisions.items.push(cactus1)
@@ -303,6 +359,18 @@ export class Action {
 				const cactus4 = new MapItems.Cactus4(row, col)
 				Collisions.items.push(cactus4)
 				return cactus4.boundaries
+			case 2528:
+				const cactus5 = new MapItems.Cactus5(row, col)
+				Collisions.items.push(cactus5)
+				return cactus5.boundaries
+			case 2529:
+				const cactus6 = new MapItems.Cactus6(row, col)
+				Collisions.items.push(cactus6)
+				return cactus6.boundaries
+			case 2530:
+				const cactus7 = new MapItems.Cactus7(row, col)
+				Collisions.items.push(cactus7)
+				return cactus7.boundaries
 			case 1140:
 				const desertStone1 = new MapItems.DesertStone1(row, col)
 				Collisions.items.push(desertStone1)
@@ -315,6 +383,10 @@ export class Action {
 				const desertStone3 = new MapItems.DesertStone3(row, col)
 				Collisions.items.push(desertStone3)
 				return desertStone3.boundaries
+			case 1172:
+				const desertStone4 = new MapItems.DesertStone4(row, col)
+				Collisions.items.push(desertStone4)
+				return desertStone4.boundaries
 			case 1144:
 				const palm2 = new MapItems.Palm2(row, col)
 				Collisions.items.push(palm2)
