@@ -19,8 +19,6 @@ loadCollisions()
 		console.error(error)
 	})
 
-Collisions.col(GameMap, collisions.object1)
-
 // Объекты
 const player = new Player()
 export const resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100)
