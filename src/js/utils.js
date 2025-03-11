@@ -206,6 +206,128 @@ export class Action {
 				Collisions.items.push(barierDownRight1)
 				return barierDownRight1.boundaries
 
+			case 2555:
+				const stone3 = new MapItems.Stone3(row, col)
+				Collisions.items.push(stone3)
+				return stone3.boundaries
+
+			case 2544:
+				const emerald1 = new MapItems.Emerald1(row, col)
+				Collisions.items.push(emerald1)
+				return emerald1.boundaries
+
+			case 2545:
+				const emerald2 = new MapItems.Emerald2(row, col)
+				Collisions.items.push(emerald2)
+				return emerald2.boundaries
+
+			case 2558:
+				const emerald3 = new MapItems.Emerald3(row, col)
+				Collisions.items.push(emerald3)
+				return emerald3.boundaries
+
+			case 2559:
+				const emerald4 = new MapItems.Emerald4(row, col)
+				Collisions.items.push(emerald4)
+				return emerald4.boundaries
+
+			case 3164:
+				const cristmasTree1 = new MapItems.CristmasTree1(row, col)
+				Collisions.items.push(cristmasTree1)
+				return cristmasTree1.boundaries
+
+			case 3166:
+				const cristmasTree2 = new MapItems.CristmasTree2(row, col)
+				Collisions.items.push(cristmasTree2)
+				return cristmasTree2.boundaries
+
+			case 3168:
+				const cristmasTree3 = new MapItems.CristmasTree3(row, col)
+				Collisions.items.push(cristmasTree3)
+				return cristmasTree3.boundaries
+
+			case 3170:
+				const cristmasTree4 = new MapItems.CristmasTree4(row, col)
+				Collisions.items.push(cristmasTree4)
+				return cristmasTree4.boundaries
+
+			case 3179:
+				const smallBush1 = new MapItems.SmallBush1(row, col)
+				Collisions.items.push(smallBush1)
+				return smallBush1.boundaries
+			case 3180:
+				const smallBush2 = new MapItems.SmallBush2(row, col)
+				Collisions.items.push(smallBush2)
+				return smallBush2.boundaries
+			case 3181:
+				const smallBush3 = new MapItems.SmallBush3(row, col)
+				Collisions.items.push(smallBush3)
+				return smallBush3.boundaries
+			case 3182:
+				const smallBush4 = new MapItems.SmallBush4(row, col)
+				Collisions.items.push(smallBush4)
+				return smallBush4.boundaries
+
+			case 3194:
+				const bigBush1 = new MapItems.BigBush1(row, col)
+				Collisions.items.push(bigBush1)
+				return bigBush1.boundaries
+			case 3195:
+				const bigBush2 = new MapItems.BigBush2(row, col)
+				Collisions.items.push(bigBush2)
+				return bigBush2.boundaries
+			case 3196:
+				const bigBush3 = new MapItems.BigBush3(row, col)
+				Collisions.items.push(bigBush3)
+				return bigBush3.boundaries
+			case 3197:
+				const bigBush4 = new MapItems.BigBush4(row, col)
+				Collisions.items.push(bigBush4)
+				return bigBush4.boundaries
+
+
+
+			case 1136:
+				const cactus1 = new MapItems.Cactus1(row, col)
+				Collisions.items.push(cactus1)
+				return cactus1.boundaries
+			case 1137:
+				const cactus2 = new MapItems.Cactus2(row, col)
+				Collisions.items.push(cactus2)
+				return cactus2.boundaries
+			case 1138:
+				const cactus3 = new MapItems.Cactus3(row, col)
+				Collisions.items.push(cactus3)
+				return cactus3.boundaries
+			case 1139:
+				const cactus4 = new MapItems.Cactus4(row, col)
+				Collisions.items.push(cactus4)
+				return cactus4.boundaries
+			case 1140:
+				const desertStone1 = new MapItems.DesertStone1(row, col)
+				Collisions.items.push(desertStone1)
+				return desertStone1.boundaries
+			case 1141:
+				const desertStone2 = new MapItems.DesertStone2(row, col)
+				Collisions.items.push(desertStone2)
+				return desertStone2.boundaries
+			case 1142:
+				const desertStone3 = new MapItems.DesertStone3(row, col)
+				Collisions.items.push(desertStone3)
+				return desertStone3.boundaries
+			case 1143:
+				const palm1 = new MapItems.Palm1(row, col)
+				Collisions.items.push(palm1)
+				return palm1.boundaries
+			case 1144:
+				const palm2 = new MapItems.Palm2(row, col)
+				Collisions.items.push(palm2)
+				return palm2.boundaries
+			case 1145:
+				const palm3 = new MapItems.Palm3(row, col)
+				Collisions.items.push(palm3)
+				return palm3.boundaries
+
 			// case 102:
 			// 	const stamp = new MapItems.Stamp(row, col)
 			// 	Collisions.items.push(stamp)
