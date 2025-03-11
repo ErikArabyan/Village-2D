@@ -2,22 +2,9 @@ import { init, GameSettings } from './gamelib.js'
 import { Player, Resources, Settings } from './items.js'
 import { Action, Collisions } from './utils.js'
 import { GameMap } from './MapItems.js'
+import collisions from '../collisions/collisions.json'
 
-async function loadCollisions() {
-	const response = await fetch('../assets/collisions/collisions.json')
-	if (!response.ok) {
-		throw new Error(`Ошибка загрузки JSON: ${response.status}`)
-	}
-	return response.json()
-}
-
-loadCollisions()
-	.then(collisions => {
-		Collisions.col(GameMap, collisions.object1)
-	})
-	.catch(error => {
-		console.error(error)
-	})
+Collisions.col(GameMap, collisions.object1)
 
 // Объекты
 const player = new Player()
@@ -41,7 +28,7 @@ const movementMap = {
 const draw = () => {
 	background.draw(GameMap.width * GameSettings.scale, GameMap.height * GameSettings.scale)
 	// отрисовка границ колизии не нужно
-	for (const i of Collisions.boundaries) i.draw(ctx)
+	for(const i of Collisions.boundaries) i.draw(ctx)
 
 	const objects = [player, ...Collisions.items]
 

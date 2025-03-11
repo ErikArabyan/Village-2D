@@ -4,7 +4,7 @@ import { Collisions } from './utils.js'
 import { Boundary } from './utils.js'
 
 export class GameMap extends Sprite {
-	static MAPS = ['https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/Base.png?raw=true', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/ForestMap.png', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/JewerlyMap.png', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/maps/StoneMap.png']
+	static MAPS = ['maps/Base.png', 'maps/ForestMap.png', 'maps/JewerlyMap.png', 'maps/StoneMap.png']
 	static width = 1920
 	static height = 1088
 	static offsetX = (GameSettings.windowWidth - GameMap.width * GameSettings.scale) / 2 / GameSettings.scale
@@ -97,7 +97,7 @@ export class Home extends MapItem {
 				{ x: 9, y: 35, width: 45, height: 26 },
 				{ x: 20, y: 61, width: 22, height: 2, action: action, teleport: [teleportX, teleportY] },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -113,7 +113,7 @@ export class OldTree extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 6, y: 20, width: 18, height: 12, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -129,7 +129,7 @@ export class Tree extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+			'map_items/cave_%20%5Bresources%5D.png'
 		)
 	}
 }
@@ -145,7 +145,7 @@ export class Tree1 extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+			'map_items/cave_%20%5Bresources%5D.png'
 		)
 	}
 }
@@ -161,7 +161,7 @@ export class Ice extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 6, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -177,7 +177,7 @@ export class Ice1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 9 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -194,7 +194,7 @@ export class Bone extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 10, width: 12, height: 5 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -211,7 +211,7 @@ export class Stone extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -228,7 +228,7 @@ export class Stone3 extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 4, y: 16, width: 24, height: 13 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -245,7 +245,7 @@ export class Emerald1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -261,7 +261,7 @@ export class Emerald2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -277,7 +277,7 @@ export class Emerald3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -293,7 +293,7 @@ export class Emerald4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 5, width: 12, height: 8, action: 9 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -310,7 +310,7 @@ export class StreetLight extends MapItem {
 			2, // picWidth, picHeight
 			6,
 			[{ x: 3, y: 40, width: 9, height: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+			'map_items/cave_%20%5Bresources%5D.png'
 		)
 	}
 }
@@ -326,7 +326,7 @@ export class GreenTree extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+			'map_items/cave_%20%5Bresources%5D.png'
 		)
 	}
 }
@@ -342,7 +342,7 @@ export class OrangeTree extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 3, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+			'map_items/cave_%20%5Bresources%5D.png'
 		)
 	}
 }
@@ -358,7 +358,7 @@ export class PinkTree extends MapItem {
 			4, // picWidth, picHeight
 			4,
 			[{ x: 11, y: 20, width: 10, height: 8, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true'
+			'map_items/cave_%20%5Bresources%5D.png'
 		)
 	}
 }
@@ -374,7 +374,7 @@ export class Grass extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 3, y: 5, width: 10, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -391,7 +391,7 @@ export class Grass1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 6, width: 12, height: 9 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -408,7 +408,7 @@ export class Stamp extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -425,7 +425,7 @@ export class Stamp extends MapItem {
 // 			4, // picWidth, picHeight
 // 			4,
 // 			[{ x: 7, y: 13, width: 18, height: 12 }], // bsize
-// 			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+// 			'map_items/TopdownForest-Props.png',
 // 			-12 // hide height
 // 		)
 // 	}
@@ -442,7 +442,7 @@ export class Stone2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 6 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -459,7 +459,7 @@ export class CampFire extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 6, width: 14, height: 10 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5Bresources%5D.png?raw=true',
+			'map_items/cave_%20%5Bresources%5D.png',
 			-12 // hide height
 		)
 	}
@@ -476,7 +476,7 @@ export class BarierLeft extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 9, width: 11, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -492,7 +492,7 @@ export class BarierMiddle extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 9, width: 16, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -508,7 +508,7 @@ export class BarierRight extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 9, width: 11, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -524,7 +524,7 @@ export class BarierTop extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 12, width: 6, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -540,7 +540,7 @@ export class BarierVerticalMiddle extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 0, width: 6, height: 16 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			'map_items/TopdownForest-Props.png',
 			-1000
 		)
 	}
@@ -557,7 +557,7 @@ export class BarierDown extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 0, width: 6, height: 14 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true',
+			'map_items/TopdownForest-Props.png',
 			-1000
 		)
 	}
@@ -577,7 +577,7 @@ export class BarierTopLeft extends MapItem {
 				{ x: 5, y: 12, width: 6, height: 4 },
 				{ x: 11, y: 12, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -596,7 +596,7 @@ export class BarierTopRight extends MapItem {
 				{ x: 5, y: 12, width: 6, height: 4 },
 				{ x: 0, y: 12, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -615,7 +615,7 @@ export class BarierDownLeft extends MapItem {
 				{ x: 5, y: 0, width: 6, height: 13 },
 				{ x: 11, y: 9, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -634,7 +634,7 @@ export class BarierDownRight extends MapItem {
 				{ x: 5, y: 0, width: 6, height: 13 },
 				{ x: 0, y: 9, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/TopdownForest-Props.png?raw=true'
+			'map_items/TopdownForest-Props.png'
 		)
 	}
 }
@@ -650,7 +650,7 @@ export class BarierLeft1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 12, width: 11, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -666,7 +666,7 @@ export class BarierMiddle1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 8, width: 16, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -682,7 +682,7 @@ export class BarierRight1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 12, width: 11, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -698,7 +698,7 @@ export class BarierTop1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 12, width: 6, height: 4 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -714,7 +714,7 @@ export class BarierVerticalMiddle1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 0, width: 6, height: 16 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true',
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png',
 			-1000
 		)
 	}
@@ -731,7 +731,7 @@ export class BarierDown1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 5, y: 0, width: 6, height: 14 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true',
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png',
 			-1000
 		)
 	}
@@ -751,7 +751,7 @@ export class BarierTopLeft1 extends MapItem {
 				{ x: 5, y: 8, width: 6, height: 8 },
 				{ x: 11, y: 8, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -770,7 +770,7 @@ export class BarierTopRight1 extends MapItem {
 				{ x: 5, y: 8, width: 6, height: 8 },
 				{ x: 0, y: 8, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -789,7 +789,7 @@ export class BarierDownLeft1 extends MapItem {
 				{ x: 5, y: 0, width: 6, height: 12 },
 				{ x: 11, y: 8, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -808,7 +808,7 @@ export class BarierDownRight1 extends MapItem {
 				{ x: 5, y: 0, width: 6, height: 12 },
 				{ x: 0, y: 8, width: 5, height: 4 },
 			], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/cave_%20%5BbridgeHorizontal%5D.png?raw=true'
+			'map_items/cave_%20%5BbridgeHorizontal%5D.png'
 		)
 	}
 }
@@ -824,7 +824,7 @@ export class CristmasTree1 extends MapItem {
 			4, // picWidth, picHeight
 			6,
 			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -839,7 +839,7 @@ export class CristmasTree2 extends MapItem {
 			4, // picWidth, picHeight
 			6,
 			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -854,7 +854,7 @@ export class CristmasTree3 extends MapItem {
 			4, // picWidth, picHeight
 			6,
 			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -869,7 +869,7 @@ export class CristmasTree4 extends MapItem {
 			4, // picWidth, picHeight
 			6,
 			[{ x: 10, y: 38, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -885,7 +885,7 @@ export class SmallBush1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -900,7 +900,7 @@ export class SmallBush2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -915,7 +915,7 @@ export class SmallBush3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -930,7 +930,7 @@ export class SmallBush4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -945,7 +945,7 @@ export class BigBush1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -960,7 +960,7 @@ export class BigBush2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -975,7 +975,7 @@ export class BigBush3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -990,7 +990,7 @@ export class BigBush4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/Resources%202.png?raw=true'
+			'map_items/Resources%202.png'
 		)
 	}
 }
@@ -1006,7 +1006,7 @@ export class Cactus1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1021,7 +1021,7 @@ export class Cactus2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1036,7 +1036,7 @@ export class Cactus3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1051,7 +1051,7 @@ export class Cactus4 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1066,7 +1066,7 @@ export class DesertStone1 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 1, y: 8, width: 13, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1081,7 +1081,7 @@ export class DesertStone2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true', -16
+			'map_items/DesertTilemapBlankBackground.png', -16
 		)
 	}
 }
@@ -1096,7 +1096,7 @@ export class DesertStone3 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 0, y: 8, width: 16, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1112,7 +1112,7 @@ export class Palm2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 10, height: 8 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }
@@ -1127,7 +1127,7 @@ export class Palm3 extends MapItem {
 			2, // picWidth, picHeight
 			4,
 			[{ x: 2, y: 24, width: 12, height: 8, action: 7 }], // bsize
-			'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/map_items/DesertTilemapBlankBackground.png?raw=true'
+			'map_items/DesertTilemapBlankBackground.png'
 		)
 	}
 }

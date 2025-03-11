@@ -91,6 +91,6 @@ def remove(src):
     with open(src, 'w', encoding='utf-8') as f:
         json.dump(arr, f, indent=1, ensure_ascii=False)
 
-remove('./src/assets/collisions/collisions.json')
+remove('./src/collisions/collisions.json')
 
 
