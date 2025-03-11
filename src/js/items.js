@@ -12,7 +12,7 @@ export class Player extends Animation {
 	static actualPosX = Player.initialPosX * GameSettings.scale
 	static actualPosY = Player.initialPosY * GameSettings.scale
 	constructor() {
-		super(['https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player1.png?raw=true', 'https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/players/Player_Actions.png?raw=true'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 60 * GameSettings.scale, 8)
+		super(['../assets/players/Player1.png', '../assets/players/Player_Actions.png'], 35, 32, 32, 32, 32, Player.initialPosX, Player.initialPosY, 60 * GameSettings.scale, 8)
 		this.collecting = false
 		this.colHeight = 0
 		this.moveX = 0
@@ -130,9 +130,9 @@ export class Resources extends Menu {
 		super(x, y, width, height)
 
 		this.items = {
-			7: new Resource('https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/Items/wood.png?raw=true', x + 4, y),
-			8: new Resource('https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/Items/rock.png?raw=true', x + 4, y + 32),
-			9: new Resource('https://github.com/ErikArabyan/Village-2D/blob/main/src/assets/Items/diamond.png?raw=true', x + 4, y + 64),
+			7: new Resource('../assets/Items/wood.png', x + 4, y),
+			8: new Resource('../assets/Items/rock.png', x + 4, y + 32),
+			9: new Resource('../assets/Items/diamond.png', x + 4, y + 64),
 		}
 	}
 
@@ -162,8 +162,8 @@ export class Option {
 export class Settings extends Menu {
 	constructor(x, y, width, height) {
 		super(x, y, width, height)
-		this.music = new Sound('assets/music/funny-bgm.mp3')
-		this.help = [new Sprite('assets/Items/enter.png', ((x + width) / 2 - 86) / GameSettings.scale, ((y + height) / 2 - 100) / GameSettings.scale), new Sprite('assets/Items/arrows.png', ((x + width) / 2 - 10) / GameSettings.scale, ((y + height) / 2 - 146) / GameSettings.scale)]
+		this.music = new Sound('../assets/music/funny-bgm.mp3')
+		this.help = [new Sprite('../assets/Items/enter.png', ((x + width) / 2 - 86) / GameSettings.scale, ((y + height) / 2 - 100) / GameSettings.scale), new Sprite('../assets/Items/arrows.png', ((x + width) / 2 - 10) / GameSettings.scale, ((y + height) / 2 - 146) / GameSettings.scale)]
 		this.items = [new Option('Play Music (Enter)', (x + width) / 2 - 86, (y + height) / 2 - 32, () => this.music.play(), 0), new Option('Pause Music (Enter)', (x + width) / 2 - 86, (y + height) / 2, () => this.music.pause(), 1), new Option('Volume Change (<-- -->)', (x + width) / 2 - 86, (y + height) / 2 + 32, () => this.volume(), 2)]
 		this.activeItem = 0
 	}
