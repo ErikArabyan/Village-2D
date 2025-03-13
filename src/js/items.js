@@ -38,8 +38,8 @@ export class Player extends Animation {
 		}
 	}
 
-	updateFrame(keys) {
-		this.timer.doTick()
+	updateFrame(time, keys) {
+		this.timer.doTick(time)
 		if (this.timer.tick()) {
 			if (this.action && keys.KeyE) {
 				if (resources.items[this.action] !== 100) {
@@ -55,7 +55,7 @@ export class Player extends Animation {
 
 	collect(keys, num) {
 		if (this.action && keys.KeyE && !this.collecting) {
-			this.side = num
+			this.side = num%4
 			this._setSize(Player.COLLECT_SIZE)
 			this.move = (this.move / 2) * 3
 			this.mapPosition.set(this.mapPosition.x - 8 * GameSettings.scale, this.mapPosition.y - 8 * GameSettings.scale)

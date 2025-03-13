@@ -1,17 +1,17 @@
 import { init, GameSettings } from './gamelib.js'
 import { Player, Resources, Settings } from './items.js'
-import { Action, Collisions } from './utils.js'
+import { Action, Boundary, Collisions } from './utils.js'
 import { GameMap } from './MapItems.js'
 import collisions from '../collisions/collisions.json'
 
-Collisions.col(GameMap, collisions.object1)
+Collisions.col(GameMap, collisions.object)
 
 // Объекты
 const player = new Player()
 export const resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100)
 const settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 const background = new GameMap()
-// let position
+
 let num = 0
 const movementMap = {
 	S: { dx: 0, dy: 1, num: 0 },
@@ -28,7 +28,7 @@ const movementMap = {
 const draw = () => {
 	background.draw(GameMap.width * GameSettings.scale, GameMap.height * GameSettings.scale)
 	// отрисовка границ колизии не нужно
-	for(const i of Collisions.boundaries) i.draw(ctx)
+	for (const i of Collisions.boundaries) i.draw(ctx)
 
 	const objects = [player, ...Collisions.items]
 
@@ -38,9 +38,8 @@ const draw = () => {
 		const bY = b.boundaries ? b.mapPosition.y + b.height - 6 * GameSettings.scale + b.hide : b.mapPosition.y + b.height / 2
 		return aY - bY
 	})
-
+	
 	for (const i of objects) i.draw()
-	player.updateFrame(keys)
 	resources.draw()
 
 	settings.draw(keys)
@@ -57,7 +56,7 @@ function animate(time) {
 	ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 	draw()
 	if (!GameSettings.pause) keyDown(moveSpeed)
-
+	player.updateFrame(moveSpeed, keys)
 	requestAnimationFrame(animate)
 }
 // Функция для движения игрока

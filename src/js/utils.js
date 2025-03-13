@@ -1,4 +1,5 @@
 import { Vector2, GameSettings } from './gamelib.js'
+import { Player } from './items.js'
 import * as MapItems from './MapItems.js'
 
 export class Action {
@@ -161,8 +162,15 @@ export class Action {
 
 			case 2600:
 				const campFire = new MapItems.CampFire(row, col)
+				campFire.updateFrame()
 				Collisions.items.push(campFire)
 				return campFire.boundaries
+
+			case 3014:
+				const fountain = new MapItems.Fountain(row, col)
+				fountain.updateFrame()
+				Collisions.items.push(fountain)
+				return fountain.boundaries
 
 			case 2469:
 				const barierLeft = new MapItems.BarierLeft(row, col)
@@ -395,6 +403,82 @@ export class Action {
 				const palm3 = new MapItems.Palm3(row, col)
 				Collisions.items.push(palm3)
 				return palm3.boundaries
+			case 2725:
+				const bridge1 = new MapItems.Bridge1(row, col)
+				Collisions.items.push(bridge1)
+				return bridge1.boundaries
+			case 2726:
+				const bridge2 = new MapItems.Bridge2(row, col)
+				Collisions.items.push(bridge2)
+				return bridge2.boundaries
+			case 2727:
+				const bridge3 = new MapItems.Bridge2(row, col)
+				Collisions.items.push(bridge3)
+				return bridge3.boundaries
+			case 2731:
+				const bridge4 = new MapItems.Bridge2(row, col)
+				Collisions.items.push(bridge4)
+				return bridge4.boundaries
+			case 2732:
+				const bridge5 = new MapItems.Bridge3(row, col)
+				Collisions.items.push(bridge5)
+				return bridge5.boundaries
+
+			case 2742:
+				const bridge6 = new MapItems.Bridge4(row, col)
+				Collisions.items.push(bridge6)
+				return bridge6.boundaries
+			case 2760:
+				const bridge7 = new MapItems.Bridge5(row, col)
+				Collisions.items.push(bridge7)
+				return [...bridge7.boundaries, new Boundary({ GameMap, x: row * 16 + 3, y: col * 16, width: 4, height: 16 })]
+			case 2761:
+				const bridge8 = new MapItems.Bridge6(row, col)
+				Collisions.items.push(bridge8)
+				return bridge8.boundaries
+			case 2765:
+				const bridge9 = new MapItems.Bridge7(row, col)
+				Collisions.items.push(bridge9)
+				return [...bridge9.boundaries, new Boundary({ GameMap, x: row * 16 + 10, y: col * 16, width: 3, height: 16 })]
+			case 2749:
+				const bridge10 = new MapItems.Bridge8(row, col)
+				Collisions.items.push(bridge10)
+				return bridge10.boundaries
+			case 3071:
+				const yellowHouse = new MapItems.YellowHouse(row, col)
+				Collisions.items.push(yellowHouse)
+				return yellowHouse.boundaries
+			case 1598:
+				const statue = new MapItems.Statue(row, col)
+				Collisions.items.push(statue)
+				return statue.boundaries
+
+			case 24:
+				return [new Boundary({ GameMap, x: row * 16 + 9, y: col * 16 + 9, width: 7, height: 7 })]
+			case 25:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16 + 9, width: 16, height: 4 })]
+			case 28:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16 + 9, width: 7, height: 7 })]
+			case 29:
+				return [new Boundary({ GameMap, x: row * 16 + 3, y: col * 16 + 3, width: 13, height: 9 })]
+			case 30:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16 + 3, width: 13, height: 9 })]
+			case 46:
+				return [new Boundary({ GameMap, x: row * 16 + 9, y: col * 16, width: 4, height: 16 })]
+			case 50:
+				return [new Boundary({ GameMap, x: row * 16 + 3, y: col * 16, width: 4, height: 16 })]
+			case 51:
+				return [new Boundary({ GameMap, x: row * 16 + 3, y: col * 16 + 9, width: 13, height: 4 }), new Boundary({ GameMap, x: row * 16 + 3, y: col * 16, width: 4, height: 9 })]
+			case 52:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16 + 9, width: 13, height: 4 }), new Boundary({ GameMap, x: row * 16 + 9, y: col * 16, width: 4, height: 9 })]
+			case 90:
+				return [new Boundary({ GameMap, x: row * 16 + 9, y: col * 16, width: 7, height: 12 })]
+			case 91:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16 + 3, width: 16, height: 9 })]
+			case 94:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16, width: 7, height: 12 })]
+			case 95:
+				return [new Boundary({ GameMap, x: row * 16, y: col * 16 + 3, width: 64, height: 9 }), new Boundary({ GameMap, x: row * 16 + 10, y: col * 16 - 13, width: 45, height: 16 })]
 
 			// case 102:
 			// 	const stamp = new MapItems.Stamp(row, col)
@@ -438,7 +522,7 @@ export class Boundary {
 	 */
 	static width = 16
 	static height = 16
-	constructor({ GameMap, x, y, action = undefined, width = 16, height = 16, teleport }) {
+	constructor({ GameMap, x, y, action = undefined, width, height, teleport }) {
 		this.mapPosition = new Vector2(x * GameSettings.scale + GameMap.offsetX * GameSettings.scale, y * GameSettings.scale + GameMap.offsetY * GameSettings.scale)
 		this.action = action
 		this.width = width * GameSettings.scale
@@ -471,8 +555,14 @@ export class Boundary {
 	}
 
 	draw(ctx) {
-		ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'
-		ctx.fillRect(this.mapPosition.x, this.mapPosition.y, this.width, this.height)
+		if (this.height) {
+			ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'
+			ctx.fillRect(this.mapPosition.x, this.mapPosition.y, this.width, this.height)
+		} else if (!this.height && this.width) {
+			ctx.beginPath()
+			ctx.arc(this.mapPosition.x + this.width / 2, this.mapPosition.y + this.width / 2, this.width / 2, 0, 2 * Math.PI)
+			ctx.stroke()
+		}
 	}
 }
 
@@ -503,6 +593,16 @@ export class Collisions {
 		Collisions.boundaries = collisions.reduce((acc, cell, index) => {
 			const row = index % Collisions.width
 			const col = Math.floor(index / Collisions.width)
+
+			// acc.push(
+			// 	new Boundary({
+			// 		GameMap,
+			// 		x: 1400,
+			// 		y: 500,
+			// 		action: 1,
+			// 		width: 100,
+			// 	})
+			// )
 
 			const newBoundaries = Action.processObject(GameMap, row, col, cell)
 			acc.push(...newBoundaries)

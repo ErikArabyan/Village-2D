@@ -104,8 +104,8 @@ export class Animation extends Sprite {
 		this.sideCound = sideCound
 	}
 
-	updateFrame() {
-		this.timer.doTick()
+	updateFrame(time) {
+		this.timer.doTick(time)
 		if (this.timer.tick()) {
 			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
 			this.timer.reset()
@@ -224,8 +224,8 @@ export class Timer {
 		this.elapsed = 0
 	}
 
-	doTick() {
-		this.elapsed += 1
+	doTick(time) {
+		this.elapsed += time
 	}
 
 	/**

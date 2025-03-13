@@ -1,4 +1,4 @@
-import { Sprite, GameSettings, Animation } from './gamelib.js'
+import { Sprite, GameSettings, Timer } from './gamelib.js'
 import { Player } from './items.js'
 import { Collisions } from './utils.js'
 import { Boundary } from './utils.js'
@@ -9,9 +9,9 @@ export class GameMap extends Sprite {
 	static height = 1088
 	static offsetX = (GameSettings.windowWidth - GameMap.width * GameSettings.scale) / 2 / GameSettings.scale
 	static offsetY = (GameSettings.windowHeight - GameMap.height * GameSettings.scale) / 2 / GameSettings.scale
-	static offsetX = -1200
-	// static offsetX = -100
-	// static offsetY = -150
+	// static offsetX = -1400
+	// static offsetX = -50
+	// static offsetY = -700
 	// static offsetY = 0
 
 	static ID = 'stage'
@@ -46,7 +46,7 @@ export class GameMap extends Sprite {
 export class MapItem extends Sprite {
 	static TILE_SIZE = 8
 	static BLOCK_SIZE = 16
-	constructor(GameMap, x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide = 0) {
+	constructor(GameMap, x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide = 0, timer = 10, frameCount = 1) {
 		super(imageSrc, x * MapItem.BLOCK_SIZE + GameMap.offsetX, y * MapItem.BLOCK_SIZE + GameMap.offsetY, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE, imgPosX * MapItem.TILE_SIZE, imgPosY * MapItem.TILE_SIZE, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE)
 		this.boundaries = boundaryConfigs.map(
 			config =>
@@ -61,14 +61,19 @@ export class MapItem extends Sprite {
 				})
 		)
 		this.hide = hide
+		this.timer = new Timer(timer)
+		this.frameCount = frameCount
+		this.startframe = imgPosX*8
 	}
 
-	updateFrame() {
-		this.timer.doTick()
-		if (this.timer.tick()) {
-			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
-			this.timer.reset()
-		}
+	updateFrame(time = 1) {
+		setInterval(() => {
+			this.timer.doTick(time)
+			if (this.timer.tick()) {
+				this.frame = this.startframe + ((this.frame - this.startframe + this.frameWidth) % (this.frameWidth * this.frameCount))
+				this.timer.reset()
+			}
+		}, 20)
 	}
 
 	moveItem(x, y) {
@@ -352,7 +357,7 @@ export class DesertHouse1 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-4,
+			mapPosY - 4,
 			0, // imgPosition X, Y
 			18,
 			8, // picWidth, picHeight
@@ -369,7 +374,7 @@ export class DesertHouse2 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			8, // imgPosition X, Y
 			22,
 			4, // picWidth, picHeight
@@ -385,7 +390,7 @@ export class DesertHouse3 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			12, // imgPosition X, Y
 			22,
 			4, // picWidth, picHeight
@@ -401,7 +406,7 @@ export class DesertHouse4 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-2,
+			mapPosY - 2,
 			16, // imgPosition X, Y
 			20,
 			6, // picWidth, picHeight
@@ -673,7 +678,8 @@ export class CampFire extends MapItem {
 			2,
 			[{ x: 1, y: 6, width: 14, height: 10 }], // bsize
 			'map_items/cave_resources.png',
-			-12 // hide height
+			-12, // hide height
+			10, 4
 		)
 	}
 }
@@ -848,6 +854,23 @@ export class BarierDownRight extends MapItem {
 				{ x: 0, y: 9, width: 5, height: 4 },
 			], // bsize
 			'map_items/TopdownForest-Props.png'
+		)
+	}
+}
+
+export class Fountain extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY-4,
+			0, // imgPosition X, Y
+			29,
+			8, // picWidth, picHeight
+			9,
+			[{ x: 0, y: 8, width: 64, height: 64 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-240,10,4
 		)
 	}
 }
@@ -1273,7 +1296,7 @@ export class Cactus5 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			4, // imgPosition X, Y
 			0,
 			2, // picWidth, picHeight
@@ -1288,7 +1311,7 @@ export class Cactus6 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			6, // imgPosition X, Y
 			0,
 			2, // picWidth, picHeight
@@ -1303,7 +1326,7 @@ export class Cactus7 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			8, // imgPosition X, Y
 			0,
 			2, // picWidth, picHeight
@@ -1339,7 +1362,8 @@ export class DesertStone2 extends MapItem {
 			2, // picWidth, picHeight
 			2,
 			[{ x: 2, y: 8, width: 12, height: 8 }], // bsize
-			'map_items/DesertTilemapBlankBackground.png', -16
+			'map_items/DesertTilemapBlankBackground.png',
+			-16
 		)
 	}
 }
@@ -1363,9 +1387,9 @@ export class DesertStone4 extends MapItem {
 		super(
 			GameMap,
 			mapPosX,
-			mapPosY-1,
+			mapPosY - 1,
 			22, // imgPosition X, Y
-		  8,
+			8,
 			6, // picWidth, picHeight
 			4,
 			[{ x: 7, y: 25, width: 32, height: 8 }], // bsize
@@ -1401,6 +1425,170 @@ export class Palm3 extends MapItem {
 			4,
 			[{ x: 2, y: 24, width: 12, height: 8, action: 7 }], // bsize
 			'map_items/DesertTilemapBlankBackground.png'
+		)
+	}
+}
+
+export class Bridge1 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			0, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 4, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+export class Bridge2 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			2, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 4, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+export class Bridge3 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			14, // imgPosition X, Y
+			0,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 0, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+export class Bridge4 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			0, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 4, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+export class Bridge5 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			2, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 4, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+export class Bridge6 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			4, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 4, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+export class Bridge7 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 1,
+			12, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			4,
+			[{ x: 4, y: 4, width: 12, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-100
+		)
+	}
+}
+
+export class Bridge8 extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY,
+			14, // imgPosition X, Y
+			4,
+			2, // picWidth, picHeight
+			2,
+			[{ x: 4, y: 4, width: 8, height: 9, action: 7 }], // bsize
+			'map_items/cave_bridgeHorizontal.png',
+			-14
+		)
+	}
+}
+
+export class YellowHouse extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 5,
+			0, // imgPosition X, Y
+			0,
+			8, // picWidth, picHeight
+			12,
+			[{ x: 5, y: 44, width: 54, height: 45, action: 7 }], // bsize
+			'map_items/House_Yellow.png',
+			-14
+		)
+	}
+}
+
+export class Statue extends MapItem {
+	constructor(mapPosX, mapPosY) {
+		super(
+			GameMap,
+			mapPosX,
+			mapPosY - 5,
+			54, // imgPosition X, Y
+			0,
+			7, // picWidth, picHeight
+			12,
+			[{ x: 13, y: 70, width: 37, height: 23, action: 7 }], // bsize
+			'map_items/TXProps.png',
+			-14
 		)
 	}
 }
