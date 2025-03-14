@@ -1,7 +1,7 @@
-import { Sprite, GameSettings, Timer } from './gamelib.js'
-import { Player } from './items.js'
-import { Collisions } from './utils.js'
-import { Boundary } from './utils.js'
+import { Sprite, GameSettings, Timer } from './gamelib.ts'
+import { Player } from './items.ts'
+import { Collisions } from './utils.ts'
+import { Boundary } from './utils.ts'
 
 export class GameMap extends Sprite {
 	static MAPS = ['maps/Base.png', 'maps/ForestMap.png', 'maps/JewerlyMap.png', 'maps/StoneMap.png']
@@ -19,7 +19,7 @@ export class GameMap extends Sprite {
 		super(GameMap.MAPS[0], GameMap.offsetX, GameMap.offsetY, GameMap.width, GameMap.height)
 	}
 
-	smoothMove(player, x, y, speed) {
+	smoothMove(player: Player, x: number, y: number, speed: number) {
 		const { windowWidth, windowHeight } = GameSettings
 
 		// останавливаем карту если игрок находится дальше границы
@@ -35,23 +35,36 @@ export class GameMap extends Sprite {
 		// не дает выходить за границу
 		dx = this.mapPosition.x - dx <= 0 ? dx : (this.mapPosition.x = 0)
 		dy = this.mapPosition.y - dy <= 0 ? dy : (this.mapPosition.y = 0)
-		dx = windowWidth + dx - this.mapPosition.x < this.width ? dx : this.width - (GameSettings.windowWidth - this.mapPosition.x)
-		dy = windowHeight + dy - this.mapPosition.y < this.height ? dy : this.height - (GameSettings.windowHeight - this.mapPosition.y)
+		dx = windowWidth + dx - this.mapPosition.x < this.width! ? dx : this.width! - (GameSettings.windowWidth - this.mapPosition.x)
+		dy = windowHeight + dy - this.mapPosition.y < this.height! ? dy : this.height! - (GameSettings.windowHeight - this.mapPosition.y)
 
 		this.mapPosition.set(this.mapPosition.x - dx, this.mapPosition.y - dy)
 		for (let i of [...Collisions.items, ...Collisions.boundaries]) i.moveItem(dx, dy)
 	}
 }
 
+interface boundaryConfigs {
+	 x: number,
+		y: number,
+		width: number,
+		height: number,
+		action?: number,
+		teleport?: number[]
+}
+
 export class MapItem extends Sprite {
+	boundaries: Boundary[]
+	hide: number
+	timer: Timer
+	frameCount: number
+	startframe: number
 	static TILE_SIZE = 8
 	static BLOCK_SIZE = 16
-	constructor(GameMap, x, y, imgPosX, imgPosY, picWidth, picHeight, boundaryConfigs, imageSrc, hide = 0, timer = 10, frameCount = 1) {
+	constructor(x: number, y: number, imgPosX: number, imgPosY: number, picWidth: number, picHeight: number, boundaryConfigs: boundaryConfigs[], imageSrc: string, hide = 0, timer = 10, frameCount = 1) {
 		super(imageSrc, x * MapItem.BLOCK_SIZE + GameMap.offsetX, y * MapItem.BLOCK_SIZE + GameMap.offsetY, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE, imgPosX * MapItem.TILE_SIZE, imgPosY * MapItem.TILE_SIZE, picWidth * MapItem.TILE_SIZE, picHeight * MapItem.TILE_SIZE)
 		this.boundaries = boundaryConfigs.map(
 			config =>
 				new Boundary({
-					GameMap,
 					x: x * MapItem.BLOCK_SIZE + config.x,
 					y: y * MapItem.BLOCK_SIZE + config.y,
 					action: config.action ? config.action : 1,
@@ -63,20 +76,20 @@ export class MapItem extends Sprite {
 		this.hide = hide
 		this.timer = new Timer(timer)
 		this.frameCount = frameCount
-		this.startframe = imgPosX*8
+		this.startframe = imgPosX * 8
 	}
 
 	updateFrame(time = 1) {
 		setInterval(() => {
 			this.timer.doTick(time)
 			if (this.timer.tick()) {
-				this.frame = this.startframe + ((this.frame - this.startframe + this.frameWidth) % (this.frameWidth * this.frameCount))
+				this.frame = this.startframe + ((this.frame! - this.startframe + this.frameWidth!) % (this.frameWidth! * this.frameCount))
 				this.timer.reset()
 			}
 		}, 20)
 	}
 
-	moveItem(x, y) {
+	moveItem(x: number, y: number) {
 		this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y)
 	}
 
@@ -89,9 +102,8 @@ export class MapItem extends Sprite {
 }
 
 export class Home extends MapItem {
-	constructor(mapPosX, mapPosY, action, teleportX, teleportY) {
+	constructor(mapPosX: number, mapPosY: number, action: number, teleportX: number, teleportY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 3,
 			8, // imgPosition X, Y
@@ -108,9 +120,8 @@ export class Home extends MapItem {
 }
 
 export class OldTree extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 3,
 			12, // imgPosition X, Y
@@ -124,9 +135,8 @@ export class OldTree extends MapItem {
 }
 
 export class Tree extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			20, // imgPosition X, Y
@@ -140,9 +150,8 @@ export class Tree extends MapItem {
 }
 
 export class Tree1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			18, // imgPosition X, Y
@@ -156,9 +165,8 @@ export class Tree1 extends MapItem {
 }
 
 export class Ice extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			22, // imgPosition X, Y
@@ -172,9 +180,8 @@ export class Ice extends MapItem {
 	}
 }
 export class Ice1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			22, // imgPosition X, Y
@@ -189,9 +196,8 @@ export class Ice1 extends MapItem {
 }
 
 export class Bone extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -206,9 +212,8 @@ export class Bone extends MapItem {
 }
 
 export class Bone1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -222,9 +227,8 @@ export class Bone1 extends MapItem {
 	}
 }
 export class Bone2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -238,9 +242,8 @@ export class Bone2 extends MapItem {
 	}
 }
 export class Bone3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			4, // imgPosition X, Y
@@ -254,9 +257,8 @@ export class Bone3 extends MapItem {
 	}
 }
 export class Bone4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -271,9 +273,8 @@ export class Bone4 extends MapItem {
 }
 
 export class Pointer1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -287,9 +288,8 @@ export class Pointer1 extends MapItem {
 	}
 }
 export class Pointer2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -303,9 +303,8 @@ export class Pointer2 extends MapItem {
 	}
 }
 export class Pointer3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			4, // imgPosition X, Y
@@ -319,9 +318,8 @@ export class Pointer3 extends MapItem {
 	}
 }
 export class Pointer4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -336,9 +334,8 @@ export class Pointer4 extends MapItem {
 }
 
 export class Vase extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -353,9 +350,8 @@ export class Vase extends MapItem {
 }
 
 export class DesertHouse1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 4,
 			0, // imgPosition X, Y
@@ -370,9 +366,8 @@ export class DesertHouse1 extends MapItem {
 }
 
 export class DesertHouse2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			8, // imgPosition X, Y
@@ -386,9 +381,8 @@ export class DesertHouse2 extends MapItem {
 	}
 }
 export class DesertHouse3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			12, // imgPosition X, Y
@@ -402,9 +396,8 @@ export class DesertHouse3 extends MapItem {
 	}
 }
 export class DesertHouse4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 2,
 			16, // imgPosition X, Y
@@ -419,9 +412,8 @@ export class DesertHouse4 extends MapItem {
 }
 
 export class Stone extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -436,9 +428,8 @@ export class Stone extends MapItem {
 }
 
 export class Stone3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			2, // imgPosition X, Y
@@ -453,9 +444,8 @@ export class Stone3 extends MapItem {
 }
 
 export class Emerald1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			8, // imgPosition X, Y
@@ -469,9 +459,8 @@ export class Emerald1 extends MapItem {
 	}
 }
 export class Emerald2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			10, // imgPosition X, Y
@@ -485,9 +474,8 @@ export class Emerald2 extends MapItem {
 	}
 }
 export class Emerald3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			8, // imgPosition X, Y
@@ -501,9 +489,8 @@ export class Emerald3 extends MapItem {
 	}
 }
 export class Emerald4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			10, // imgPosition X, Y
@@ -518,9 +505,8 @@ export class Emerald4 extends MapItem {
 }
 
 export class StreetLight extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 2,
 			22, // imgPosition X, Y
@@ -534,9 +520,8 @@ export class StreetLight extends MapItem {
 }
 
 export class GreenTree extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			10, // imgPosition X, Y
@@ -550,9 +535,8 @@ export class GreenTree extends MapItem {
 }
 
 export class OrangeTree extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			12, // imgPosition X, Y
@@ -566,9 +550,8 @@ export class OrangeTree extends MapItem {
 }
 
 export class PinkTree extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			14, // imgPosition X, Y
@@ -582,9 +565,8 @@ export class PinkTree extends MapItem {
 }
 
 export class Grass extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			22, // imgPosition X, Y
@@ -599,9 +581,8 @@ export class Grass extends MapItem {
 }
 
 export class Grass1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			22, // imgPosition X, Y
@@ -616,9 +597,8 @@ export class Grass1 extends MapItem {
 }
 
 export class Stamp extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			16, // imgPosition X, Y
@@ -633,7 +613,7 @@ export class Stamp extends MapItem {
 }
 
 // export class Stamp extends MapItem {
-// 	constructor(mapPosX, mapPosY) {
+// 	constructor(mapPosX: number, mapPosY: number) {
 // 		super(
 // 			GameMap,
 // 			mapPosX,
@@ -650,9 +630,8 @@ export class Stamp extends MapItem {
 // }
 
 export class Stone2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			20, // imgPosition X, Y
@@ -667,9 +646,8 @@ export class Stone2 extends MapItem {
 }
 
 export class CampFire extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			10, // imgPosition X, Y
@@ -679,15 +657,15 @@ export class CampFire extends MapItem {
 			[{ x: 1, y: 6, width: 14, height: 10 }], // bsize
 			'map_items/cave_resources.png',
 			-12, // hide height
-			10, 4
+			10,
+			4
 		)
 	}
 }
 
 export class BarierLeft extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -701,9 +679,8 @@ export class BarierLeft extends MapItem {
 }
 
 export class BarierMiddle extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			4, // imgPosition X, Y
@@ -717,9 +694,8 @@ export class BarierMiddle extends MapItem {
 }
 
 export class BarierRight extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -733,9 +709,8 @@ export class BarierRight extends MapItem {
 }
 
 export class BarierTop extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -749,9 +724,8 @@ export class BarierTop extends MapItem {
 }
 
 export class BarierVerticalMiddle extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -766,9 +740,8 @@ export class BarierVerticalMiddle extends MapItem {
 }
 
 export class BarierDown extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -783,9 +756,8 @@ export class BarierDown extends MapItem {
 }
 
 export class BarierTopLeft extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -802,9 +774,8 @@ export class BarierTopLeft extends MapItem {
 }
 
 export class BarierTopRight extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -821,9 +792,8 @@ export class BarierTopRight extends MapItem {
 }
 
 export class BarierDownLeft extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -840,9 +810,8 @@ export class BarierDownLeft extends MapItem {
 }
 
 export class BarierDownRight extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -859,26 +828,26 @@ export class BarierDownRight extends MapItem {
 }
 
 export class Fountain extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
-			mapPosY-4,
+			mapPosY - 4,
 			0, // imgPosition X, Y
 			29,
 			8, // picWidth, picHeight
 			9,
 			[{ x: 0, y: 8, width: 64, height: 64 }], // bsize
 			'map_items/cave_bridgeHorizontal.png',
-			-240,10,4
+			-240,
+			10,
+			4
 		)
 	}
 }
 
 export class BarierLeft1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -892,9 +861,8 @@ export class BarierLeft1 extends MapItem {
 }
 
 export class BarierMiddle1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			2, // imgPosition X, Y
@@ -908,9 +876,8 @@ export class BarierMiddle1 extends MapItem {
 }
 
 export class BarierRight1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -924,9 +891,8 @@ export class BarierRight1 extends MapItem {
 }
 
 export class BarierTop1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -940,9 +906,8 @@ export class BarierTop1 extends MapItem {
 }
 
 export class BarierVerticalMiddle1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -957,9 +922,8 @@ export class BarierVerticalMiddle1 extends MapItem {
 }
 
 export class BarierDown1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -974,9 +938,8 @@ export class BarierDown1 extends MapItem {
 }
 
 export class BarierTopLeft1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -993,9 +956,8 @@ export class BarierTopLeft1 extends MapItem {
 }
 
 export class BarierTopRight1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			4, // imgPosition X, Y
@@ -1012,9 +974,8 @@ export class BarierTopRight1 extends MapItem {
 }
 
 export class BarierDownLeft1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -1031,9 +992,8 @@ export class BarierDownLeft1 extends MapItem {
 }
 
 export class BarierDownRight1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			4, // imgPosition X, Y
@@ -1050,9 +1010,8 @@ export class BarierDownRight1 extends MapItem {
 }
 
 export class CristmasTree1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 2,
 			14, // imgPosition X, Y
@@ -1065,9 +1024,8 @@ export class CristmasTree1 extends MapItem {
 	}
 }
 export class CristmasTree2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 2,
 			18, // imgPosition X, Y
@@ -1080,9 +1038,8 @@ export class CristmasTree2 extends MapItem {
 	}
 }
 export class CristmasTree3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 2,
 			22, // imgPosition X, Y
@@ -1095,9 +1052,8 @@ export class CristmasTree3 extends MapItem {
 	}
 }
 export class CristmasTree4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 2,
 			26, // imgPosition X, Y
@@ -1111,9 +1067,8 @@ export class CristmasTree4 extends MapItem {
 }
 
 export class SmallBush1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			14, // imgPosition X, Y
@@ -1126,9 +1081,8 @@ export class SmallBush1 extends MapItem {
 	}
 }
 export class SmallBush2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			16, // imgPosition X, Y
@@ -1141,9 +1095,8 @@ export class SmallBush2 extends MapItem {
 	}
 }
 export class SmallBush3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			18, // imgPosition X, Y
@@ -1156,9 +1109,8 @@ export class SmallBush3 extends MapItem {
 	}
 }
 export class SmallBush4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			20, // imgPosition X, Y
@@ -1171,9 +1123,8 @@ export class SmallBush4 extends MapItem {
 	}
 }
 export class BigBush1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			14, // imgPosition X, Y
@@ -1186,9 +1137,8 @@ export class BigBush1 extends MapItem {
 	}
 }
 export class BigBush2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			16, // imgPosition X, Y
@@ -1201,9 +1151,8 @@ export class BigBush2 extends MapItem {
 	}
 }
 export class BigBush3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			18, // imgPosition X, Y
@@ -1216,9 +1165,8 @@ export class BigBush3 extends MapItem {
 	}
 }
 export class BigBush4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			20, // imgPosition X, Y
@@ -1232,9 +1180,8 @@ export class BigBush4 extends MapItem {
 }
 
 export class Cactus1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			6, // imgPosition X, Y
@@ -1247,9 +1194,8 @@ export class Cactus1 extends MapItem {
 	}
 }
 export class Cactus2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			8, // imgPosition X, Y
@@ -1262,9 +1208,8 @@ export class Cactus2 extends MapItem {
 	}
 }
 export class Cactus3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			10, // imgPosition X, Y
@@ -1277,9 +1222,8 @@ export class Cactus3 extends MapItem {
 	}
 }
 export class Cactus4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			12, // imgPosition X, Y
@@ -1292,9 +1236,8 @@ export class Cactus4 extends MapItem {
 	}
 }
 export class Cactus5 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			4, // imgPosition X, Y
@@ -1307,9 +1250,8 @@ export class Cactus5 extends MapItem {
 	}
 }
 export class Cactus6 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			6, // imgPosition X, Y
@@ -1322,9 +1264,8 @@ export class Cactus6 extends MapItem {
 	}
 }
 export class Cactus7 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			8, // imgPosition X, Y
@@ -1337,9 +1278,8 @@ export class Cactus7 extends MapItem {
 	}
 }
 export class DesertStone1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			14, // imgPosition X, Y
@@ -1352,9 +1292,8 @@ export class DesertStone1 extends MapItem {
 	}
 }
 export class DesertStone2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			16, // imgPosition X, Y
@@ -1368,9 +1307,8 @@ export class DesertStone2 extends MapItem {
 	}
 }
 export class DesertStone3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			18, // imgPosition X, Y
@@ -1383,9 +1321,8 @@ export class DesertStone3 extends MapItem {
 	}
 }
 export class DesertStone4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			22, // imgPosition X, Y
@@ -1399,9 +1336,8 @@ export class DesertStone4 extends MapItem {
 }
 
 export class Palm2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			22, // imgPosition X, Y
@@ -1414,9 +1350,8 @@ export class Palm2 extends MapItem {
 	}
 }
 export class Palm3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			24, // imgPosition X, Y
@@ -1430,9 +1365,8 @@ export class Palm3 extends MapItem {
 }
 
 export class Bridge1 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			0, // imgPosition X, Y
@@ -1446,9 +1380,8 @@ export class Bridge1 extends MapItem {
 	}
 }
 export class Bridge2 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			2, // imgPosition X, Y
@@ -1462,9 +1395,8 @@ export class Bridge2 extends MapItem {
 	}
 }
 export class Bridge3 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			14, // imgPosition X, Y
@@ -1478,9 +1410,8 @@ export class Bridge3 extends MapItem {
 	}
 }
 export class Bridge4 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			0, // imgPosition X, Y
@@ -1494,9 +1425,8 @@ export class Bridge4 extends MapItem {
 	}
 }
 export class Bridge5 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			2, // imgPosition X, Y
@@ -1510,9 +1440,8 @@ export class Bridge5 extends MapItem {
 	}
 }
 export class Bridge6 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			4, // imgPosition X, Y
@@ -1526,9 +1455,8 @@ export class Bridge6 extends MapItem {
 	}
 }
 export class Bridge7 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 1,
 			12, // imgPosition X, Y
@@ -1543,9 +1471,8 @@ export class Bridge7 extends MapItem {
 }
 
 export class Bridge8 extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY,
 			14, // imgPosition X, Y
@@ -1560,16 +1487,15 @@ export class Bridge8 extends MapItem {
 }
 
 export class YellowHouse extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 5,
 			0, // imgPosition X, Y
 			0,
 			8, // picWidth, picHeight
 			12,
-			[{ x: 5, y: 44, width: 54, height: 45, action: 7 }], // bsize
+			[{ x: 5, y: 44, width: 54, height: 45 }], // bsize
 			'map_items/House_Yellow.png',
 			-14
 		)
@@ -1577,9 +1503,8 @@ export class YellowHouse extends MapItem {
 }
 
 export class Statue extends MapItem {
-	constructor(mapPosX, mapPosY) {
+	constructor(mapPosX: number, mapPosY: number) {
 		super(
-			GameMap,
 			mapPosX,
 			mapPosY - 5,
 			54, // imgPosition X, Y

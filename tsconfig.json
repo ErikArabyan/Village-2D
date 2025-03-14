@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+    "resolveJsonModule": true,
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"strict": true,
+		"jsx": "preserve",
+		"esModuleInterop": true
+	},
+	"include": ["src"]
+}

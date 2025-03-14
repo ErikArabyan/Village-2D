@@ -1,19 +1,21 @@
-import { init, GameSettings } from './gamelib.js'
-import { Player, Resources, Settings } from './items.js'
-import { Action, Boundary, Collisions } from './utils.js'
-import { GameMap } from './MapItems.js'
+import { init, GameSettings } from './gamelib.ts'
+import { Action, Collisions } from './utils.ts'
+import { Player, Resources, Settings } from './items.ts'
+import { GameMap, MapItem } from './MapItems.ts'
 import collisions from '../collisions/collisions.json'
 
-Collisions.col(GameMap, collisions.object)
 
 // Объекты
 const player = new Player()
 export const resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100)
 const settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 const background = new GameMap()
+Collisions.col(background, collisions.object)
 
 let num = 0
-const movementMap = {
+
+type MovementKey = 'S' | 'D' | 'A' | 'W' | 'SD' | 'WD' | 'AS' | 'WA'
+const movementMap: Record<MovementKey, { dx: number; dy: number; num: number }> = {
 	S: { dx: 0, dy: 1, num: 0 },
 	D: { dx: 1, dy: 0, num: 1 },
 	A: { dx: -1, dy: 0, num: 2 },
@@ -26,19 +28,19 @@ const movementMap = {
 
 // отображение всех предметов и очередь отображения
 const draw = () => {
-	background.draw(GameMap.width * GameSettings.scale, GameMap.height * GameSettings.scale)
+	background.draw()
 	// отрисовка границ колизии не нужно
 	for (const i of Collisions.boundaries) i.draw(ctx)
 
-	const objects = [player, ...Collisions.items]
+	const objects: (Player | MapItem)[] = [player, ...Collisions.items]
 
 	objects.sort((a, b) => {
 		// item , player
-		const aY = a.boundaries ? a.mapPosition.y + a.height - 6 * GameSettings.scale + a.hide : a.mapPosition.y + a.height / 2
-		const bY = b.boundaries ? b.mapPosition.y + b.height - 6 * GameSettings.scale + b.hide : b.mapPosition.y + b.height / 2
+		const aY = a instanceof Player ? a.mapPosition.y + a.height! / 2 : a.mapPosition.y + a.height! - 6 * GameSettings.scale + a.hide!
+		const bY = b instanceof Player ? b.mapPosition.y + b.height! / 2 : b.mapPosition.y + b.height! - 6 * GameSettings.scale + b.hide!
 		return aY - bY
 	})
-	
+
 	for (const i of objects) i.draw()
 	resources.draw()
 
@@ -46,7 +48,7 @@ const draw = () => {
 }
 
 // Функция для анимации
-function animate(time) {
+function animate(time: number) {
 	if (!lastTime) lastTime = time
 	const deltaTime = (time - lastTime) / 1000
 	lastTime = time
@@ -56,24 +58,24 @@ function animate(time) {
 	ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight)
 	draw()
 	if (!GameSettings.pause) keyDown(moveSpeed)
-	player.updateFrame(moveSpeed, keys)
+	player.updateFrame(moveSpeed, keys, resources)
 	requestAnimationFrame(animate)
 }
 // Функция для движения игрока
-const movePlayer = (dx = 0, dy = 0, speed) => {
-	if (!Collisions.boundaries.some(b => b.collide(GameMap, player, background, player.mapPosition.x + 2 * dx, player.mapPosition.y + 2 * dy, player.width, player.height))) {
+const movePlayer = (dx = 0, dy = 0, speed: number) => {
+	if (!Collisions.boundaries.some(b => b.collide(player, background, player.mapPosition.x + 2 * dx, player.mapPosition.y + 2 * dy, player.width!, player.height!, collisions.object))) {
 		Action.move(player, background, dx, dy, speed)
 	}
 }
 
 // Обработчик событий для клавиш
-const keyDown = moveSpeed => {
+const keyDown = (moveSpeed: number) => {
 	const dir = { dx: 0, dy: 0 }
 
-	const keysPressed = [keys.KeyW || keys.ArrowUp ? 'W' : null, keys.KeyA || keys.ArrowLeft ? 'A' : null, keys.KeyS || keys.ArrowDown ? 'S' : null, keys.KeyD || keys.ArrowRight ? 'D' : null].filter(Boolean)
+	const keysPressed = [(keys.KeyW || keys.ArrowUp) && !(keys.KeyS || keys.ArrowDown) ? 'W' : null, (keys.KeyA || keys.ArrowLeft) && !(keys.KeyD || keys.ArrowRight) ? 'A' : null, (keys.KeyS || keys.ArrowDown) && !(keys.KeyW || keys.ArrowUp) ? 'S' : null, (keys.KeyD || keys.ArrowRight) && !(keys.KeyA || keys.ArrowLeft) ? 'D' : null].filter(Boolean)
 
 	if (keysPressed.length) {
-		const keyCombination = keysPressed.join('')
+		const keyCombination = keysPressed.join('') as MovementKey
 		const move = movementMap[keyCombination] || null
 
 		if (move) {
@@ -94,11 +96,11 @@ const keyDown = moveSpeed => {
 
 	keys.KeyE ? player.collect(keys, num) : player.endState(keys)
 
-	player.changeState(keys, num, dir.dx || dir.dy)
+	player.changeState(keys, num, Boolean(dir.dx || dir.dy))
 }
 
 // События клавиатуры
-export let keys = {}
+export let keys = {} as Record<string, boolean>
 addEventListener('keydown', e => {
 	if (!e.repeat) {
 		keys[e.code] = true

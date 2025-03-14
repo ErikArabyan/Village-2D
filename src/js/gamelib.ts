@@ -1,15 +1,7 @@
-let ctx
-
-/**
- * @param {string} id
- * @param {number} x
- * @param {number} y
- * @param {number} width
- * @param {number} height
- */
-export function init(id) {
-	let canvas = document.getElementById(id)
-	ctx = canvas.getContext('2d')
+let ctx: CanvasRenderingContext2D
+export function init(id: string) {
+	let canvas = document.getElementById(id) as HTMLCanvasElement
+	ctx = canvas.getContext('2d')!
 	canvas.width = GameSettings.windowWidth
 	canvas.height = GameSettings.windowHeight
 
@@ -37,16 +29,14 @@ export class GameSettings {
 // -----------------------------------------------------------------------------
 
 export class Vector2 {
+	x: number
+	y: number
 	constructor(x = 0, y = 0) {
 		this.x = x
 		this.y = y
 	}
 
-	/**
-	 * @param {number} x
-	 * @param {number} y
-	 */
-	set(x, y) {
+	set(x: number, y: number) {
 		this.x = x
 		this.y = y
 	}
@@ -55,19 +45,16 @@ export class Vector2 {
 // -----------------------------------------------------------------------------
 // класс для отображения карты
 export class Sprite {
-	/**
-	 * @param {string} path
-	 * @param {number} mapX // позиция на карте
-	 * @param {number} mapY // позиция на карте
-	 * @param {number} frame // позиция среза
-	 * @param {number} move // позиция среза
-	 * @param {number} frameWidth // размер среза
-	 * @param {number} moveHeight // размер среза
-	 * @param {number} width // размер на карте
-	 * @param {number} height // размер на карте
-	 */
+	image: HTMLImageElement
+	mapPosition: Vector2
+	frame?: number
+	move?: number
+	frameWidth?: number
+	moveHeight?: number
+	width?: number
+	height?: number
 
-	constructor(path, mapX, mapY, width, height, frame, move, frameWidth, moveHeight) {
+	constructor(path: string, mapX: number, mapY: number, width?: number, height?: number, frame?: number, move?: number, frameWidth?: number, moveHeight?: number) {
 		this.image = new Image()
 		this.image.src = path
 		this.mapPosition = new Vector2(mapX * GameSettings.scale, mapY * GameSettings.scale)
@@ -75,16 +62,16 @@ export class Sprite {
 		this.move = move
 		this.frameWidth = frameWidth
 		this.moveHeight = moveHeight
-		this.width = width * GameSettings.scale
-		this.height = height * GameSettings.scale
+		this.width = width! * GameSettings.scale
+		this.height = height! * GameSettings.scale
 	}
 
 	draw() {
 		ctx.imageSmoothingEnabled = false
-		if (this.frameWidth) {			
-			ctx.drawImage(this.image, this.frame, this.move, this.frameWidth, this.moveHeight, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
+		if (this.frameWidth) {
+			ctx.drawImage(this.image, this.frame!, this.move!, this.frameWidth, this.moveHeight!, this.mapPosition.x, this.mapPosition.y, this.width!, this.height!)
 		} else if (this.width) {
-			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y, this.width, this.height)
+			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y, this.width, this.height!)
 		} else {
 			ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y)
 		}
@@ -94,25 +81,31 @@ export class Sprite {
 // -----------------------------------------------------------------------------
 // класс для отображения существ
 export class Animation extends Sprite {
-	constructor(paths, delay, pic_width, pic_height, width, height, x, y, speed, sideCound = 4) {
+	images: string[]
+	timer: Timer
+	side: number
+	action?: number
+	speed: number
+	sideCound: number
+	constructor(paths: string[], delay: number, pic_width: number, pic_height: number, width: number, height: number, x: number, y: number, speed: number, sideCound = 4) {
 		super(paths[0], x, y, width, height, 0, 0, pic_width, pic_height)
 		this.images = paths
 		this.timer = new Timer(delay)
-		this.side = null
-		this.action = null
+		this.side = 1
+		this.action = undefined
 		this.speed = speed
 		this.sideCound = sideCound
 	}
 
-	updateFrame(time) {
+	updateFrame(time: number) {
 		this.timer.doTick(time)
 		if (this.timer.tick()) {
-			this.frame = (this.frame + this.picWidth) % (this.picWidth * 6)
+			this.frame = (this.frame! + this.frameWidth!) % (this.frameWidth! * 6)
 			this.timer.reset()
 		}
 	}
 
-	changeState(keys, x, ismove = false) {
+	changeState(keys: Record<string, boolean>, x: number, ismove = false) {
 		if (!this.action || !keys.KeyE) {
 			this.side = x
 			const moveValues = [0, 32, 64, 96, 128, 160, 192, 224]
@@ -124,12 +117,11 @@ export class Animation extends Sprite {
 // -----------------------------------------------------------------------------
 
 export class Menu {
-	/**
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {string[]} items
-	 */
-	constructor(x, y, width, height) {
+	x: number
+	y: number
+	width: number
+	height: number
+	constructor(x: number, y: number, width: number, height: number) {
 		this.x = x
 		this.y = y
 		this.width = width
@@ -145,25 +137,17 @@ export class Menu {
 // -----------------------------------------------------------------------------
 
 export class Sound {
-	/**
-	 * @param {string} path
-	 */
-	constructor(path) {
+	audio: HTMLAudioElement
+	constructor(path: string) {
 		this.audio = new Audio(path)
 		this.audio.volume = 0.3
 	}
 
-	/**
-	 * @param {boolean} value
-	 */
-	loop(value) {
+	loop(value: boolean) {
 		this.audio.loop = value
 	}
 
-	/**
-	 * @param {number} value Volume [0.0; 1.0]
-	 */
-	volume(value) {
+	volume(value: number) {
 		this.audio.volume = value
 	}
 
@@ -172,7 +156,7 @@ export class Sound {
 	}
 
 	playEffect() {
-		this.audio.cloneNode().play()
+		;(this.audio.cloneNode() as HTMLAudioElement).play()
 	}
 
 	pause() {
@@ -188,7 +172,12 @@ export class Sound {
 // -----------------------------------------------------------------------------
 
 export class Text {
-	constructor(text, x, y) {
+	text: string
+	font: string
+	size: number
+	mapPosition: Vector2
+	color: string
+	constructor(text: string, x: number, y: number) {
 		this.text = text
 		this.font = 'Arial'
 		this.size = 20
@@ -196,7 +185,7 @@ export class Text {
 		this.color = 'white'
 	}
 
-	setText(text) {
+	setText(text: string) {
 		this.text = text
 	}
 
@@ -212,10 +201,9 @@ export class Text {
 // -----------------------------------------------------------------------------
 
 export class Timer {
-	/**
-	 * @param {number} delay
-	 */
-	constructor(delay) {
+	delay: number
+	elapsed: number
+	constructor(delay: number) {
 		this.delay = delay
 		this.elapsed = 0
 	}
@@ -224,7 +212,7 @@ export class Timer {
 		this.elapsed = 0
 	}
 
-	doTick(time) {
+	doTick(time: number) {
 		this.elapsed += time
 	}
 
@@ -249,14 +237,12 @@ export class Timer {
 // -----------------------------------------------------------------------------
 
 export class List {
+	items: string[]
 	constructor() {
 		this.items = []
 	}
 
-	/**
-	 * @param {Object} item
-	 */
-	add(item) {
+	add(item: string) {
 		this.items.push(item)
 	}
 
@@ -264,41 +250,25 @@ export class List {
 		this.items = []
 	}
 
-	/**
-	 * @param {number} index
-	 * @return {Object}
-	 */
-	get(index) {
+	get(index: number) {
 		if (index >= 0 && index < this.items.length) {
 			return this.items[index]
 		}
 	}
 
-	/**
-	 * @param {requestCallback} callback
-	 */
-	filter(callback) {
-		this.items = this.items.filter(callback)
-	}
+	// filter(callback: Function) {
+	// 	this.items = this.items.filter(callback)
+	// }
 
-	/**
-	 * @param {requestCallback} callback
-	 */
-	forEach(callback) {
-		this.items.forEach(callback)
-	}
+	// forEach(callback: Function) {
+	// 	this.items.forEach(callback)
+	// }
 
-	/**
-	 * @return {number}
-	 */
 	count() {
 		return this.items.length
 	}
 
-	/**
-	 * @param {number} index
-	 */
-	remove(index) {
+	remove(index: number) {
 		if (index >= 0 && index < this.items.length) {
 			this.items.splice(index, 1)
 		}
@@ -308,29 +278,16 @@ export class List {
 // -----------------------------------------------------------------------------
 
 export class Storage {
-	constructor() {}
-
-	/**
-	 * @param {string} key
-	 * @param {Object} value
-	 */
-	save(key, value) {
+	save(key: string, value: string) {
 		localStorage.setItem(key, value)
 	}
 
-	/**
-	 * @param {string} key
-	 * @return {Object}
-	 */
-	load(key) {
+	load(key: string) {
 		let value = localStorage.getItem(key)
 		return value
 	}
 
-	/**
-	 * @param {string} key
-	 */
-	remove(key) {
+	remove(key: string) {
 		localStorage.removeItem(key)
 	}
 
