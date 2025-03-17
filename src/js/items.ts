@@ -1,15 +1,19 @@
-import { Sprite, Menu, Animation, MyText, Sound, GameSettings, Vector2 } from './gamelib.ts';
+import { Sprite, Menu, MyText, Sound, GameSettings, Entity } from './gamelib.ts';
 import { GameMap } from './MapItems.ts';
 
+
 // -----------------------------------------------------------------------------
-export class Player extends Animation {
+
+export class NPC extends Entity {
+
+}
+
+// -----------------------------------------------------------------------------
+export class Player extends Entity {
   collecting: boolean;
   colHeight: number;
-  moveX: number;
-  moveY: number;
   boundary: MapObject;
 
-  static DEFAULT_SIZE = 32;
   static COLLECT_SIZE = 48;
   static actualPosX = GameSettings.windowWidth / 2 - 16 * GameSettings.scale;
   static actualPosY = GameSettings.windowHeight / 2 - 16 * GameSettings.scale;
@@ -17,7 +21,7 @@ export class Player extends Animation {
   static initialPosY = Player.actualPosY / GameSettings.scale;
   constructor() {
     super(
-      ['players/Player1.png', 'players/Player_Actions.png'],
+      ['players/Player.png', 'players/Player_Actions.png'],
       35,
       32,
       32,
@@ -30,8 +34,6 @@ export class Player extends Animation {
     );
     this.collecting = false;
     this.colHeight = 0;
-    this.moveX = 0;
-    this.moveY = 0;
     this.boundary = {
       mapPosition: { x: Player.actualPosX + 12 * GameSettings.scale, y: Player.actualPosY + 21 * GameSettings.scale },
       width: 8 * GameSettings.scale,
@@ -60,6 +62,7 @@ export class Player extends Animation {
   updateFrame(time: number, keys?: Record<string, boolean>, resources?: Resources): void {
     this.timer.doTick(time);
     if (!this.timer.tick()) return;
+
     if (this.action && keys?.KeyE) {
       // if (resources?.items[this.action] !== 100) {
       resources?.items[this.action].collect();
@@ -68,6 +71,7 @@ export class Player extends Animation {
     } else {
       this.frame = (this.frame! + this.frameWidth!) % (this.frameWidth! * 6);
     }
+
     this.timer.reset();
   }
 
@@ -82,9 +86,7 @@ export class Player extends Animation {
     this.move = collectMoveValues[this.side];
     this.colHeight += 8;
 
-    if (this.action === 7 && this.move < 192) {
-      this.move += 192;
-    }
+    if (this.action === 7 && this.move < 192) this.move += 192;
   }
 
   smoothMove(background: GameMap, x: number, y: number, speed: number, smooth: number) {
@@ -93,27 +95,21 @@ export class Player extends Animation {
     speed /= smooth;
     const { windowWidth, windowHeight, scale } = GameSettings;
     const { mapPosition } = background;
+    const mapWidth = GameMap.width * scale;
+    const mapHeight = GameMap.height * scale;
+    const mapXEnd = windowWidth - mapPosition.x;
+    const mapYEnd = windowHeight - mapPosition.y;
 
     // не дает выходить за границу
     const calcX = Player.actualPosX - this.mapPosition.x;
     const calcY = Player.actualPosY - this.mapPosition.y;
-    let dx =
-      Math.abs(calcX - x) <= 30
-        ? x
-        : mapPosition.x == 0 || GameMap.width * scale == windowWidth - mapPosition.x
-        ? x * 2
-        : 0;
-    let dy =
-      Math.abs(calcY - y) <= 30
-        ? y
-        : mapPosition.y == 0 || GameMap.height * scale == windowHeight - mapPosition.y
-        ? y * 2
-        : 0;
+    let dx = Math.abs(calcX - x) <= 30 ? x : mapPosition.x == 0 || mapWidth == mapXEnd ? x * 2 : 0;
+    let dy = Math.abs(calcY - y) <= 30 ? y : mapPosition.y == 0 || mapHeight == mapYEnd ? y * 2 : 0;
 
     // плавное движение
-    if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0 && GameMap.width * scale != windowWidth - mapPosition.x)
+    if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0 && mapWidth != mapXEnd)
       calcX > 0 ? (dx = speed) : (dx = -speed);
-    if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0 && GameMap.height * scale != windowHeight - mapPosition.y)
+    if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0 && mapHeight != mapYEnd)
       calcY > 0 ? (dy = speed) : (dy = -speed);
 
     // не дает выходить за экран

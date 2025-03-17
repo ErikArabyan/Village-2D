@@ -44,7 +44,7 @@ export class Boundary {
     this.mapPosition.set(this.mapPosition.x - x, this.mapPosition.y - y);
     if (!this.helpButton) return;
     this.helpButton.mapPosition.set(this.helpButton.mapPosition.x - x, this.helpButton.mapPosition.y - y);
-    this.text![0].mapPosition.set(this.helpButton.mapPosition.x - x, this.helpButton.mapPosition.y - y);
+    this.text![0].mapPosition.set(this.text![0].mapPosition.x - x, this.text![0].mapPosition.y - y);
   }
 
   showHelp(player: Player, keys: Record<string, boolean>) {

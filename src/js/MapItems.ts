@@ -312,13 +312,17 @@ export class Table1 extends MapItem {
           height: 15,
           helpButton: new Sprite(
             'Items/E.png',
-            (mapPosX + 8) * GameSettings.scale,
-            (mapPosY - 2) * GameSettings.scale,
-            18,
-            18
+            mapPosX * MapItem.BLOCK_SIZE + GameMap.offsetX,
+            mapPosY * MapItem.BLOCK_SIZE + GameMap.offsetY - 15,
+            17,
+            17
           ),
           text: [
-            new MyText("Hi It's Village 2D", (mapPosX + 8) * GameSettings.scale, (mapPosY - 2) * GameSettings.scale),
+            new MyText(
+              "Hi It's Village 2D",
+              mapPosX * MapItem.BLOCK_SIZE + GameMap.offsetX,
+              mapPosY * MapItem.BLOCK_SIZE + GameMap.offsetY - 15
+            ),
           ],
         },
       ], // bsize

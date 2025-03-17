@@ -147,6 +147,14 @@ export class Animation extends Sprite {
 
 // -----------------------------------------------------------------------------
 
+export class Entity extends Animation {
+  // boundary: MapObject;
+
+  static DEFAULT_SIZE = 32;
+}
+
+// -----------------------------------------------------------------------------
+
 export class Menu {
   x: number;
   y: number;
