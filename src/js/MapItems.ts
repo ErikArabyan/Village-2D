@@ -1,7 +1,7 @@
 import { Sprite, GameSettings, Timer, MyText } from './gamelib.ts';
 import { Player } from './items.ts';
-import { Collisions } from './utils.ts';
-import { Boundary } from './utils.ts';
+import { Collisions, Boundary } from './utils.ts';
+import { BoundaryConstructor } from './types.ts';
 
 export class GameMap extends Sprite {
   static MAPS = ['maps/Base.png', 'maps/ForestMap.png', 'maps/JewerlyMap.png', 'maps/StoneMap.png'];
@@ -29,8 +29,8 @@ export class GameMap extends Sprite {
     // плавное движение
     const calcX = Player.actualPosX - player.mapPosition.x;
     const calcY = Player.actualPosY - player.mapPosition.y;
-    if (x === 0 && Math.abs(calcX) >= 8 && this.mapPosition.x != 0) calcX > 0 ? (dx = -speed / 2) : (dx = speed / 2);
-    if (y === 0 && Math.abs(calcY) >= 8 && this.mapPosition.y != 0) calcY > 0 ? (dy = -speed / 2) : (dy = speed / 2);
+    if (x === 0 && Math.abs(calcX) >= 8 && this.mapPosition.x != 0) dx = calcX > 0 ? -speed / 2 : speed / 2;
+    if (y === 0 && Math.abs(calcY) >= 8 && this.mapPosition.y != 0) dy = calcY > 0 ? -speed / 2 : speed / 2;
 
     // не дает выходить за границу
     dx = this.mapPosition.x - dx <= 0 ? dx : (this.mapPosition.x = 0);
@@ -45,7 +45,7 @@ export class GameMap extends Sprite {
         : this.height! - (GameSettings.windowHeight - this.mapPosition.y);
 
     this.mapPosition.set(this.mapPosition.x - dx, this.mapPosition.y - dy);
-    for (let i of [...Collisions.items, ...Collisions.boundaries]) i.moveItem(dx, dy);
+    for (const i of [...Collisions.items, ...Collisions.boundaries]) i.moveItem(dx, dy);
   }
 }
 
@@ -64,7 +64,7 @@ export class MapItem extends Sprite {
     imgPosY: number,
     picWidth: number,
     picHeight: number,
-    boundaryConfigs: boundaryConfigs[],
+    boundaryConfigs: BoundaryConstructor[],
     imageSrc: string,
     hide = -20,
     timer = 10,

@@ -1,6 +1,6 @@
 let ctx: CanvasRenderingContext2D;
 export function init(id: string) {
-  let canvas = document.getElementById(id) as HTMLCanvasElement;
+  const canvas = document.getElementById(id) as HTMLCanvasElement;
   ctx = canvas.getContext('2d')!;
   canvas.width = GameSettings.windowWidth;
   canvas.height = GameSettings.windowHeight;
@@ -18,7 +18,6 @@ export function init(id: string) {
 }
 
 // -----------------------------------------------------------------------------
-
 export class GameSettings {
   static scale = 4;
   static windowWidth = window.innerWidth;
@@ -27,11 +26,11 @@ export class GameSettings {
 }
 
 // -----------------------------------------------------------------------------
-
+// класс управления координатами
 export class Vector2 {
   x: number;
   y: number;
-  constructor(x = 0, y = 0) {
+  constructor(x: number, y: number) {
     this.x = x * GameSettings.scale;
     this.y = y * GameSettings.scale;
   }
@@ -95,6 +94,8 @@ export class Sprite {
     } else {
       ctx.drawImage(this.image, this.mapPosition.x, this.mapPosition.y);
     }
+    if (this.image.src === 'http://localhost:4000/Village-2D/players/Player.png') {
+    }
   }
 }
 
@@ -143,14 +144,6 @@ export class Animation extends Sprite {
       this.move = moveValues[x] + (ismove ? (this.sideCound == 8 ? 256 : 128) : 0);
     }
   }
-}
-
-// -----------------------------------------------------------------------------
-
-export class Entity extends Animation {
-  // boundary: MapObject;
-
-  static DEFAULT_SIZE = 32;
 }
 
 // -----------------------------------------------------------------------------
@@ -290,10 +283,9 @@ export class List {
 export class Storage {
   save = (key: string, value: string) => localStorage.setItem(key, value);
 
-  load(key: string) {
-    let value = localStorage.getItem(key);
-    return value;
-  }
+  load = (key: string) => {
+    return localStorage.getItem(key);
+  };
 
   remove = (key: string) => localStorage.removeItem(key);
 

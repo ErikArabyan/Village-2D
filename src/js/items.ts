@@ -1,19 +1,98 @@
-import { Sprite, Menu, MyText, Sound, GameSettings, Entity } from './gamelib.ts';
+import { Sprite, Menu, MyText, Sound, GameSettings, Animation, Vector2 } from './gamelib.ts';
 import { GameMap } from './MapItems.ts';
-
+import { Boundary } from './utils.ts';
 
 // -----------------------------------------------------------------------------
 
-export class NPC extends Entity {
+export class NPC extends Animation {
+  collecting: boolean;
+  colHeight: number;
+  boundary: Boundary;
+  oldMapPosition: Vector2;
 
+  static DEFAULT_SIZE = 32;
+  constructor() {
+    super(
+      ['players/Player.png', 'players/Player_Actions.png'],
+      35,
+      32,
+      32,
+      32,
+      32,
+      350,
+      135,
+      60 * GameSettings.scale,
+      8
+    );
+    this.collecting = false;
+    this.colHeight = 0;
+    this.oldMapPosition = new Vector2(-754, -375);
+    // this.boundary = new Boundary({
+    //   x: Player.initialPosX - GameMap.offsetX + 11,
+    //   y: Player.initialPosY - GameMap.offsetY + 21,
+    //   width: 9,
+    //   height: 3,
+    // });
+    this.boundary = new Boundary({
+      x: 350 - GameMap.offsetX + 11,
+      y: 135 - GameMap.offsetY + 21,
+      width: 9,
+      height: 3,
+    });
+  }
+  smoothMove = (background: GameMap) => {
+    this.mapPosition.set(
+      this.mapPosition.x - (this.oldMapPosition.x - background.mapPosition.x),
+      this.mapPosition.y - (this.oldMapPosition.y - background.mapPosition.y)
+    );
+    this.boundary.mapPosition.set(
+      this.mapPosition.x - (this.oldMapPosition.x - background.mapPosition.x - 11 * GameSettings.scale),
+      this.mapPosition.y - (this.oldMapPosition.y - background.mapPosition.y - 21 * GameSettings.scale)
+    );
+    this.oldMapPosition.set(background.mapPosition.x, background.mapPosition.y);
+  };
+  moveTowards(player: Player, background: GameMap, boundaries: Boundary[]) {
+    this.smoothMove(background);
+
+    const dx = player.mapPosition.x - this.mapPosition.x;
+    const dy = player.mapPosition.y - this.mapPosition.y;
+    const distance = Math.sqrt(dx ** 2 + dy ** 2);
+
+    if (distance > 0 && distance < 400) {
+      const stepX = (dx / distance) * 1;
+      const stepY = (dy / distance) * 1;
+
+      let newX = this.mapPosition.x + stepX;
+      let newY = this.mapPosition.y + stepY;
+
+      const px = this.boundary.mapPosition.x + stepX * 2;
+      const py = this.boundary.mapPosition.y + stepY * 2;
+
+      if (!boundaries.some((b) => b.checkCollision(this, px, py))) {
+        this.mapPosition.x = newX;
+        this.mapPosition.y = newY;
+      } else {
+        // Пробуем двигаться в обход
+        let alternativeX = this.mapPosition.x + stepX;
+        let alternativeY = this.mapPosition.y;
+
+        if (!boundaries.some((b) => b.checkCollision(this, alternativeX, this.mapPosition.y))) {
+          this.mapPosition.x = alternativeX;
+        } else if (!boundaries.some((b) => b.checkCollision(this, this.mapPosition.x, alternativeY))) {
+          this.mapPosition.y = alternativeY;
+        }
+      }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------
-export class Player extends Entity {
+export class Player extends Animation {
   collecting: boolean;
   colHeight: number;
-  boundary: MapObject;
+  boundary: Boundary;
 
+  static DEFAULT_SIZE = 32;
   static COLLECT_SIZE = 48;
   static actualPosX = GameSettings.windowWidth / 2 - 16 * GameSettings.scale;
   static actualPosY = GameSettings.windowHeight / 2 - 16 * GameSettings.scale;
@@ -34,15 +113,16 @@ export class Player extends Entity {
     );
     this.collecting = false;
     this.colHeight = 0;
-    this.boundary = {
-      mapPosition: { x: Player.actualPosX + 12 * GameSettings.scale, y: Player.actualPosY + 21 * GameSettings.scale },
-      width: 8 * GameSettings.scale,
-      height: 2 * GameSettings.scale,
-    };
+    this.boundary = new Boundary({
+      x: Player.initialPosX - GameMap.offsetX + 11,
+      y: Player.initialPosY - GameMap.offsetY + 21,
+      width: 9,
+      height: 3,
+    });
   }
 
   _setSize(size: number) {
-    !this.collecting ? (this.image.src = this.images[1]) : (this.image.src = this.images[0]);
+    this.image.src = !this.collecting ? this.images[1] : this.images[0];
     this.moveHeight = size;
     this.frameWidth = size;
     this.width = size * GameSettings.scale;
@@ -107,10 +187,8 @@ export class Player extends Entity {
     let dy = Math.abs(calcY - y) <= 30 ? y : mapPosition.y == 0 || mapHeight == mapYEnd ? y * 2 : 0;
 
     // плавное движение
-    if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0 && mapWidth != mapXEnd)
-      calcX > 0 ? (dx = speed) : (dx = -speed);
-    if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0 && mapHeight != mapYEnd)
-      calcY > 0 ? (dy = speed) : (dy = -speed);
+    if (x === 0 && Math.abs(calcX) >= 8 && mapPosition.x != 0 && mapWidth != mapXEnd) dx = calcX > 0 ? speed : -speed;
+    if (y === 0 && Math.abs(calcY) >= 8 && mapPosition.y != 0 && mapHeight != mapYEnd) dy = calcY > 0 ? speed : -speed;
 
     // не дает выходить за экран
     if (this.mapPosition.x + dx >= 0 && this.mapPosition.x + this.width! + dx <= GameSettings.windowWidth) {
@@ -184,10 +262,39 @@ export class Resources extends Menu {
 }
 
 export class Option {
+  sprite: Sprite;
   text: MyText;
   action: Function;
   number: number;
-  constructor(text: string, x: number, y: number, action: Function, num: number) {
+  constructor(
+    imgConfigs: {
+      img: string;
+      mapX: number;
+      mapY: number;
+      width: number;
+      height: number;
+      imgPosX: number;
+      imgPosY: number;
+      scaleX: number;
+      scaleY: number;
+    },
+    text: string,
+    x: number,
+    y: number,
+    action: Function,
+    num: number
+  ) {
+    this.sprite = new Sprite(
+      imgConfigs.img,
+      imgConfigs.mapX,
+      imgConfigs.mapY,
+      imgConfigs.scaleX,
+      imgConfigs.scaleY,
+      imgConfigs.imgPosX,
+      imgConfigs.imgPosY,
+      imgConfigs.width,
+      imgConfigs.height
+    );
     this.text = new MyText(text, x, y);
     this.action = action;
     this.number = num;
@@ -199,6 +306,7 @@ export class Option {
     } else {
       this.text.color = 'white';
     }
+    this.sprite.draw();
     this.text.draw();
   }
 }
@@ -225,22 +333,55 @@ export class Settings extends Menu {
     ];
     this.items = [
       new Option(
+        {
+          img: 'UI/icons_16x16.png',
+          mapX: ((x + width) / 2 - 82) / GameSettings.scale,
+          mapY: ((y + height) / 2 - 38) / GameSettings.scale,
+          imgPosX: 16,
+          imgPosY: 16,
+          width: 16,
+          height: 16,
+          scaleX: 8,
+          scaleY: 8,
+        },
         'Play Music',
-        ((x + width) / 2 - 86) / GameSettings.scale,
+        ((x + width) / 2 - 50) / GameSettings.scale,
         ((y + height) / 2 - 32) / GameSettings.scale,
         () => this.music.play(),
         0
       ),
       new Option(
+        {
+          img: 'UI/icons_16x16.png',
+          mapX: ((x + width) / 2 - 82) / GameSettings.scale,
+          mapY: ((y + height) / 2 - 6) / GameSettings.scale,
+          imgPosX: 32,
+          imgPosY: 16,
+          width: 16,
+          height: 16,
+          scaleX: 8,
+          scaleY: 8,
+        },
         'Pause Music',
-        ((x + width) / 2 - 86) / GameSettings.scale,
+        ((x + width) / 2 - 50) / GameSettings.scale,
         (y + height) / 2 / GameSettings.scale,
         () => this.music.pause(),
         1
       ),
       new Option(
+        {
+          img: 'UI/icons_16x16.png',
+          mapX: ((x + width) / 2 - 82) / GameSettings.scale,
+          mapY: ((y + height) / 2 + 26) / GameSettings.scale,
+          imgPosX: 16,
+          imgPosY: 0,
+          width: 16,
+          height: 16,
+          scaleX: 8,
+          scaleY: 8,
+        },
         'Volume Change',
-        ((x + width) / 2 - 86) / GameSettings.scale,
+        ((x + width) / 2 - 50) / GameSettings.scale,
         ((y + height) / 2 + 32) / GameSettings.scale,
         (keys: Record<string, boolean>) => this.volume(keys),
         2
@@ -276,7 +417,7 @@ export class Settings extends Menu {
 
   _draw() {
     super.draw();
-    for (let i of [...this.help, ...this.items]) i.draw(this.activeItem);
+    for (const i of [...this.help, ...this.items]) i.draw(this.activeItem);
   }
 
   volume(keys: Record<string, boolean>) {

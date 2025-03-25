@@ -1,14 +1,16 @@
 import { init, GameSettings } from './gamelib.ts';
 import { Action, Collisions } from './utils.ts';
-import { Player, Resources, Settings } from './items.ts';
-import { GameMap, MapItem } from './MapItems.ts';
+import { NPC, Player, Resources, Settings } from './items.ts';
 import collisions from '../collisions/collisions.json';
+import { GameMap, type MapItem } from './MapItems.ts';
+import { MovementKey } from './types.ts';
 
 class Game {
   private ctx: CanvasRenderingContext2D;
   private lastTime: number = 0;
   private keys: Record<string, boolean> = {};
   private player: Player;
+  private npc: NPC;
   private background: GameMap;
   private settings: Settings;
   private resources: Resources;
@@ -17,10 +19,11 @@ class Game {
   constructor() {
     this.ctx = init(GameMap.ID);
     this.player = new Player();
+    this.npc = new NPC();
     this.background = new GameMap();
     this.settings = new Settings(0, 0, GameSettings.windowWidth, GameSettings.windowHeight);
     this.resources = new Resources(GameSettings.windowWidth - 104, 0, 104, 100);
-    this.movementMap = new MovementMap(this.player, this.background);
+    this.movementMap = new MovementMap(this.player, this.background, this.npc);
 
     Collisions.col(collisions.object);
 
@@ -44,7 +47,7 @@ class Game {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         GameSettings.pause = true;
-        for (let i in this.keys) {
+        for (const i in this.keys) {
           this.keys[i] = false;
         }
       } else {
@@ -64,21 +67,26 @@ class Game {
     const deltaTime = this.updateDeltaTime(time);
     const moveSpeed = this.player.speed * deltaTime;
 
+    this.npc.moveTowards(this.player, this.background, Collisions.boundaries);
+
     this.ctx.clearRect(0, 0, GameSettings.windowWidth, GameSettings.windowHeight);
     this.draw();
 
-    // prettier-ignore
-    !GameSettings.pause && this.movementMap.keyDown(moveSpeed, this.keys)
-
+    this.npc.updateFrame(moveSpeed);
     this.player.updateFrame(moveSpeed, this.keys, this.resources);
     requestAnimationFrame((time) => this.animate(time));
+    // prettier-ignore
+    !GameSettings.pause && this.movementMap.keyDown(moveSpeed, this.keys)
   }
 
   private draw(): void {
     this.background.draw();
+    // контуры колизий не нужно
+    this.npc.boundary.draw(this.ctx);
     for (const i of Collisions.boundaries) i.draw(this.ctx);
+    this.player.boundary.draw(this.ctx);
 
-    const objects: (Player | MapItem)[] = [this.player, ...Collisions.items];
+    const objects: (Player | NPC | MapItem)[] = [this.player, this.npc, ...Collisions.items];
 
     objects.sort((a, b) => {
       const aY = this.getYPosition(a);
@@ -89,27 +97,29 @@ class Game {
     for (const i of objects) i.draw();
     this.resources.draw();
     this.settings.draw(this.keys);
-    for (let i in Collisions.action0) {
+    for (const i in Collisions.action0) {
       Collisions.action0[i].showHelp(this.player, this.keys);
     }
   }
 
-  private getYPosition(obj: Player | MapItem): number {
-    return obj instanceof Player ? obj.boundary.mapPosition.y : obj.mapPosition.y + obj.height! + obj.hide;
+  private getYPosition(obj: Player | MapItem | NPC): number {
+    return obj instanceof Player || obj instanceof NPC
+      ? obj.boundary.mapPosition.y
+      : obj.mapPosition.y + obj.height! + obj.hide;
   }
 }
-
-type MovementKey = 'S' | 'D' | 'A' | 'W' | 'SD' | 'WD' | 'AS' | 'WA';
 
 class MovementMap {
   private player: Player;
   private background: GameMap;
+  private npc: NPC;
   public isMovementKeyPressed: boolean = false;
   public num: number = 0;
 
-  constructor(player: Player, background: GameMap) {
+  constructor(player: Player, background: GameMap, npc: NPC) {
     this.player = player;
     this.background = background;
+    this.npc = npc;
   }
 
   private movementMap = {
@@ -145,7 +155,7 @@ class MovementMap {
 
   public movePlayer(dx = 0, dy = 0, speed: number): void {
     if (!Collisions.boundaries.some((b) => b.collide(this.player, this.background, dx, dy, collisions.object))) {
-      Action.move(this.player, this.background, dx, dy, speed);
+      Action.move(this.player, this.background, this.npc, dx, dy, speed);
     }
   }
 

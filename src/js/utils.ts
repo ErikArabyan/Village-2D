@@ -1,9 +1,8 @@
-import { Vector2, GameSettings } from './gamelib.ts';
+import { Vector2, GameSettings, type MyText, type Sprite } from './gamelib.ts';
 import { borders, ItemIDs } from './ItemIDs.ts';
-import { Player } from './items.ts';
 import * as MapItems from './MapItems.ts';
-
-type classNames = Exclude<keyof typeof MapItems, 'Home' | 'GameMap' | 'MapItem'>;
+import { BoundaryConstructor, classNames, GameMapConstructor } from './types.ts';
+import { type NPC, type Player } from './items.ts';
 
 // -----------------------------------------------------------------------------
 // ОДИН объект колизии
@@ -20,7 +19,7 @@ export class Boundary {
   showText: Boolean;
   static width = 16;
   static height = 16;
-  constructor({ x, y, action = 1, width, height, teleport, helpButton, text }: boundaryConfigs) {
+  constructor({ x, y, action = 1, width, height, teleport, helpButton, text }: BoundaryConstructor) {
     this.mapPosition = new Vector2(x + MapItems.GameMap.offsetX, y + MapItems.GameMap.offsetY);
     this.action = action;
     this.width = width * GameSettings.scale;
@@ -58,7 +57,7 @@ export class Boundary {
     ? this.text![0].draw()
     : this.helpButton?.draw();
 
-    if (!this._collide(player, player.boundary.mapPosition.x, player.boundary.mapPosition.y)) {
+    if (!this.checkCollision(player, player.boundary.mapPosition.x, player.boundary.mapPosition.y)) {
       this.show = false;
       this.showText = false;
     }
@@ -68,7 +67,7 @@ export class Boundary {
     player.action = undefined;
     const px = player.boundary.mapPosition.x + dx * 2;
     const py = player.boundary.mapPosition.y + dy * 2;
-    if (!this._collide(player, px, py)) return false;
+    if (!this.checkCollision(player, px, py)) return false;
     if (this.action == 0) {
       this.show = true;
       return false;
@@ -80,7 +79,7 @@ export class Boundary {
     return true;
   }
 
-  _collide(player: Player, px: number, py: number): boolean {
+  checkCollision(player: Player | NPC, px: number, py: number): boolean {
     return (
       px < this.mapPosition.x + this.width &&
       px + player.boundary.width > this.mapPosition.x &&
@@ -110,7 +109,7 @@ export class Collisions {
   static width = 120;
   static height = 68;
 
-  static createBoundary(row: number, col: number, cell: number | number[]) {
+  static createBoundary(row: number, col: number, cell: number | number[]): Boundary {
     const width = typeof cell === 'object' ? cell[1] * 16 : 16;
     const height = typeof cell === 'object' ? cell[2] * 16 : 16;
 
@@ -126,6 +125,7 @@ export class Collisions {
   static col(collisions: (number | number[])[]) {
     Collisions.items = [];
     Collisions.boundaries = Object.entries(collisions).reduce((acc: Boundary[], [key, cell], index) => {
+      
       const row = index % Collisions.width;
       const col = Math.floor(index / Collisions.width);
 
@@ -164,11 +164,12 @@ export class Action {
     },
   };
 
-  static move(player: Player, background: MapItems.GameMap, dx: number, dy: number, speed: number) {
+  static move(player: Player, background: MapItems.GameMap, npc: NPC, dx: number, dy: number, speed: number) {
     const smooth = 2;
     speed /= smooth;
-    player.smoothMove(background, dx, dy, speed, smooth);
     background.smoothMove(player, dx, dy, speed);
+    player.smoothMove(background, dx, dy, speed, smooth);
+    // npc.smoothMove(background);
   }
 
   static execute(background: MapItems.GameMap, action: number, t: number[], collisions: (number | number[])[]) {
@@ -183,7 +184,7 @@ export class Action {
     t[1] = GameSettings.windowHeight / 2 - t[1] * GameSettings.scale;
 
     background.mapPosition.set(t[0], t[1]);
-    for (let i of [...Collisions.items, ...Collisions.boundaries]) {
+    for (const i of [...Collisions.items, ...Collisions.boundaries]) {
       i.mapPosition.x += t[0] - deviationX;
       i.mapPosition.y += t[1] - deviationY;
     }
