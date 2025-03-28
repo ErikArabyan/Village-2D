@@ -130,34 +130,35 @@ export class Player extends Animation {
     this.frame = 0;
   }
 
+  static calculateSide(input: number): number {
+    const mapping: Record<number, number> = {
+      0: 0,
+      4: 1,
+      1: 1,
+      6: 2,
+      2: 2,
+      3: 3,
+      5: 3,
+      7: 3,
+    };
+
+    return mapping[input];
+  }
+
   endState(keys: Record<string, boolean>) {
-    if (!(this.action && !keys.KeyE && this.collecting && this.move)) return;
+    if (!(this.action && !keys.KeyE && this.collecting)) return;
+    if ([1, 2].includes(this.side)) this.boundary.mapPosition.y -= 64;
     this._setSize(Player.DEFAULT_SIZE);
-    this.move = (this.move / 3) * 2;
+    this.move = (this.move! / 3) * 2;
     this.mapPosition.set(this.mapPosition.x + 8 * GameSettings.scale, this.mapPosition.y + 8 * GameSettings.scale);
     this.collecting = false;
     this.colHeight -= 8 * GameSettings.scale;
   }
 
-  updateFrame(time: number, keys?: Record<string, boolean>, resources?: Resources): void {
-    this.timer.doTick(time);
-    if (!this.timer.tick()) return;
-
-    if (this.action && keys?.KeyE) {
-      // if (resources?.items[this.action] !== 100) {
-      resources?.items[this.action].collect();
-      // }
-      this.frame = this.frame === 0 ? this.frameWidth : 0;
-    } else {
-      this.frame = (this.frame! + this.frameWidth!) % (this.frameWidth! * 6);
-    }
-
-    this.timer.reset();
-  }
-
   collect(keys: Record<string, boolean>, num: number) {
     if (!(this.action && keys.KeyE && !this.collecting)) return;
-    this.side = num % 4;
+    this.side = Player.calculateSide(num);
+    if ([1, 2].includes(this.side)) this.boundary.mapPosition.y += 64;
     this._setSize(Player.COLLECT_SIZE);
     this.move = (this.move! / 2) * 3;
     this.mapPosition.set(this.mapPosition.x - 8 * GameSettings.scale, this.mapPosition.y - 8 * GameSettings.scale);
@@ -167,6 +168,20 @@ export class Player extends Animation {
     this.colHeight += 8;
 
     if (this.action === 7 && this.move < 192) this.move += 192;
+  }
+
+  updateFrame(time: number, keys?: Record<string, boolean>, resources?: Resources): void {
+    this.timer.doTick(time);
+    if (!this.timer.tick()) return;
+
+    if (this.action && keys?.KeyE) {
+      resources?.items[this.action].collect();
+      this.frame = this.frame === 0 ? this.frameWidth : 0;
+    } else {
+      this.frame = (this.frame! + this.frameWidth!) % (this.frameWidth! * 6);
+    }
+
+    this.timer.reset();
   }
 
   smoothMove(background: GameMap, x: number, y: number, speed: number, smooth: number) {

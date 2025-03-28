@@ -3,3 +3,9 @@ maps - actions
 7 Tree
 8 stone
 9 jewelery
+
+
+0 => 0
+4, 1 => 1
+6, 2 => 2
+3, 5, 7 => 3

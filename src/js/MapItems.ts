@@ -404,7 +404,7 @@ export class DesertHouse1 extends MapItem {
       12,
       [{ x: 0, y: 40, width: 64, height: 40 }], // bsize
       'map_items/DesertTilemapBlankBackground.png',
-      -52 // hide height
+      -64 // hide height
     );
   }
 }
@@ -420,7 +420,7 @@ export class DesertHouse2 extends MapItem {
       5,
       [{ x: 0, y: 17, width: 33, height: 16 }], // bsize
       'map_items/DesertTilemapBlankBackground.png',
-      -12 // hide height
+      -36 // hide height
     );
   }
 }
@@ -435,7 +435,7 @@ export class DesertHouse3 extends MapItem {
       5,
       [{ x: 0, y: 17, width: 33, height: 16 }], // bsize
       'map_items/DesertTilemapBlankBackground.png',
-      -12 // hide height
+      -36 // hide height
     );
   }
 }
@@ -450,7 +450,7 @@ export class DesertHouse4 extends MapItem {
       7,
       [{ x: 0, y: 33, width: 49, height: 16 }], // bsize
       'map_items/DesertTilemapBlankBackground.png',
-      -12 // hide height
+      -36 // hide height
     );
   }
 }
